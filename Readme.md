@@ -1,3 +1,14 @@
+
+error.doc is the documentary for error.os now it's in under development, the goal is to have a  manpage like cli  documentary viewer with a qt web view in gui that fetches data from  https://zynomon.github.io/error.doc which is also under construction
+the gui will have --gui flag in the   .desktop  and if not used  --gui flag it will run in cli making it an universal documentary + manpage viewer
+
+
+-------documentary begins from here -------------------------
+
+___
+
+
+
 error.os Neospace 2025 is debian based system, following doc readme contains information about this distribution as if now it's being made under 2 months yet it's typically lame,
 in error.doc we are going to learn how to use error.os as if it's your playground
 we will discuss  about every chosen packages for error.os you will get idea about what to do
