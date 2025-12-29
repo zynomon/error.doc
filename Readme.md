@@ -1,4 +1,4 @@
-
+# DOCUMENTATION UNDER CONSTRUCTION 
 error.doc is the documentary for error.os now it's in under development, the goal is to have a  manpage like cli  documentary viewer with a qt web view in gui that fetches data from  https://zynomon.github.io/error.doc which is also under construction
 the gui will have --gui flag in the   .desktop  and if not used  --gui flag it will run in cli making it an universal documentary + manpage viewer
 
