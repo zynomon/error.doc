@@ -1,6 +1,1 @@
-### welcome to error.doc 
----
-Pickup your topics !
---
-
-[installing error.os]()
+go to archive.org and install error.os
