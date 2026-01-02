@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doc>
+  <id>001</id>
+  <title>Placeholder Title 1</title>
+  <icon>https://picsum.photos/seed/placeholder-icon-1/40/40</icon>
+  <preview>https://picsum.photos/seed/placeholder-preview-1/600/300</preview>
+  <short>This is a placeholder description for document 1.</short>
+  <meta>Placeholder meta content.</meta>
+  <content>
+    <p>This is placeholder content for document 1.</p>
+  </content>
+</doc>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doc>
+  <id>002</id>
+  <title>Filesystem Rituals</title>
+  <icon>https://picsum.photos/seed/fsicon/40/40</icon>
+  <preview>https://picsum.photos/seed/fspreview/600/300</preview>
+  <short>Clean mounts, sane fstab, and graceful recovery.</short>
+  <meta
+    >Embed in survivability cards; avoid 777 curses on packaging control dirs.</meta>
+  <content>
+    <p
+        >Ensure mount points exist before automount. Validate UUIDs for reproducibility.</p>
+    <warning>Never use world-writable (777) on control directories.</warning>
+    <code type="shell">
+      chmod 0755 debian/control
+      chmod -R u+rwX,go-rwx debian/*
+    </code>
+<hr></hr>
+    <embed
+            type="link"
+            href="https://www.debian.org/doc/manuals/debian-reference/ch02.en.html"
+        />
+  </content>
+</doc>

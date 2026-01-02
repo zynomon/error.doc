@@ -1,0 +1,321 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+:root {
+    --bg-color: #1a1a1a;
+    --primary-text: #e6e6e6;
+    --secondary-text: #a6a6a6;
+    --glass-bg: rgba(42, 42, 42, 0.5);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --accent-color: #007acc;
+    --warning-bg: rgba(255, 59, 48, 0.2);
+    --warning-border: #ff3b30;
+    --code-bg: rgba(0, 0, 0, 0.3);
+}
+
+body {
+    background: var(--bg-color);
+    color: var(--primary-text);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 1.5rem;
+    overflow-x: hidden;
+}
+
+/* Glassmorphism Effect */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Header / Navbar --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    position: fixed;
+    top: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
+    z-index: 1000;
+}
+
+.hamburger-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.hamburger-btn span {
+    display: block;
+    width: 24px;
+    height: 3px;
+    background: var(--primary-text);
+    border-radius: 3px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.url-breadcrumb {
+    color: var(--secondary-text);
+    font-size: 1rem;
+}
+
+.url-breadcrumb strong {
+    color: var(--primary-text);
+    font-weight: 500;
+}
+
+.search-container {
+    position: relative;
+    width: 250px;
+}
+
+.search-input {
+    width: 100%;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--primary-text);
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}
+
+/* --- Slide-Out Menu --- */
+#side-menu {
+    position: fixed;
+    top: 0;
+    left: -320px; /* Start off-screen */
+    width: 300px;
+    height: 100%;
+    padding: 1.5rem;
+    z-index: 1100;
+    transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: flex;
+    flex-direction: column;
+}
+
+#side-menu.open {
+    left: 0;
+}
+
+#side-menu h2 {
+    margin-top: 60px; /* Space for close button */
+    margin-bottom: 2rem;
+}
+
+#side-menu-content {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+}
+
+#side-menu-content a {
+    display: block;
+    color: var(--secondary-text);
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#side-menu-content a:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--primary-text);
+}
+
+/* --- Main Content --- */
+main {
+    margin-top: 100px; /* Space for fixed header */
+    margin-bottom: 100px; /* Space for footer */
+}
+
+#content-area {
+    padding: 2rem;
+}
+
+.preview-banner {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.title-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.doc-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+}
+.doc-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.content-body p {
+    line-height: 1.7;
+    color: var(--secondary-text);
+}
+.content-body .warning {
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    background: var(--warning-bg);
+    border: 1px solid var(--warning-border);
+    color: var(--primary-text);
+}
+.content-body .code-block {
+    background: var(--code-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    font-family: 'Roboto Mono', monospace;
+    white-space: pre-wrap;
+}
+.content-body .embedded-link {
+    display: block;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+    color: var(--accent-color);
+    transition: background-color 0.2s ease;
+}
+.content-body .embedded-link:hover {
+    background-color: rgba(0, 122, 204, 0.1);
+}
+
+/* --- Footer --- */
+footer {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    z-index: 1000;
+}
+
+footer a {
+    color: var(--secondary-text);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+footer a:hover {
+    color: var(--primary-text);
+}
+
+/* --- Search Results --- */
+.search-results-container {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 110%;
+    left: 0;
+    right: 0;
+    z-index: 1200;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.search-results-container ul {
+    list-style: none;
+    margin: 0;
+    padding: 8px;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+.search-results-container li a {
+    display: block;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: var(--primary-text);
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.search-results-container li a:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.result-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.result-title {
+    font-weight: 500;
+}
+
+.result-id {
+    font-size: 0.8rem;
+    color: var(--secondary-text);
+    background: rgba(0,0,0,0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.result-snippet {
+    font-size: 0.9rem;
+    color: var(--secondary-text);
+    margin: 0;
+}
+
+.result-snippet strong {
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.no-results {
+    padding: 12px 16px;
+    color: var(--secondary-text);
+    text-align: center;
+}
+
+/* --- Responsiveness --- */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+    .navbar {
+        top: 1rem;
+        left: 1rem;
+        right: 1rem;
+    }
+    .url-breadcrumb {
+        display: none; /* Hide breadcrumb on small screens */
+    }
+    .search-container {
+        width: 100%;
+        margin-left: 1rem;
+    }
+    main {
+        margin-top: 80px;
+        margin-bottom: 80px;
+    }
+    footer {
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+    }
+}
