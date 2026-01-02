@@ -10,7 +10,7 @@ ___
 
 
 error.os Neospace 2025 is debian based system, following doc readme contains information about this distribution as if now it's being made under 2 months yet it's typically lame,
-in error.doc we are going to learn how to use error.os as if it's your playground
+in error.doc we are going to learn how to use error.os as if it's your playgrounduyt
 we will discuss  about every chosen packages for error.os you will get idea about what to do
 use ``gh repo view zynomon/error.doc``
 if your minimal tty device supports github cli
