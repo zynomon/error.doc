@@ -1,5 +1,37 @@
-title: Hacker theme
-description: Hacker is a theme for GitHub Pages.
-show_downloads: true
-google_analytics:
-theme: jekyll-theme-hacker
+title: error.doc
+description: Documentation for error.os
+baseurl: "/error.doc"
+icon: "documents"
+url: "https://zynomon.github.io"
+remote_theme: pages-themes/hacker@v0.2.0
+
+header_text: "error.doc"
+theme_color: "#000d5d"
+secondary_color: "#b5e853"
+
+nav_buttons:
+  - label: "← Back"
+    action: "previous"
+    disabled_on: ["index", "000"]
+
+  - label: "⟳ Refresh"
+    action: "refresh"
+
+  - label: "→ Forward"
+    action: "next"
+    disabled_on: ["last"]
+
+  - label: "External"
+    url: "https://zynomon.github.io/error"
+    external: true
+footer_links:
+  - label: "Discord"
+    url: "https://discord.gg/Jn7FBwu99F"
+    icon: "discord"
+
+  - label: "GitHub"
+    url: "https://github.com/zynomon/error.doc"
+    icon: "github"
+
+code_theme: "hacker"
+copy_button: true
