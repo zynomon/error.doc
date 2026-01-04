@@ -2,10 +2,14 @@
 :root {
     --bg: #0d0f12;
     --fg: #dfe2ec;
-    --accent: #00bfff;
+    --accent: #4169e1;
+    --accent-bright: #5b7fe6;
     --panel: rgba(255, 255, 255, 0.08);
     --panel-hover: rgba(255, 255, 255, 0.15);
     --glass-border: rgba(255, 255, 255, 0.25);
+    --terminal-bg: #0a0e0f;
+    --terminal-green: #00ff41;
+    --terminal-border: #1a3a1a;
 }
 
 /* Global layout */
@@ -36,6 +40,7 @@ header {
     font-weight: bold;
     border-radius: 0 0 1rem 1rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    font-family: "Nimbus Mono PS", "Courier New", monospace;
 }
 
 /* Main content */
@@ -61,6 +66,25 @@ h6 {
     color: var(--fg);
     margin-top: 0;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    font-family: "Nimbus Mono PS", "Courier New", monospace;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+    color: var(--accent-bright);
+}
+
+h3 {
+    font-size: 1.5rem;
 }
 
 /* Links */
@@ -68,25 +92,122 @@ a {
     color: var(--accent);
     text-decoration: none;
     transition: all 0.25s ease-in-out;
+    border-bottom: 1px solid transparent;
 }
 
 a:hover {
-    color: #ffffff;
-    text-shadow: 0 0 6px var(--accent);
+    color: var(--accent-bright);
+    text-shadow: 0 0 8px rgba(65, 105, 225, 0.6);
+    border-bottom: 1px solid var(--accent-bright);
 }
 
-/* Code blocks */
-code,
-pre {
+/* Inline code */
+code {
     background: linear-gradient(to bottom, #2a2c30 0%, #1a1c20 100%);
-    color: var(--accent);
-    padding: 0.4rem 0.6rem;
-    border-radius: 0.75rem;
+    color: var(--accent-bright);
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.4rem;
     border: 1px solid #333;
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.1),
-        0 2px 6px rgba(0, 0, 0, 0.6);
+        0 2px 4px rgba(0, 0, 0, 0.4);
+    font-size: 0.9em;
+    font-family: "Fira Code", monospace;
+}
+
+/* Regular code blocks */
+pre {
+    background: linear-gradient(to bottom, #1e2126 0%, #15171a 100%);
+    color: var(--fg);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid #2a2d35;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 4px 12px rgba(0, 0, 0, 0.6);
+    overflow-x: auto;
+    position: relative;
+    margin: 1.5rem 0;
+}
+
+pre code {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    color: var(--fg);
+    display: block;
     font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* Terminal-style bash code blocks */
+pre.language-bash,
+pre.language-shell,
+pre.language-terminal {
+    background: var(--terminal-bg);
+    border: 2px solid var(--terminal-border);
+    border-radius: 0.5rem;
+    box-shadow:
+        0 0 20px rgba(0, 255, 65, 0.1),
+        inset 0 0 40px rgba(0, 255, 65, 0.03),
+        0 8px 20px rgba(0, 0, 0, 0.8);
+    padding: 1rem 1.5rem;
+    position: relative;
+    overflow-x: auto;
+}
+
+/* Terminal header with traffic lights */
+pre.language-bash::before,
+pre.language-shell::before,
+pre.language-terminal::before {
+    content: "● ● ●";
+    display: block;
+    color: #555;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--terminal-border);
+    letter-spacing: 0.5rem;
+}
+
+pre.language-bash code,
+pre.language-shell code,
+pre.language-terminal code {
+    color: var(--terminal-green);
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+    font-family: "Fira Code", "Consolas", monospace;
+    font-weight: 500;
+    background: transparent;
+}
+
+/* Terminal prompt symbol */
+pre.language-bash code::before,
+pre.language-shell code::before,
+pre.language-terminal code::before {
+    content: "$ ";
+    color: var(--terminal-green);
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+/* Scrollbar for code blocks */
+pre::-webkit-scrollbar {
+    height: 8px;
+}
+
+pre::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+pre::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 4px;
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-bright);
 }
 
 /* Docs grid cards */
@@ -94,13 +215,14 @@ pre {
     display: grid;
     gap: 1.5rem;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    margin: 2rem 0;
 }
 
 .docs-card {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 1rem;
+    padding: 1.25rem;
     background: var(--panel);
     border-radius: 1rem;
     border: 1px solid var(--glass-border);
@@ -108,20 +230,74 @@ pre {
     -webkit-backdrop-filter: blur(12px);
     transition:
         background 0.25s ease-in-out,
-        transform 0.2s ease;
+        transform 0.2s ease,
+        border-color 0.25s ease;
 }
 
 .docs-card:hover {
     background: var(--panel-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+    border-color: var(--accent);
 }
 
 .docs-card code {
     background-color: #1a1c20;
-    color: var(--accent);
-    padding: 0.25rem 0.5rem;
+    color: var(--accent-bright);
+    padding: 0.3rem 0.6rem;
     border-radius: 0.5rem;
+    border: 1px solid var(--accent);
+}
+
+/* Lists */
+ul,
+ol {
+    line-height: 1.8;
+    margin: 1rem 0;
+}
+
+li {
+    margin: 0.5rem 0;
+}
+
+/* Blockquotes */
+blockquote {
+    border-left: 4px solid var(--accent);
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+    color: #b0b5c0;
+    font-style: italic;
+    background: rgba(65, 105, 225, 0.05);
+    padding: 1rem 1.5rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+th,
+td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+th {
+    background: var(--panel);
+    color: var(--accent-bright);
+    font-weight: bold;
+    font-family: "Nimbus Mono PS", "Courier New", monospace;
+}
+
+tr:hover {
+    background: var(--panel-hover);
 }
 
 /* Footer */
@@ -130,10 +306,44 @@ footer {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     color: #aaa;
-    padding: 1rem;
+    padding: 1.5rem;
     font-family: "Fira Code", monospace;
     font-size: 0.9rem;
     border-top: 1px solid var(--glass-border);
     border-radius: 1rem 1rem 0 0;
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.6);
+    text-align: center;
+}
+
+footer a {
+    color: var(--accent);
+}
+
+footer a:hover {
+    color: var(--accent-bright);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    main {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .docs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    pre {
+        padding: 1rem;
+        font-size: 0.85rem;
+    }
 }
