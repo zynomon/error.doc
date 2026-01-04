@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page.title }} | error.doc</title>
+    <link rel="icon" type="image/svg+xml" href="{{ "/assets/images/edock.svg" | relative_url }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
+  </head>
+  <body class="bg-gray-900 text-gray-100 relative">
+
+    <!-- Background -->
+    <div class="absolute inset-0 -z-10">
+      <img src="{{ "/assets/images/bg.svg" | relative_url }}" class="w-full h-full object-cover" alt="background">
+    </div>
+
+    <!-- Header -->
+    <header class="bg-black/70 text-cyan-400 p-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold">error.doc</h1>
+      <nav>
+        <a href="{{ "/" | relative_url }}" class="px-2 hover:underline">Home</a>
+        <a href="{{ "/docs" | relative_url }}" class="px-2 hover:underline">Docs</a>
+      </nav>
+    </header>
+
+    <!-- Content -->
+    <main class="backdrop-blur-md bg-black/40 p-6 rounded-lg shadow-lg m-6">
+      {{ content }}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black/70 text-gray-400 p-6 text-center mt-8"> <h2 class="text-xl text-cyan-400 font-bold">𝚎𝚛𝚛𝚘𝚛.𝚘𝚜™</h2> <p class="italic mb-4">born from failure, built for control.</p> <p align="left" class="flex justify-center gap-4 flex-wrap"> <a href="https://zynomon.github.io"> <img src="https://img.shields.io/badge/⌕-blue?style=plastic"> </a> <a href="https://discord.gg/Jn7FBwu99F"> <img src="https://img.shields.io/badge/-5865F2?style=plastic&logo=discord&logoColor=white"> </a> <a href="https://zynomon.github.io/error/e.html"> <img src="https://img.shields.io/badge/repo-black?style=plastic"> </a> <img src="https://img.shields.io/badge/⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀-white?style=plastic"> </p> </footer
+
+  </body>
+</html>
