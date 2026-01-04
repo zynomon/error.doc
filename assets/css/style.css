@@ -1,3 +1,4 @@
+/* Root palette */
 :root {
     --bg: #0d0f12;
     --fg: #dfe2ec;
@@ -11,6 +12,7 @@
     --terminal-border: #1a3a1a;
 }
 
+/* Global layout */
 html,
 body {
     height: 100%;
@@ -25,15 +27,18 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.7;
 }
 
+/* Header*/
 header {
     background: var(--panel);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--glass-border);
     color: var(--accent);
-    padding: 1rem;
+    padding: 1.5rem 2rem;
     font-weight: bold;
     border-radius: 0 0 1rem 1rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
@@ -44,6 +49,28 @@ header {
     -ms-user-select: none;
 }
 
+header h1 {
+    font-size: 2rem;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+header nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+header nav a {
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.25s ease;
+}
+
+header nav a:hover {
+    background: var(--panel-hover);
+}
+
 /* Main content */
 main {
     flex-grow: 1;
@@ -51,13 +78,17 @@ main {
     backdrop-filter: blur(16px) saturate(150%);
     -webkit-backdrop-filter: blur(16px) saturate(150%);
     margin: 2rem;
-    padding: 2rem;
+    padding: 2.5rem;
     border-radius: 1.25rem;
     border: 1px solid var(--glass-border);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
 }
 
-/* Headings */
+p {
+    margin: 1rem 0;
+    line-height: 1.8;
+}
+
 h1,
 h2,
 h3,
@@ -65,27 +96,49 @@ h4,
 h5,
 h6 {
     color: var(--fg);
-    margin-top: 0;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
     font-family: "Nimbus Mono PS", "Courier New", monospace;
     font-weight: bold;
     letter-spacing: 0.5px;
+    line-height: 1.3;
 }
 
 h1 {
-    font-size: 2.5rem;
-    border-bottom: 2px solid var(--accent);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1.5rem;
-}
-
-h2 {
-    font-size: 2rem;
+    font-size: 3rem;
+    border-bottom: 3px solid var(--accent);
+    padding-bottom: 0.75rem;
+    margin-bottom: 2rem;
+    margin-top: 0;
     color: var(--accent-bright);
 }
 
+h2 {
+    font-size: 2.25rem;
+    color: var(--accent-bright);
+    border-bottom: 2px solid rgba(65, 105, 225, 0.3);
+    padding-bottom: 0.5rem;
+}
+
 h3 {
+    font-size: 1.75rem;
+    color: var(--fg);
+}
+
+h4 {
     font-size: 1.5rem;
+    color: var(--fg);
+}
+
+h5 {
+    font-size: 1.25rem;
+    color: var(--fg);
+}
+
+h6 {
+    font-size: 1.1rem;
+    color: var(--fg);
 }
 
 /* Links */
@@ -102,11 +155,11 @@ a:hover {
     border-bottom: 1px solid var(--accent-bright);
 }
 
-/* Inline code */
+/* Inline codeblocks */
 code {
     background: linear-gradient(to bottom, #2a2c30 0%, #1a1c20 100%);
     color: var(--accent-bright);
-    padding: 0.2rem 0.5rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 0.4rem;
     border: 1px solid #333;
     box-shadow:
@@ -116,7 +169,14 @@ code {
     font-family: "Fira Code", monospace;
 }
 
+/* Code block wrapper */
+.code-block-wrapper {
+    position: relative;
+    margin: 1.5rem 0;
+}
+
 /* Regular code blocks */
+.code-block-wrapper pre,
 pre {
     background: linear-gradient(to bottom, #1e2126 0%, #15171a 100%);
     color: var(--fg);
@@ -128,7 +188,7 @@ pre {
         0 4px 12px rgba(0, 0, 0, 0.6);
     overflow-x: auto;
     position: relative;
-    margin: 1.5rem 0;
+    margin: 0;
 }
 
 pre code {
@@ -138,24 +198,18 @@ pre code {
     padding: 0;
     color: var(--fg);
     display: block;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     line-height: 1.6;
-}
-
-/* Copy button for code blocks */
-.code-block-wrapper {
-    position: relative;
-    margin: 1.5rem 0;
 }
 
 .copy-button {
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
-    background: rgba(65, 105, 225, 0.2);
-    border: 1px solid var(--accent);
+    background: rgba(65, 105, 225, 0.15);
+    border: 1px solid rgba(65, 105, 225, 0.4);
     color: var(--accent-bright);
-    padding: 0.5rem 1rem;
+    padding: 0.5rem;
     border-radius: 0.5rem;
     font-size: 0.85rem;
     font-family: "Fira Code", monospace;
@@ -164,17 +218,29 @@ pre code {
     z-index: 10;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    width: 36px;
+    height: 36px;
+}
+
+.code-block-wrapper:hover .copy-button {
+    opacity: 1;
+    pointer-events: all;
 }
 
 .copy-button:hover {
-    background: rgba(65, 105, 225, 0.4);
+    background: rgba(65, 105, 225, 0.3);
     border-color: var(--accent-bright);
-    transform: translateY(-2px);
+    transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
 }
 
 .copy-button:active {
-    transform: translateY(0);
+    transform: scale(0.95);
 }
 
 .copy-button.copied {
@@ -183,7 +249,14 @@ pre code {
     color: var(--terminal-green);
 }
 
-/* Terminal-style bash code blocks */
+.copy-button svg {
+    width: 18px;
+    height: 18px;
+}
+
+.code-block-wrapper pre.language-bash,
+.code-block-wrapper pre.language-shell,
+.code-block-wrapper pre.language-terminal,
 pre.language-bash,
 pre.language-shell,
 pre.language-terminal {
@@ -195,11 +268,12 @@ pre.language-terminal {
         inset 0 0 40px rgba(0, 255, 65, 0.03),
         0 8px 20px rgba(0, 0, 0, 0.8);
     padding: 1rem 1.5rem;
-    position: relative;
-    overflow-x: auto;
+    padding-top: 3rem;
 }
 
-/* Terminal header with traffic lights */
+.code-block-wrapper pre.language-bash::before,
+.code-block-wrapper pre.language-shell::before,
+.code-block-wrapper pre.language-terminal::before,
 pre.language-bash::before,
 pre.language-shell::before,
 pre.language-terminal::before {
@@ -207,12 +281,15 @@ pre.language-terminal::before {
     display: block;
     color: #555;
     font-size: 1rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--terminal-border);
+    position: absolute;
+    top: 1rem;
+    left: 1.5rem;
     letter-spacing: 0.5rem;
 }
 
+.code-block-wrapper pre.language-bash code,
+.code-block-wrapper pre.language-shell code,
+.code-block-wrapper pre.language-terminal code,
 pre.language-bash code,
 pre.language-shell code,
 pre.language-terminal code {
@@ -223,7 +300,9 @@ pre.language-terminal code {
     background: transparent;
 }
 
-/* Terminal prompt symbol */
+.code-block-wrapper pre.language-bash code::before,
+.code-block-wrapper pre.language-shell code::before,
+.code-block-wrapper pre.language-terminal code::before,
 pre.language-bash code::before,
 pre.language-shell code::before,
 pre.language-terminal code::before {
@@ -233,7 +312,6 @@ pre.language-terminal code::before {
     opacity: 0.8;
 }
 
-/* Scrollbar styling */
 pre::-webkit-scrollbar {
     height: 8px;
 }
@@ -294,11 +372,21 @@ pre::-webkit-scrollbar-thumb:hover {
 ul,
 ol {
     line-height: 1.8;
-    margin: 1rem 0;
+    margin: 1.5rem 0;
+    padding-left: 2rem;
 }
 
 li {
-    margin: 0.5rem 0;
+    margin: 0.75rem 0;
+}
+
+ul li::marker {
+    color: var(--accent-bright);
+}
+
+ol li::marker {
+    color: var(--accent-bright);
+    font-weight: bold;
 }
 
 /* Blockquotes */
@@ -313,6 +401,7 @@ blockquote {
     border-radius: 0 0.5rem 0.5rem 0;
 }
 
+/* Tables */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -338,6 +427,12 @@ th {
 
 tr:hover {
     background: var(--panel-hover);
+}
+
+hr {
+    border: none;
+    border-top: 2px solid var(--glass-border);
+    margin: 2rem 0;
 }
 
 footer {
@@ -367,6 +462,23 @@ footer a:hover {
 }
 
 @media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    header {
+        padding: 1rem;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    header nav a {
+        font-size: 1rem;
+        padding: 0.4rem 0.8rem;
+    }
+
     main {
         margin: 1rem;
         padding: 1.5rem;
@@ -377,6 +489,10 @@ footer a:hover {
     }
 
     h2 {
+        font-size: 1.75rem;
+    }
+
+    h3 {
         font-size: 1.5rem;
     }
 
@@ -390,7 +506,9 @@ footer a:hover {
     }
 
     .copy-button {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.75rem;
+        opacity: 1;
+        pointer-events: all;
+        width: 32px;
+        height: 32px;
     }
 }
