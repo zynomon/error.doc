@@ -11,13 +11,11 @@
   </head>
   <body class="bg-gray-900 text-gray-100 relative">
 
-    <!-- Background -->
     <div class="absolute inset-0 -z-10">
       <img src="{{ "/assets/images/bg.svg" | relative_url }}" class="w-full h-full object-cover" alt="background">
     </div>
 
-    <!-- Header -->
-    <header class="bg-black/70 text-cyan-400 p-4 flex justify-between items-center">
+  <header class="bg-black/70 text-cyan-400 p-4 flex justify-between items-center">
       <h1 class="text-xl font-bold">error.doc</h1>
       <nav>
         <a href="{{ "/" | relative_url }}" class="px-2 hover:underline">Home</a>
@@ -27,6 +25,80 @@
 
     <!-- Content -->
     <main class="backdrop-blur-md bg-black/40 p-6 rounded-lg shadow-lg m-6">
+        <script>// Add copy buttons to all code blocks
+        document.addEventListener('DOMContentLoaded', function() {
+            // Find all pre elements with code blocks
+            const codeBlocks = document.querySelectorAll('pre code');
+
+            codeBlocks.forEach(function(codeBlock) {
+                const pre = codeBlock.parentElement;
+
+                if (pre.parentElement.classList.contains('code-block-wrapper')) {
+                    return;
+                }
+
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-block-wrapper';
+
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(pre);
+
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-button';
+                copyButton.textContent = 'Copy';
+                copyButton.setAttribute('aria-label', 'Copy code to clipboard');
+
+                copyButton.addEventListener('click', function() {
+
+                    let code = codeBlock.textContent;
+
+                    if (pre.classList.contains('language-bash') ||
+                        pre.classList.contains('language-shell') ||
+                        pre.classList.contains('language-terminal')) {
+                        code = code.replace(/^\$ /gm, '');
+                    }
+
+                    navigator.clipboard.writeText(code).then(function() {
+
+                        copyButton.textContent = '✓ Copied!';
+                        copyButton.classList.add('copied');
+
+                        setTimeout(function() {
+                            copyButton.textContent = 'Copy';
+                            copyButton.classList.remove('copied');
+                        }, 2000);
+                    }).catch(function(err) {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = code;
+                        textArea.style.position = 'fixed';
+                        textArea.style.opacity = '0';
+                        document.body.appendChild(textArea);
+                        textArea.select();
+
+                        try {
+                            document.execCommand('copy');
+                            copyButton.textContent = '✓ Copied!';
+                            copyButton.classList.add('copied');
+
+                            setTimeout(function() {
+                                copyButton.textContent = 'Copy';
+                                copyButton.classList.remove('copied');
+                            }, 2000);
+                        } catch (err) {
+                            copyButton.textContent = 'Failed';
+                            setTimeout(function() {
+                                copyButton.textContent = 'Copy';
+                            }, 2000);
+                        }
+
+                        document.body.removeChild(textArea);
+                    });
+                });
+
+                wrapper.insertBefore(copyButton, pre);
+            });
+        });</script>
       {{ content }}
     </main>
 
