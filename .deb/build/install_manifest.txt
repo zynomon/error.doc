@@ -1,0 +1,3 @@
+/usr/bin/error_doc
+/usr/share/applications/error.doc.desktop
+/usr/share/icons/hicolor/scalable/apps/error.doc.svg

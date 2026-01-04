@@ -1,0 +1,26 @@
+# ninja log v6
+2	2043	1766660564626844306	error_doc_autogen/timestamp	2e8f30090547742
+2	2043	1766660564626844306	error_doc_autogen/mocs_compilation.cpp	2e8f30090547742
+2	2043	1766660564626844306	/home/user/error_doc/build/Desktop-MinSizeRel/error_doc_autogen/timestamp	2e8f30090547742
+2	2043	1766660564626844306	/home/user/error_doc/build/Desktop-MinSizeRel/error_doc_autogen/mocs_compilation.cpp	2e8f30090547742
+2057	2295	1766660564658844306	CMakeFiles/error_doc.dir/error_doc_autogen/mocs_compilation.cpp.o	189b703d0e07a2e
+2059	17666	1766660564658844306	CMakeFiles/error_doc.dir/main.cpp.o	8d11d15bc1471803
+17668	19444	1766660580270843896	error_doc	7964828f677518b8
+21	1425	1766660763046839106	error_doc_autogen/timestamp	2e8f30090547742
+21	1425	1766660763046839106	error_doc_autogen/mocs_compilation.cpp	2e8f30090547742
+21	1425	1766660763046839106	/home/user/error_doc/build/Desktop-MinSizeRel/error_doc_autogen/timestamp	2e8f30090547742
+21	1425	1766660763046839106	/home/user/error_doc/build/Desktop-MinSizeRel/error_doc_autogen/mocs_compilation.cpp	2e8f30090547742
+1426	10957	1766660764446839070	CMakeFiles/error_doc.dir/main.cpp.o	8d11d15bc1471803
+10957	12736	1766660773978838820	error_doc	7964828f677518b8
+5	1473	1766660867514836369	error_doc_autogen/timestamp	2e8f30090547742
+5	1473	1766660867514836369	error_doc_autogen/mocs_compilation.cpp	2e8f30090547742
+5	1473	1766660867514836369	/home/user/error_doc/build/Desktop-MinSizeRel/error_doc_autogen/timestamp	2e8f30090547742
+5	1473	1766660867514836369	/home/user/error_doc/build/Desktop-MinSizeRel/error_doc_autogen/mocs_compilation.cpp	2e8f30090547742
+1473	11858	1766660868986836330	CMakeFiles/error_doc.dir/main.cpp.o	8d11d15bc1471803
+11858	13887	1766660879370836058	error_doc	7964828f677518b8
+4	1208	1766660910222835250	error_doc_autogen/timestamp	2e8f30090547742
+4	1208	1766660910222835250	error_doc_autogen/mocs_compilation.cpp	2e8f30090547742
+4	1208	1766660910222835250	/home/user/error_doc/build/Desktop-MinSizeRel/error_doc_autogen/timestamp	2e8f30090547742
+4	1208	1766660910222835250	/home/user/error_doc/build/Desktop-MinSizeRel/error_doc_autogen/mocs_compilation.cpp	2e8f30090547742
+1210	10476	1766660911426835218	CMakeFiles/error_doc.dir/main.cpp.o	8d11d15bc1471803
+10476	12209	1766660920694834975	error_doc	7964828f677518b8
