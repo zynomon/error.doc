@@ -15,6 +15,18 @@
     --step-up-3: 1.75rem;
     --step-up-2: 1.4rem;
     --step-up-1: 1.15rem;
+    --fg-primary: var(--fg);
+    --fg-secondary: #b0b5c0;
+    --fg-dim: #888cb0;
+    --accent-primary: var(--accent);
+    --glass-bg: var(--panel);
+    --border-radius-sm: 0.35rem;
+    --border-radius-md: 0.75rem;
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --info: #00bfff;
+    --success: var(--terminal-green);
+    --warning: #ffa500;
+    --error: #ff4444;
 }
 
 html,
@@ -53,9 +65,19 @@ header {
 }
 
 header h1 {
-    font-size: var(--step-up-6);
+    font-size: revert;
     margin: 0;
     letter-spacing: 1px;
+}
+
+header h1::before {
+    content: "";
+    display: inline-block;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-right: 0.4rem;
+    vertical-align: text-bottom;
+    background: url(assets/images/edock.svg) no-repeat center / contain;
 }
 
 header nav {
@@ -98,49 +120,43 @@ h4,
 h5,
 h6 {
     color: var(--fg);
-    margin-top: 2rem;
-    margin-bottom: 1rem;
+    margin: 2.5rem 0 1.25rem;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
     font-family: "Nimbus Mono PS", "Courier New", monospace;
     font-weight: bold;
     letter-spacing: 0.5px;
     line-height: 1.3;
+    font-size: revert;
 }
 
 h1 {
-    font-size: var(--step-up-6);
-    border-bottom: 3px solid var(--accent);
-    padding-bottom: 0.75rem;
-    margin-bottom: 2rem;
-    margin-top: 0;
     color: var(--accent-bright);
+    border-bottom: 3px solid var(--accent);
 }
 
 h2 {
-    font-size: var(--step-up-5);
     color: var(--accent-bright);
-    border-bottom: 2px solid rgba(65, 105, 225, 0.3);
-    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(65, 105, 225, 0.4);
 }
 
 h3 {
-    font-size: var(--step-up-4);
-    color: var(--fg);
+    color: var(--fg-primary);
 }
 
 h4 {
-    font-size: var(--step-up-3);
-    color: var(--fg);
+    color: var(--fg-primary);
 }
 
 h5 {
-    font-size: var(--step-up-2);
-    color: var(--fg);
+    color: var(--fg-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 h6 {
-    font-size: var(--step-up-1);
-    color: var(--fg);
+    color: var(--fg-dim);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
 }
 
 a {
@@ -397,6 +413,26 @@ blockquote {
     border-radius: 0 0.5rem 0.5rem 0;
 }
 
+blockquote.note {
+    border-left-color: var(--info);
+    background: rgba(0, 191, 255, 0.08);
+}
+
+blockquote.tip {
+    border-left-color: var(--success);
+    background: rgba(0, 255, 65, 0.08);
+}
+
+blockquote.warning {
+    border-left-color: var(--warning);
+    background: rgba(255, 165, 0, 0.08);
+}
+
+blockquote.danger {
+    border-left-color: var(--error);
+    background: rgba(255, 68, 68, 0.08);
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -418,6 +454,21 @@ th {
     color: var(--accent-bright);
     font-weight: bold;
     font-family: "Nimbus Mono PS", "Courier New", monospace;
+}
+
+th[align="left"],
+td[align="left"] {
+    text-align: left;
+}
+
+th[align="center"],
+td[align="center"] {
+    text-align: center;
+}
+
+th[align="right"],
+td[align="right"] {
+    text-align: right;
 }
 
 tr:hover {
@@ -491,17 +542,133 @@ figcaption {
 }
 
 dl {
-    margin: 1.5rem 0;
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
 }
 
 dt {
+    font-family: "OCR A Std", monospace;
     font-weight: bold;
     color: var(--accent-bright);
     margin-top: 1rem;
 }
 
+dt:first-child {
+    margin-top: 0;
+}
+
 dd {
-    margin: 0.25rem 0 0.75rem 1.5rem;
+    margin: 0.25rem 0 0.75rem 2rem;
+    color: var(--fg-secondary);
+}
+
+details {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+summary {
+    font-family: "OCR A Std", monospace;
+    font-weight: bold;
+    color: var(--accent-bright);
+    cursor: pointer;
+    user-select: none;
+    padding: 0.75rem;
+    margin: -0.75rem;
+    border-radius: var(--border-radius-sm);
+}
+
+summary:hover {
+    background: var(--panel-hover);
+}
+
+details[open] > summary {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+kbd {
+    font:
+        0.9em/1 "Nimbus Mono PS",
+        monospace;
+    background: #222;
+    color: var(--fg-primary);
+    padding: 0.2em 0.4em;
+    border: 1px solid #444;
+    border-radius: 0.35rem;
+    box-shadow:
+        0 2px 0 #111,
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+samp {
+    font:
+        0.9em "Nimbus Mono PS",
+        monospace;
+    background: var(--terminal-bg);
+    color: var(--terminal-green);
+    padding: 0.25em 0.5em;
+    border: 1px solid var(--terminal-border);
+    border-radius: 0.35rem;
+}
+
+var {
+    font:
+        italic 1em "Nimbus Mono PS",
+        monospace;
+    color: var(--accent-bright);
+}
+
+abbr[title] {
+    text-decoration: underline dotted;
+    cursor: help;
+}
+
+ins {
+    background: rgba(0, 255, 65, 0.2);
+    color: var(--success);
+    text-decoration: none;
+    padding: 0.1em 0.3em;
+    border-radius: 0.25rem;
+}
+
+del {
+    opacity: 0.6;
+    color: var(--error);
+}
+
+.footnotes {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--glass-border);
+    font-size: 0.85rem;
+}
+
+.footnotes ol {
+    padding-left: 2rem;
+}
+
+.footnotes li {
+    color: var(--fg-secondary);
+}
+
+a.footnote {
+    color: var(--accent-primary);
+    text-decoration: none;
+    padding: 0.1em 0.3em;
+    border-radius: 0.25rem;
+    background: rgba(65, 105, 225, 0.2);
+}
+
+a.footnote:hover {
+    background: rgba(65, 105, 225, 0.3);
 }
 
 ul.task-list {
@@ -511,85 +678,60 @@ ul.task-list {
 
 .task-list li {
     position: relative;
-    padding-left: 1.8rem;
+    padding-left: 2rem;
 }
 
 .task-list input[type="checkbox"] {
     position: absolute;
     left: 0;
-    top: 0.35em;
-    width: 1.1rem;
-    height: 1.1rem;
-    accent-color: var(--accent);
+    top: 0.4rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    accent-color: var(--accent-primary);
 }
 
-.footnote {
-    font-size: 0.8rem;
-    color: var(--accent);
-    text-decoration: none;
-    margin-left: 0.15rem;
+.text-center {
+    text-align: center;
 }
 
-.footnote:hover {
-    text-decoration: underline;
+.text-left {
+    text-align: left;
 }
 
-.footnotes {
-    margin-top: 3rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--glass-border);
-    font-size: 0.85rem;
-    color: #a0a6b0;
+.text-right {
+    text-align: right;
 }
 
-.footnotes ol {
-    padding-left: 1.25rem;
+.mt-0 {
+    margin-top: 0 !important;
 }
 
-.footnotes li {
-    margin: 0.35rem 0;
+.mt-1 {
+    margin-top: 1rem !important;
 }
 
-sup,
-sub {
-    font-size: 0.72rem;
-    line-height: 0;
-    position: relative;
-    vertical-align: baseline;
+.mt-2 {
+    margin-top: 2rem !important;
 }
 
-sup {
-    top: -0.4em;
+.mb-0 {
+    margin-bottom: 0 !important;
 }
 
-sub {
-    bottom: -0.25em;
+.mb-1 {
+    margin-bottom: 1rem !important;
 }
 
-abbr[title] {
-    text-decoration: underline dotted;
-    cursor: help;
+.mb-2 {
+    margin-bottom: 2rem !important;
 }
 
-kbd {
-    background: #222;
-    color: var(--fg);
-    padding: 0.2rem 0.4rem;
-    border: 1px solid #444;
-    border-radius: 0.3rem;
-    font-size: 0.85em;
-    font-family: "Fira Code", monospace;
-    box-shadow: 0 2px 0 #111;
+.hidden {
+    display: none !important;
 }
 
-s,
-del {
-    color: #ff6b6b;
-}
-
-ins {
-    color: var(--terminal-green);
-    text-decoration: none;
+.visible {
+    display: block !important;
 }
 
 @media (max-width: 768px) {
@@ -611,7 +753,7 @@ ins {
     }
 
     header h1 {
-        font-size: var(--step-up-6);
+        font-size: revert;
     }
 
     header nav a {
