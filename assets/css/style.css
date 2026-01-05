@@ -274,7 +274,7 @@ pre.language-terminal {
 pre.language-bash::before,
 pre.language-shell::before,
 pre.language-terminal::before {
-    content: "● ● ●";
+    content: "● ● ● term";
     display: block;
     color: #555;
     font-size: 1rem;
@@ -353,58 +353,47 @@ pre::-webkit-scrollbar-thumb:hover {
 ul,
 ol {
     margin: 1.5rem 0;
-    padding-left: 2.75rem;
+    padding-left: 2.5rem;
     line-height: 1.8;
 }
 
 ul {
-    counter-reset: ul-counter;
-    list-style: none;
+    list-style-type: disc;
 }
 
-ul li {
-    counter-increment: ul-counter;
-    position: relative;
-}
-
-ul li::marker {
-    content: counter(ul-counter) "•";
+ul::marker {
     color: var(--accent-primary) !important;
-    font-weight: 700 !important;
     font-size: 1.1em !important;
-    font-family: "OCR A Std", monospace;
-    background: rgba(65, 105, 225, 0.15);
-    padding: 0.15rem 0.4rem;
-    border-radius: 0.25rem;
-    margin-right: 0.75rem;
 }
 
-ul ul li::marker {
-    content: counter(ul-counter, lower-alpha) "•";
-    font-size: 1em;
-    background: rgba(65, 105, 225, 0.1);
+ul ul {
+    list-style-type: circle;
+    padding-left: 2rem;
 }
 
-ul ul ul li::marker {
-    content: counter(ul-counter, lower-roman) "•";
-    font-size: 0.95em;
+ul ul ul {
+    list-style-type: square;
+    padding-left: 1.75rem;
 }
 
 ol {
     list-style-type: decimal;
-    padding-left: 2.75rem;
+    padding-left: 2.5rem;
 }
 
 ol::marker {
     color: var(--accent-bright) !important;
-    font-weight: 700 !important;
-    font-size: 1.15em !important;
-    font-family: "OCR A Std", monospace;
+    font-weight: 600 !important;
 }
 
-ol ol::marker {
-    color: var(--accent-primary) !important;
-    font-size: 1em;
+ol ol {
+    list-style-type: lower-alpha;
+    padding-left: 2rem;
+}
+
+ol ol ol {
+    list-style-type: lower-roman;
+    padding-left: 1.75rem;
 }
 
 li {
@@ -416,9 +405,7 @@ ul.task-list,
 .task-list {
     list-style: none;
     padding-left: 0;
-    counter-reset: none;
 }
-
 ul.task-list li::before {
     content: "☐";
     position: absolute;
@@ -426,7 +413,6 @@ ul.task-list li::before {
     top: 0.1rem;
     color: var(--glass-border);
     font-size: 1rem;
-    z-index: 1;
 }
 
 ul.task-list li:has(input[type="checkbox"]:checked)::before {
@@ -439,91 +425,77 @@ ul.task-list li,
     position: relative;
     padding-left: 2rem;
 }
+/* ============================================================================
+   SVG-EXACT DL LAYOUT - GRAY HEADER (rect11 #828282)
+   ============================================================================ */
 
 dl {
-    margin: 3rem 0;
+    margin: 2.5rem 0;
     padding: 0;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    position: static;
 }
 
-dl::before {
-    display: none;
-}
-
+/* DT - GRAY header bar (SVG rect11 #828282) */
 dt {
+    background: #828282;                    /* UL group gray - NOT blue */
+    color: white;
+    padding: 0.75rem 1.25rem;
+    margin: 1.5rem 0 0.25rem 0;
     font-family: "OCR A Std", monospace;
+    font-size: 1rem;
     font-weight: 700;
-    color: var(--accent-bright);
-    font-size: 1.15rem;
-    margin: 2.5rem 0 1rem 0;
-    padding: 1rem 1.5rem;
-    background: rgba(65, 105, 225, 0.15);
-    border-left: 4px solid var(--accent-primary);
-    border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
-    position: relative;
+    border-radius: 0.6rem 0.6rem 0 0;
     line-height: 1.4;
 }
 
-dt:first-child {
-    margin-top: 1rem;
+/* DD - Content box with outline matching SVG rect10 */
+dd {
+    margin: 0 0 1.5rem 1rem;
+    padding: 1rem 1.25rem 1rem 2.5rem;
+    position: relative;
+    background: rgba(255, 255, 255, 0.14);  /* rect10 fill */
+
+    /* OUTLINE around the box */
+    outline: 1px solid rgba(255, 255, 255, 0.14);  /* Matches rect10 opacity */
+    outline-offset: -1px;                          /* Tight to edge */
+
+    border-radius: 0 6px 6px 0;
 }
 
-dd {
-    margin: 0 0 2.5rem 2.5rem;
-    color: var(--fg-primary);
-    padding: 1.25rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-md);
-    line-height: 1.7;
-    font-size: 0.98rem;
+
+dd::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1rem;
+    bottom: 1rem;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 1px;
 }
+
+dd > * { position: relative; z-index: 1; }
 
 dd + dt::before {
     content: "";
     display: block;
     height: 1px;
-    background: linear-gradient(
-        to right,
-        transparent,
-        var(--glass-border),
-        transparent
-    );
-    margin: 2rem 0;
-    opacity: 0.5;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 1rem 0;
 }
 
+/* Mobile - Maintain proportions */
 @media (max-width: 768px) {
     dt {
-        margin: 2rem 0 0.75rem 0;
-        padding: 1rem;
-        font-size: 1.05rem;
+        padding: 0.65rem 1rem;
+        font-size: 0.95rem;
+        margin: 1.25rem 0 0.25rem 0;
     }
 
     dd {
-        margin: 0 0 2rem 1.25rem;
-        padding: 1rem;
-    }
-}
+        margin: 0 0 1.25rem 0.75rem;
+        padding: 0.875rem 1rem 0.875rem 2.25rem;
 
-@media (max-width: 768px) {
-    ul,
-    ol {
-        padding-left: 1.75rem;
-    }
-    li > ul,
-    li > ol {
-        padding-left: 1.25rem;
-    }
-    dl::before {
-        font-size: 0.7rem;
-        left: 0.75rem;
-    }
-}
+
 
 blockquote {
     border-left: 4px solid var(--accent);
@@ -655,13 +627,7 @@ table {
 }
 
 thead {
-    background: linear-gradient(
-        135deg,
-        rgba(65, 105, 225, 0.4) 0%,
-        rgba(65, 105, 225, 0.25) 50%,
-        rgba(65, 105, 225, 0.15) 100%
-    );
-    backdrop-filter: blur(10px);
+    background: #1b248f;  /* SVG rect3 EXACT */
 }
 
 th {
@@ -669,46 +635,59 @@ th {
     padding: 1.25rem 1.75rem;
     text-align: left;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: white;
     text-transform: uppercase;
     font-size: 0.85rem;
     letter-spacing: 1px;
-    border-right: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-th:last-child {
-    border-right: none;
+    /* NO border-right */
 }
 
 td {
-    padding: 1.25rem 1.75rem;
+    padding: 1.25rem 3.5rem 1.25rem 1.75rem;  /* Extra left for accent bar */
     color: var(--fg-primary);
-    border-right: 1px solid rgba(255, 255, 255, 0.06);
     font-size: 0.95rem;
-    background: rgba(255, 255, 255, 0.03);
+    position: relative;
+    z-index: 1;
 }
 
-td:last-child {
-    border-right: none;
-}
-
+/* FLUENT INSET SEPARATOR (SVG rect8/9) */
 tbody tr {
-    transition: all 0.3s ease;
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    margin: 0 2px;
+}
+
+tbody tr::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 2.5rem;      /* Inset from left */
+    right: 2.5rem;     /* Inset from right */
+    height: 1px;
+    background: rgba(255, 255, 255, 0.14);  /* rect8/9 */
+}
+
+tbody tr:last-child::after {
+    display: none;
+}
+
+/* LEFT ACCENT BAR (SVG rect6/7) */
+tbody tr::before {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    top: 1.25rem;
+    bottom: 1.25rem;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.15);
 }
 
 tbody tr:hover {
-    background: rgba(65, 105, 225, 0.15);
-    border-color: rgba(65, 105, 225, 0.3);
-}
-
-th[align="center"],
-td[align="center"] {
-    text-align: center;
-}
-th[align="right"],
-td[align="right"] {
-    text-align: right;
+    background: rgba(27, 36, 143, 0.2);  /* #1b248f tint */
+    border-color: rgba(27, 36, 143, 0.4);
 }
 hr {
     border: none;
@@ -721,15 +700,19 @@ hr {
     );
     margin: 3rem 0;
     opacity: 0.6;
+    box-shadow:
+        0 0 8px var(--glass-border),
+        0 0 16px var(--glass-border);
 }
-
 @media (max-width: 768px) {
-    th,
-    td {
+    th, td {
         padding: 1rem 1rem;
     }
     table {
         font-size: 0.9rem;
+    }
+    hr {
+        margin: 2rem 0;
     }
 }
 
@@ -762,8 +745,17 @@ footer a:hover {
 img {
     max-width: 100%;
     height: auto;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-lg);
+    margin: 2rem auto;
+    display: block;
+}
+
+img[width],
+img[height] {
+    display: inline-block;
+    margin: 0.5rem;
 }
 
 figure {
