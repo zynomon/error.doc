@@ -350,6 +350,7 @@ pre::-webkit-scrollbar-thumb:hover {
         border-color 0.25s ease;
 }
 
+/* ---------- BASE LIST RESET ---------- */
 ul,
 ol {
     margin: 1.5rem 0;
@@ -363,16 +364,18 @@ li {
     padding: 0;
 }
 
+/* ---------- UL : single ▫ marker ---------- */
 ul {
     list-style-type: none;
 }
 
-ul > li::marker {
-    content: "▫  ";
+ul::marker {
+    content: "  › ";
     color: var(--accent-primary);
     font-size: 1.1em;
 }
 
+/* ---------- OL : OCR-A numerals ---------- */
 ol {
     list-style-type: decimal;
 }
@@ -383,6 +386,7 @@ ol > li::marker {
     font-weight: 600;
 }
 
+/* ---------- Nested lists ---------- */
 ul ul,
 ol ol {
     padding-left: 2rem;
@@ -396,6 +400,7 @@ ol ol ol {
     list-style-type: lower-roman;
 }
 
+/* ---------- Task list (unchanged) ---------- */
 ul.task-list,
 .task-list {
     list-style: none;
@@ -428,11 +433,13 @@ ul.task-list li:has(input[type="checkbox"]:checked)::before {
     --dl-gap: 0.5rem;
 }
 
+/* container */
 dl {
     margin: 1.25rem 0;
     padding: 0;
 }
 
+/* LABEL */
 dt {
     display: inline;
 
@@ -448,11 +455,13 @@ dt {
     margin: 0;
 }
 
+/* colon */
 dt::after {
     content: " : ";
     opacity: 0.65;
 }
 
+/* VALUE */
 dd {
     display: inline;
 
@@ -478,6 +487,7 @@ dd::after {
     margin-bottom: 0.4rem;
 }
 
+/* mobile */
 @media (max-width: 768px) {
     dt {
         font-size: 0.75rem;
@@ -1028,6 +1038,11 @@ footer > *:last-child {
     th,
     td {
         padding: 0.75rem;
+    }
+
+    ul,
+    ol {
+        padding-left: 1.5rem;
     }
 
     blockquote {
