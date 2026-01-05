@@ -355,50 +355,45 @@ ol {
     margin: 1.5rem 0;
     padding-left: 2.5rem;
     line-height: 1.8;
-}
-
-ul {
-    list-style-type: disc;
-}
-
-ul::marker {
-    color: var(--accent-primary) !important;
-    font-size: 1.1em !important;
-}
-
-ul ul {
-    list-style-type: circle;
-    padding-left: 2rem;
-}
-
-ul ul ul {
-    list-style-type: square;
-    padding-left: 1.75rem;
-}
-
-ol {
-    list-style-type: decimal;
-    padding-left: 2.5rem;
-}
-
-ol::marker {
-    color: var(--accent-bright) !important;
-    font-weight: 600 !important;
-}
-
-ol ol {
-    list-style-type: lower-alpha;
-    padding-left: 2rem;
-}
-
-ol ol ol {
-    list-style-type: lower-roman;
-    padding-left: 1.75rem;
+    list-style-position: outside;
 }
 
 li {
     margin: 0.75rem 0;
-    padding: 0.25rem 0;
+    padding: 0;
+}
+
+ul {
+    list-style-type: none;
+}
+
+ul > li::marker {
+    content: "▫  ";
+    color: var(--accent-primary);
+    font-size: 1.1em;
+}
+
+ol {
+    list-style-type: decimal;
+}
+
+ol > li::marker {
+    font-family: "OCR A Std", "OCR A", monospace;
+    color: var(--accent-bright);
+    font-weight: 600;
+}
+
+ul ul,
+ol ol {
+    padding-left: 2rem;
+}
+
+ol ol {
+    list-style-type: lower-alpha;
+}
+
+ol ol ol {
+    list-style-type: lower-roman;
 }
 
 ul.task-list,
@@ -406,6 +401,13 @@ ul.task-list,
     list-style: none;
     padding-left: 0;
 }
+
+ul.task-list li,
+.task-list li {
+    position: relative;
+    padding-left: 2rem;
+}
+
 ul.task-list li::before {
     content: "☐";
     position: absolute;
@@ -416,99 +418,73 @@ ul.task-list li::before {
 }
 
 ul.task-list li:has(input[type="checkbox"]:checked)::before {
-    content: "🗹" !important;
-    color: var(--accent-primary) !important;
-}
-
-ul.task-list li,
-.task-list li {
-    position: relative;
-    padding-left: 2rem;
+    content: "🗹";
+    color: var(--accent-primary);
 }
 
 :root {
-    --dl-header-bg: #828282;
-    --dl-border: rgba(255, 255, 255, 0.14);
-    --dl-bg: rgba(255, 255, 255, 0.14);
-    --dl-separator: rgba(255, 255, 255, 0.1);
-    --dl-radius: 0.6rem;
+    --dl-label: var(--accent-primary);
+    --dl-text: var(--fg-primary);
+    --dl-gap: 0.5rem;
 }
 
 dl {
-    margin: 2.5rem 0;
+    margin: 1.25rem 0;
     padding: 0;
 }
 
 dt {
-    background: var(--dl-header-bg);
-    color: #fff;
+    display: inline;
 
-    margin: 2rem 0 0;
-    padding: 0.75rem 1.25rem;
+    font-family: "OCR A Std", "OCR A", monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
 
-    font-family: "OCR A Std", monospace;
-    font-size: 0.95rem;
-    font-weight: 700;
-    line-height: 1.4;
+    color: var(--dl-label);
+    background: none;
+    padding: 0;
+    margin: 0;
+}
 
-    border-radius: var(--dl-radius) var(--dl-radius) 0 0;
+dt::after {
+    content: " : ";
+    opacity: 0.65;
 }
 
 dd {
-    position: relative;
+    display: inline;
 
-    margin: 0 0 1.75rem 1rem;
-    padding: 1rem 1.25rem 1rem 2.5rem;
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
 
-    background: var(--dl-bg);
-    border: 1px solid var(--dl-border);
-    border-top: none;
+    color: var(--dl-text);
 
-    border-radius: 0 0 var(--dl-radius) var(--dl-radius);
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
 }
 
-dd::before {
+dd::after {
     content: "";
-    position: absolute;
-    left: 0.75rem;
-    top: 1rem;
-    bottom: 1rem;
-
-    width: 2px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 1px;
-}
-
-dd > * {
-    position: relative;
-    z-index: 1;
-}
-
-dt:not(:first-of-type) {
-    position: relative;
-}
-
-dt:not(:first-of-type)::before {
-    content: "";
-    position: absolute;
-    top: -1rem;
-    left: 0;
-    right: 0;
-
-    height: 1px;
-    background: var(--dl-separator);
+    display: block;
+    margin-bottom: 0.4rem;
 }
 
 @media (max-width: 768px) {
     dt {
-        padding: 0.65rem 1rem;
-        font-size: 0.95rem;
-        margin: 1.25rem 0 0.25rem 0;
+        font-size: 0.75rem;
     }
 
     dd {
-        margin: 0 0 1.25rem 0.75rem;
-        padding: 0.875rem 1rem 0.875rem 2.25rem;
+        font-size: 0.9rem;
     }
 }
 
@@ -1052,11 +1028,6 @@ footer > *:last-child {
     th,
     td {
         padding: 0.75rem;
-    }
-
-    ul,
-    ol {
-        padding-left: 1.5rem;
     }
 
     blockquote {
