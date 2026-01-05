@@ -425,65 +425,80 @@ ul.task-list li,
     position: relative;
     padding-left: 2rem;
 }
-/* ============================================================================
-   SVG-EXACT DL LAYOUT - GRAY HEADER (rect11 #828282)
-   ============================================================================ */
+
+:root {
+    --dl-header-bg: #828282;
+    --dl-border: rgba(255, 255, 255, 0.14);
+    --dl-bg: rgba(255, 255, 255, 0.14);
+    --dl-separator: rgba(255, 255, 255, 0.1);
+    --dl-radius: 0.6rem;
+}
 
 dl {
     margin: 2.5rem 0;
     padding: 0;
 }
 
-/* DT - GRAY header bar (SVG rect11 #828282) */
 dt {
-    background: #828282;                    /* UL group gray - NOT blue */
-    color: white;
+    background: var(--dl-header-bg);
+    color: #fff;
+
+    margin: 2rem 0 0;
     padding: 0.75rem 1.25rem;
-    margin: 1.5rem 0 0.25rem 0;
+
     font-family: "OCR A Std", monospace;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 700;
-    border-radius: 0.6rem 0.6rem 0 0;
     line-height: 1.4;
+
+    border-radius: var(--dl-radius) var(--dl-radius) 0 0;
 }
 
-/* DD - Content box with outline matching SVG rect10 */
 dd {
-    margin: 0 0 1.5rem 1rem;
-    padding: 1rem 1.25rem 1rem 2.5rem;
     position: relative;
-    background: rgba(255, 255, 255, 0.14);  /* rect10 fill */
 
-    /* OUTLINE around the box */
-    outline: 1px solid rgba(255, 255, 255, 0.14);  /* Matches rect10 opacity */
-    outline-offset: -1px;                          /* Tight to edge */
+    margin: 0 0 1.75rem 1rem;
+    padding: 1rem 1.25rem 1rem 2.5rem;
 
-    border-radius: 0 6px 6px 0;
+    background: var(--dl-bg);
+    border: 1px solid var(--dl-border);
+    border-top: none;
+
+    border-radius: 0 0 var(--dl-radius) var(--dl-radius);
 }
-
 
 dd::before {
     content: "";
     position: absolute;
-    left: 0;
+    left: 0.75rem;
     top: 1rem;
     bottom: 1rem;
+
     width: 2px;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 1px;
 }
 
-dd > * { position: relative; z-index: 1; }
-
-dd + dt::before {
-    content: "";
-    display: block;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.1);
-    margin: 1rem 0;
+dd > * {
+    position: relative;
+    z-index: 1;
 }
 
-/* Mobile - Maintain proportions */
+dt:not(:first-of-type) {
+    position: relative;
+}
+
+dt:not(:first-of-type)::before {
+    content: "";
+    position: absolute;
+    top: -1rem;
+    left: 0;
+    right: 0;
+
+    height: 1px;
+    background: var(--dl-separator);
+}
+
 @media (max-width: 768px) {
     dt {
         padding: 0.65rem 1rem;
@@ -494,8 +509,8 @@ dd + dt::before {
     dd {
         margin: 0 0 1.25rem 0.75rem;
         padding: 0.875rem 1rem 0.875rem 2.25rem;
-
-
+    }
+}
 
 blockquote {
     border-left: 4px solid var(--accent);
@@ -627,7 +642,13 @@ table {
 }
 
 thead {
-    background: #1b248f;  /* SVG rect3 EXACT */
+    background: linear-gradient(
+        135deg,
+        rgba(65, 105, 225, 0.4) 0%,
+        rgba(65, 105, 225, 0.25) 50%,
+        rgba(65, 105, 225, 0.15) 100%
+    );
+    backdrop-filter: blur(10px);
 }
 
 th {
@@ -635,59 +656,46 @@ th {
     padding: 1.25rem 1.75rem;
     text-align: left;
     font-weight: 700;
-    color: white;
+    color: rgba(255, 255, 255, 0.95);
     text-transform: uppercase;
     font-size: 0.85rem;
     letter-spacing: 1px;
-    /* NO border-right */
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+th:last-child {
+    border-right: none;
 }
 
 td {
-    padding: 1.25rem 3.5rem 1.25rem 1.75rem;  /* Extra left for accent bar */
+    padding: 1.25rem 1.75rem;
     color: var(--fg-primary);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
     font-size: 0.95rem;
-    position: relative;
-    z-index: 1;
-}
-
-/* FLUENT INSET SEPARATOR (SVG rect8/9) */
-tbody tr {
-    position: relative;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 4px;
+}
+
+td:last-child {
+    border-right: none;
+}
+
+tbody tr {
     transition: all 0.3s ease;
-    margin: 0 2px;
-}
-
-tbody tr::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 2.5rem;      /* Inset from left */
-    right: 2.5rem;     /* Inset from right */
-    height: 1px;
-    background: rgba(255, 255, 255, 0.14);  /* rect8/9 */
-}
-
-tbody tr:last-child::after {
-    display: none;
-}
-
-/* LEFT ACCENT BAR (SVG rect6/7) */
-tbody tr::before {
-    content: "";
-    position: absolute;
-    left: 1rem;
-    top: 1.25rem;
-    bottom: 1.25rem;
-    width: 2px;
-    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 tbody tr:hover {
-    background: rgba(27, 36, 143, 0.2);  /* #1b248f tint */
-    border-color: rgba(27, 36, 143, 0.4);
+    background: rgba(65, 105, 225, 0.15);
+    border-color: rgba(65, 105, 225, 0.3);
+}
+
+th[align="center"],
+td[align="center"] {
+    text-align: center;
+}
+th[align="right"],
+td[align="right"] {
+    text-align: right;
 }
 hr {
     border: none;
@@ -700,19 +708,15 @@ hr {
     );
     margin: 3rem 0;
     opacity: 0.6;
-    box-shadow:
-        0 0 8px var(--glass-border),
-        0 0 16px var(--glass-border);
 }
+
 @media (max-width: 768px) {
-    th, td {
+    th,
+    td {
         padding: 1rem 1rem;
     }
     table {
         font-size: 0.9rem;
-    }
-    hr {
-        margin: 2rem 0;
     }
 }
 
