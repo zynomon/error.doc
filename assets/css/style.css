@@ -131,6 +131,7 @@ h6 {
 
 h1 {
     color: var(--accent-bright);
+    font-size: 4px;
     border-bottom: 3px solid var(--accent);
 }
 
@@ -746,19 +747,6 @@ ul.task-list {
 
     body {
         font-size: 14px;
-    }
-
-    header {
-        padding: 1rem;
-    }
-
-    header h1 {
-        font-size: revert;
-    }
-
-    header nav a {
-        font-size: 1rem;
-        padding: 0.4rem 0.8rem;
     }
 
     main {
