@@ -1,111 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ page.title }} | error.doc</title>
-    <link rel="icon" type="image/svg+xml" href="{{ "/assets/images/edock.svg" | relative_url }}">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
-  </head>
-  <body class="bg-gray-900 text-gray-100 relative">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title }} | error.doc</title>
+  <link rel="icon" type="image/svg+xml" href="{{ "/assets/images/edock.svg" | relative_url }}">
+  <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
+</head>
+<body>
+  <div id="vanta-bg"></div>
 
-    <!-- Background -->
-    <div id="vanta-bg" class="absolute inset-0 -z-10 w-full h-full"></div>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <h1>error.doc</h1>
+      <nav>
+        <a href="{{ "/" | relative_url }}">Home</a>
+        <a href="{{ "/docs" | relative_url }}">Docs</a>
+      </nav>
+    </div>
+  </header>
 
-    <!-- Header -->
-    <header class="bg-black/70 text-cyan-400 p-4 flex justify-between items-center">
-      <h1 class="text-xl font-bold">error.doc</h1>
-      <div class="flex items-center gap-2">
-        <nav>
-          <a href="{{ "/" | relative_url }}" class="px-2 hover:underline">Home</a>
-          <a href="{{ "/docs" | relative_url }}" class="px-2 hover:underline">Docs</a>
-        </nav>
-        <button id="pause-btn" class="pause-toggle btn btn-xs btn-outline btn-cyan h-8 w-8 p-0" title="Pause/Resume background">
-          <svg id="pause-icon" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-            <rect x="6" y="4" width="4" height="16"/>
-            <rect x="14" y="4" width="4" height="16"/>
-          </svg>
-          <svg id="play-icon" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24">
-            <polygon points="5,3 19,12 5,21 5,3"/>
-          </svg>
-        </button>
-      </div>
-    </header>
+  <!-- Main Content -->
+  <main>
+    {{ content }}
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-left">
+      <h2 class="footer-title">𝚎𝚛𝚛𝚘𝚛.𝚘𝚜™</h2>
+      <p class="footer-subtitle">born from failure, built for control.</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://zynomon.github.io" aria-label="Portfolio">
+        <img src="https://img.shields.io/badge/⌕-blue?style=plastic" alt="Portfolio">
+      </a>
+      <a href="https://discord.gg/Jn7FBwu99F" aria-label="Discord">
+        <img src="https://img.shields.io/badge/-5865F2?style=plastic&logo=discord&logoColor=white" alt="Discord">
+      </a>
+      <a href="https://zynomon.github.io/error/e.html" aria-label="Repository">
+        <img src="https://img.shields.io/badge/repo-black?style=plastic" alt="Repository">
+      </a>
+    </div>
+  </footer>
+
+  <!-- vanta.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.trunk.min.js"></script>
+  <script>
+    window.vantaEffect = VANTA.TRUNK({
+      el: "#vanta-bg",
+      backgroundAlpha: 1,
+      backgroundColor: 2237478,
+      chaos: 10,
+      color: 16777215,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      mouseControls: false,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      spacing: 10,
+      touchControls: false
+    });
+  </script>
 
 
-    <!-- Content -->
-    <main class="backdrop-blur-md bg-black/40 p-6 rounded-lg shadow-lg m-6">
-      {{ content }}
-    </main>
 
-    <!-- Footer -->
-    <footer class="site-footer">
-      <div class="footer-left">
-        <h2 class="footer-title">𝚎𝚛𝚛𝚘𝚛.𝚘𝚜™</h2>
-        <p class="footer-subtitle">born from failure, built for control.</p>
-      </div>
-
-      <p class="footer-links">
-        <a href="https://zynomon.github.io">
-          <img src="https://img.shields.io/badge/⌕-blue?style=plastic">
-        </a>
-        <a href="https://discord.gg/Jn7FBwu99F">
-          <img src="https://img.shields.io/badge/-5865F2?style=plastic&logo=discord&logoColor=white">
-        </a>
-        <a href="https://zynomon.github.io/error/e.html">
-          <img src="https://img.shields.io/badge/repo-black?style=plastic">
-        </a>
-      </p>
-    </footer>
-
-    <!-- vanta.js script -->
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.trunk.min.js"></script>
-    <script>
-      window.vantaEffect = VANTA.TRUNK({
-        el: "#vanta-bg",
-        backgroundAlpha: 1,
-        backgroundColor: 2237478,
-        chaos: 10,
-        color: 16777215,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        mouseControls: false,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        spacing: 10,
-        touchControls: false
-      });
-    </script>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const btn = document.getElementById('pause-btn');
-        const pauseIcon = document.getElementById('pause-icon');
-        const playIcon = document.getElementById('play-icon');
-        const effect = window.vantaEffect;
-        let isPaused = false;
-
-        btn.addEventListener('click', () => {
-          if (isPaused) {
-            effect.resume();
-            pauseIcon.classList.remove('hidden');
-            playIcon.classList.add('hidden');
-            btn.title = 'Pause background';
-          } else {
-            effect.pause();
-            pauseIcon.classList.add('hidden');
-            playIcon.classList.remove('hidden');
-            btn.title = 'Resume background';
-          }
-          isPaused = !isPaused;
-        });
-      });
-    </script>
 
     <!-- Copy button script  -->
     <script>
