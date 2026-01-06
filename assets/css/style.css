@@ -116,34 +116,6 @@ header h1::before {
     filter: brightness(1.2) hue-rotate(220deg);
 }
 
-header nav {
-    display: flex;
-    gap: 1.5rem;
-}
-
-header nav a {
-    padding: 0.6rem 1.2rem;
-    background: rgba(65, 105, 225, 0.15);
-    border: 1px solid rgba(65, 105, 225, 0.3);
-    border-radius: var(--border-radius-sm);
-    color: var(--fg-primary);
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 0.95rem;
-}
-
-header nav a:hover {
-    background: rgba(65, 105, 225, 0.3);
-    border-color: var(--accent-bright);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(65, 105, 225, 0.4);
-}
-
-header nav a:active {
-    transform: translateY(0);
-}
-
 main {
     flex-grow: 1;
     background: var(--panel);
@@ -162,6 +134,63 @@ a:hover {
     color: var(--accent-bright);
     text-shadow: 0 0 8px rgba(65, 105, 225, 0.6);
     border-bottom: 1px solid var(--accent-bright);
+}
+
+h1 {
+    font-size: var(--step-up-6);
+    margin: 3rem 0 1.5rem 0;
+    font-weight: 600;
+    color: var(--accent-bright);
+    line-height: 1.3;
+    font-family: "OCR A Std", "Fira Code", monospace;
+}
+
+h2 {
+    font-size: var(--step-up-5);
+    margin: 2.5rem 0 1.25rem 0;
+    font-weight: 500;
+    color: var(--accent-bright);
+    line-height: 1.4;
+}
+
+h3 {
+    font-size: var(--step-up-4);
+    margin: 2rem 0 1rem 0;
+    font-weight: 500;
+    color: var(--fg-primary);
+    line-height: 1.4;
+}
+
+h4 {
+    font-size: var(--step-up-3);
+    margin: 1.75rem 0 0.875rem 0;
+    font-weight: 500;
+    color: var(--fg-primary);
+    line-height: 1.5;
+}
+
+h5 {
+    font-size: var(--step-up-2);
+    margin: 1.5rem 0 0.75rem 0;
+    font-weight: 500;
+}
+
+h6 {
+    font-size: var(--step-up-1);
+    margin: 1.25rem 0 0.625rem 0;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+    h2 {
+        font-size: 2rem;
+    }
+    h3 {
+        font-size: 1.75rem;
+    }
 }
 
 code {
@@ -723,30 +752,32 @@ footer {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 
-    color: #aaa;
     padding: 1.75rem 1.5rem;
 
     font-family: "Fira Code", monospace;
     font-size: 0.9rem;
 
     border-top: 1px solid var(--glass-border);
-    border-radius: 1rem 1rem 0 0;
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.6);
 
     text-align: left;
     user-select: none;
+
+    /* Ensure it stays above vanta.js */
+    position: relative;
+    z-index: 100;
+    margin-top: auto;
 }
 
 footer a {
     color: var(--accent);
     text-decoration: none;
 }
-.site-footer {
-    margin-top: auto !important;
-}
 
 footer a:hover {
     color: var(--accent-bright);
+    text-shadow: var(--glow-sm);
 }
 
 .footer-left {
@@ -756,29 +787,32 @@ footer a:hover {
 }
 
 .footer-title {
-    background: #5a5a5a;
-    color: #fff;
-
+    background: linear-gradient(
+        135deg,
+        var(--accent-primary),
+        var(--accent-bright)
+    );
+    color: var(--fg-primary);
     font-family: "OCR A Std", "OCR A", monospace;
     font-size: 1.25rem;
     font-weight: 600;
     letter-spacing: 0.14em;
-
     padding: 0.6rem 1.3rem;
-    border-radius: 0.6rem;
+    border-radius: var(--border-radius-sm);
     width: fit-content;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-sm);
 }
 
 .footer-subtitle {
-    background: rgba(90, 90, 90, 0.14);
-    color: #cbd5e1;
-
+    background: rgba(65, 105, 225, 0.15);
+    color: var(--fg-secondary);
     font-size: 0.85rem;
     font-style: italic;
-
     padding: 0.4rem 1rem;
-    border-radius: 0.6rem;
+    border-radius: var(--border-radius-sm);
     width: fit-content;
+    border: 1px solid rgba(65, 105, 225, 0.2);
 }
 
 .footer-links {
@@ -792,34 +826,72 @@ footer a:hover {
 .footer-links a {
     display: inline-flex !important;
     align-items: center;
-    background: rgba(90, 90, 90, 0.14);
-    padding: 0.35rem 0.65rem;
-    border-radius: 0.6rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+    background: none;
+}
+
+.footer-links a:hover {
+    background: rgba(65, 105, 225, 0.1);
+    border-color: var(--accent-bright);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(65, 105, 225, 0.4);
+}
+
+/* Keep badges crisp - remove or adjust filter if too dark */
+.footer-links img {
+    height: 20px;
+    width: auto;
+    /* Remove filter or adjust as needed:
+    filter: brightness(0.95) contrast(1.1);
+    */
+}
+
+.footer-links a:hover img {
+    /* Slight glow effect on hover */
+    filter: drop-shadow(0 0 4px rgba(65, 105, 225, 0.4));
 }
 
 @media (max-width: 768px) {
+    footer {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        text-align: center;
+        padding: 1.5rem 1rem;
+    }
+
+    .footer-left {
+        align-items: center;
+    }
+
     .footer-links {
         justify-content: center;
         gap: 0.75rem;
     }
 
     .footer-links a {
-        padding: 0.25rem 0.5rem;
+        padding: 0.15rem 0.35rem;
+    }
+
+    .footer-links img {
+        height: 18px;
     }
 }
 
 img {
     max-width: 100%;
     height: auto;
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-lg);
+    border-radius: var(--border-radius-md, 0.75rem);
+    border: 1px solid var(--glass-border, #333);
+    box-shadow: var(--shadow-lg, 0 8px 24px rgba(0, 0, 0, 0.7));
     margin: 2rem auto;
     display: block;
     position: relative;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: zoom-in;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
+    z-index: 1;
 }
 
 img[width],
@@ -831,57 +903,83 @@ img[height] {
 
 img::before {
     content: "";
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.1);
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
     opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 1;
-    pointer-events: none;
+    visibility: hidden;
+    transition: all 0.4s ease;
+    z-index: 999;
+    backdrop-filter: blur(8px);
 }
 
 img::after {
     content: "";
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     width: 0;
     height: 0;
-    background: var(--accent-primary) center / 60% no-repeat;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='white' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+    background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.9) 0%,
+        rgba(255, 255, 255, 0.3) 70%
+    );
+    border-radius: 50%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='black' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
     transform: translate(-50%, -50%) scale(0);
     opacity: 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 2;
-    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1001;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 img:hover {
-    transform: scale(1.05);
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) scale(4) !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 90vw !important;
+    max-height: 90vh !important;
+    z-index: 1000 !important;
     box-shadow:
-        var(--shadow-xl),
-        0 0 30px rgba(65, 105, 225, 0.4);
-    z-index: 100;
+        0 60px 120px rgba(0, 0, 0, 0.9),
+        0 0 0 25px rgba(255, 255, 255, 0.03),
+        0 30px 80px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    border-width: 4px !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 img:hover::before {
     opacity: 1;
+    visibility: visible;
 }
 
 img:hover::after {
-    width: 48px;
-    height: 48px;
+    width: 72px;
+    height: 72px;
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
 }
 
 img[width]:hover,
 img[height]:hover {
-    transform: scale(1.1) !important;
-    z-index: 100;
+    transform: translate(-50%, -50%) scale(3.5) !important;
+    max-width: 85vw !important;
+    max-height: 85vh !important;
+}
+
+img:not(:hover) {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 figure {

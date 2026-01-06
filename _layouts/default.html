@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ page.title }} | error.doc</title>
+  <title>error.doc › {{ page.title }}</title>
   <link rel="icon" type="image/svg+xml" href="{{ "/assets/images/edock.svg" | relative_url }}">
   <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
 </head>
@@ -21,7 +21,7 @@
     </div>
   </header>
 
-  <!-- Main Content -->
+  <!-- Main -->
   <main>
     {{ content }}
   </main>
@@ -47,97 +47,70 @@
 
   <!-- vanta.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.trunk.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.topology.min.js"></script>
   <script>
-    window.vantaEffect = VANTA.TRUNK({
+    VANTA.TOPOLOGY({
       el: "#vanta-bg",
-      backgroundAlpha: 1,
-      backgroundColor: 2237478,
-      chaos: 10,
-      color: 16777215,
+      mouseControls: true,
+      touchControls: true,
       gyroControls: false,
       minHeight: 200.00,
       minWidth: 200.00,
-      mouseControls: false,
       scale: 1.00,
       scaleMobile: 1.00,
-      spacing: 10,
-      touchControls: false
+      color: 0x4169e1,
+      backgroundColor: 0x0d0f12
     });
   </script>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const codeBlocks = document.querySelectorAll('pre code');
 
+      codeBlocks.forEach(function(codeBlock) {
+        const pre = codeBlock.parentElement;
 
+        if (pre.parentElement.classList.contains('code-block-wrapper')) {
+          return;
+        }
 
-    <!-- Copy button script  -->
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-          const codeBlocks = document.querySelectorAll('pre code');
+        const wrapper = document.createElement('div');
+        wrapper.className = 'code-block-wrapper';
 
-          codeBlocks.forEach(function(codeBlock) {
-              const pre = codeBlock.parentElement;
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(pre);
 
-              if (pre.parentElement.classList.contains('code-block-wrapper')) {
-                  return;
-              }
+        const copyButton = document.createElement('button');
+        copyButton.className = 'copy-button';
+        copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+        copyButton.setAttribute('aria-label', 'Copy code to clipboard');
+        copyButton.setAttribute('title', 'Copy code');
 
-              const wrapper = document.createElement('div');
-              wrapper.className = 'code-block-wrapper';
+        copyButton.addEventListener('click', function() {
+          let code = codeBlock.textContent;
 
-              pre.parentNode.insertBefore(wrapper, pre);
-              wrapper.appendChild(pre);
+          if (pre.classList.contains('language-bash') ||
+              pre.classList.contains('language-shell') ||
+              pre.classList.contains('language-terminal')) {
+            code = code.replace(/^\$ /gm, '');
+          }
 
-              const copyButton = document.createElement('button');
-              copyButton.className = 'copy-button';
+          navigator.clipboard.writeText(code).then(function() {
+            copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            copyButton.classList.add('copied');
+
+            setTimeout(function() {
               copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
-              copyButton.setAttribute('aria-label', 'Copy code to clipboard');
-              copyButton.setAttribute('title', 'Copy code');
-
-              copyButton.addEventListener('click', function() {
-                  let code = codeBlock.textContent;
-
-                  if (pre.classList.contains('language-bash') ||
-                      pre.classList.contains('language-shell') ||
-                      pre.classList.contains('language-terminal')) {
-                      code = code.replace(/^\$ /gm, '');
-                  }
-
-                  navigator.clipboard.writeText(code).then(function() {
-                      copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-                      copyButton.classList.add('copied');
-
-                      setTimeout(function() {
-                          copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
-                          copyButton.classList.remove('copied');
-                      }, 2000);
-                  }).catch(function(err) {
-                      const textArea = document.createElement('textarea');
-                      textArea.value = code;
-                      textArea.style.position = 'fixed';
-                      textArea.style.opacity = '0';
-                      document.body.appendChild(textArea);
-                      textArea.select();
-
-                      try {
-                          document.execCommand('copy');
-                          copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-                          copyButton.classList.add('copied');
-
-                          setTimeout(function() {
-                              copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
-                              copyButton.classList.remove('copied');
-                          }, 2000);
-                      } catch (err) {
-                          console.error('Copy failed:', err);
-                      }
-
-                      document.body.removeChild(textArea);
-                  });
-              });
-
-              wrapper.appendChild(copyButton);
+              copyButton.classList.remove('copied');
+            }, 2000);
+          }).catch(function(err) {
+            console.error('Copy failed:', err);
           });
+        });
+
+        wrapper.appendChild(copyButton);
       });
-    </script>
-  </body>
+    });
+  </script>
+</body>
 </html>
