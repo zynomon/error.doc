@@ -1,9 +1,10 @@
 ---
 layout: default
+title: Testing nigga
 ---
 
 
-<h1 style="font-size:7rem">THIS PAGE IS MIDDLE OF CONSTRUCTION 🚧 🚧 🚧 🚧 🚧 </h1>
+<h1 style="font-size:4rem">THIS PAGE IS MIDDLE OF CONSTRUCTION 🚧 🚧 🚧 🚧 🚧 </h1>
 
 
 Text can be **bold**, _italic_, or ~~strikethrough~~.
