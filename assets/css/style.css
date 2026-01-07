@@ -215,7 +215,6 @@ h1 {
     font-weight: 600;
     color: var(--accent-bright);
     line-height: 1.3;
-    font-family: "OCR A Std", "Fira Code", monospace;
 }
 
 h2 {
@@ -264,7 +263,7 @@ h3,
 h4,
 h5,
 h6 {
-    font: "OCR A", monospace;
+    font: "OCR A Std", "OCR A", "Nimbus Mono PS", "Nimbus Mono", monospace;
     font-weight: 500;
 }
 @media (max-width: 768px) {
