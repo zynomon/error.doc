@@ -3,9 +3,9 @@
     --fg: #fff7f1;
     --accent: #4169e1;
     --accent-bright: #5b7fe6;
-    --panel: rgba(0, 0, 0, 0.4);
-    --panel-hover: rgba(0, 0, 0, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.25);
+    --panel: rgba(0, 0, 0, 0.7);
+    --panel-hover: rgba(0, 0, 0, 0.85);
+    --glass-border: rgba(43, 0, 211, 0.25);
     --terminal-bg: #0a0e0f;
     --terminal-green: #00ff41;
     --terminal-border: #1a3a3a;
