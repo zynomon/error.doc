@@ -49,17 +49,20 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.topology.min.js"></script>
   <script>
-    VANTA.TOPOLOGY({
+  VANTA.TOPOLOGY({
       el: "#vanta-bg",
       mouseControls: true,
-      touchControls: true,
-      gyroControls: false,
+      touchControls: false,
+      gyroControls: true,
       minHeight: 200.00,
       minWidth: 200.00,
       scale: 1.00,
       scaleMobile: 1.00,
-      color: 0x4169e1,
-      backgroundColor: 0x0d0f12
+      color: 0xff,
+      backgroundColor: 0x222222,
+      points: 20.00,
+      maxDistance: 15.00,
+      spacing: 20.00
     });
   </script>
 
@@ -112,5 +115,17 @@
       });
     });
   </script>
+  <!-- debug -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const codeBlocks = document.querySelectorAll('pre');
+    console.log('Found', codeBlocks.length, 'code blocks');
+
+    codeBlocks.forEach((pre, i) => {
+      console.log(`Block ${i + 1}:`, pre.className);
+    });
+  });
+  </script>
+  <!-- debug ends here -->
 </body>
 </html>
