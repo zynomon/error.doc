@@ -1,7 +1,13 @@
-/* --------------------------------------------------------------------------
-       Zynomon aelius - apache 2.0 - style.css for jekyll theme
+/* -------------------------------------------------------------------------------------------
 
- --------------------------------------------------------------------------*/
+                             Zynomon Aelius ©️ 2026
+                                apache 2.0
+
+                            project : style.css for jekyll theme;
+                            version : {Unknown - Not specified};
+                            contributor : @zynomon;
+
+-------------------------------------------------------------------------------------------- */
 
 :root {
     --bg: #0d0f12;
@@ -326,17 +332,6 @@ code .kn,
 code .kp,
 code .kr,
 code .kt,
-pre .k,
-pre .kc,
-pre .kd,
-pre .kn,
-pre .kp,
-pre .kr,
-pre .kt {
-    color: var(--accent-primary);
-    font-weight: 500;
-}
-
 code .na,
 code .nb,
 code .bp,
@@ -368,8 +363,15 @@ pre .nt,
 pre .nv,
 pre .vc,
 pre .vg,
+pre .k,
+pre .kc,
+pre .kd,
+pre .kn,
+pre .kp,
+pre .kr,
+pre .kt,
 pre .vi {
-    color: #9cdcfe;
+    color: var(--accent-primary);
 }
 
 code .s,
@@ -400,7 +402,7 @@ pre .sx,
 pre .sr,
 pre .s1,
 pre .ss {
-    color: #ce9178;
+    color: var(--terminal-border);
 }
 
 code .m,
@@ -417,20 +419,20 @@ pre .mh,
 pre .mi,
 pre .il,
 pre .mo {
-    color: #b5cea8;
+    color: var(--info);
 }
 
 code .o,
 code .ow,
 pre .o,
 pre .ow {
-    color: #d4d4d4;
+    color: var(--fg);
     font-weight: 500;
 }
 
 code .p,
 pre .p {
-    color: #d4d4d4;
+    color: var(--fg-secondary);
 }
 
 /* Terminal-style Code Blocks ( doesn't gonna work now ) */
@@ -1092,6 +1094,7 @@ footer {
     position: relative;
     z-index: 100;
     margin-top: auto;
+    margin-bottom: clamp(0.75rem, 2vw, 1.5rem);
     user-select: none;
 }
 
