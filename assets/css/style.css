@@ -430,7 +430,7 @@ code .p,
 pre .p {
     color: #d4d4d4;
 }
-/* TERM */
+/* term */
 .code-block-wrapper pre[data-terminal="true"],
 .code-block-wrapper pre.language-bash,
 .code-block-wrapper pre.language-shell,
@@ -439,11 +439,17 @@ pre[data-terminal="true"],
 pre.language-bash,
 pre.language-shell,
 pre.language-terminal {
-    background: #000;
-    border: 2px solid #00062b;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 6, 43, 0.6);
     border-radius: 6px;
     padding: 2.5rem 1.5rem 1.5rem;
     position: relative;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(0, 180, 24, 0.1);
+    margin: 1.5rem 0;
+    min-height: 94px;
 }
 
 .code-block-wrapper pre[data-terminal="true"]::before,
@@ -460,8 +466,15 @@ pre.language-terminal::before {
     left: 0;
     right: 0;
     height: 11px;
-    background: linear-gradient(90deg, #00062b 48%, #000125 91%);
+    background: linear-gradient(
+        90deg,
+        rgba(0, 6, 43, 0.8) 0%,
+        rgba(0, 1, 37, 0.6) 50%,
+        rgba(0, 1, 37, 0.4) 100%
+    );
     border-radius: 6px 6px 0 0;
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid rgba(65, 105, 225, 0.3);
 }
 
 .code-block-wrapper pre[data-terminal="true"]::after,
@@ -472,14 +485,16 @@ pre[data-terminal="true"]::after,
 pre.language-bash::after,
 pre.language-shell::after,
 pre.language-terminal::after {
-    content: "shell";
+    content: ">_                  shell";
     position: absolute;
-    top: 1px;
-    right: 1.5rem;
+    top: -1px;
+    left: 6px;
     color: #ededed;
-    font-family: "OCR A Extended", monospace;
+    font-family: "OCR A Extended", "OCR A Std", monospace;
     font-size: 8px;
     opacity: 0.9;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.5px;
 }
 
 .code-block-wrapper pre[data-terminal="true"] code,
@@ -491,10 +506,13 @@ pre.language-bash code,
 pre.language-shell code,
 pre.language-terminal code {
     color: #00b418;
-    text-shadow: 0 0 5px rgba(0, 180, 24, 0.5);
-    font-family: "OCR A Extended", monospace;
+    text-shadow: 0 0 8px rgba(0, 180, 24, 0.5);
+    font-family: "OCR A Extended", "Fira Code", monospace;
+    font-size: 9.6px;
     font-weight: 500;
+    line-height: 1.4;
 }
+
 .code-block-wrapper pre[data-terminal="true"] .copy-button,
 .code-block-wrapper pre.language-bash .copy-button,
 .code-block-wrapper pre.language-shell .copy-button,
@@ -505,10 +523,27 @@ pre.language-shell .copy-button,
 pre.language-terminal .copy-button {
     top: 3px;
     right: 5px;
-    width: 24px;
+    width: 28px;
     height: 16px;
-    background: rgba(0, 180, 24, 0.2);
-    border: 1px solid rgba(0, 180, 24, 0.4);
+    background: rgba(0, 180, 24, 0.14);
+    border: 1px solid rgba(0, 180, 24, 0.3);
+    border-radius: 2.3px;
+    opacity: 1;
+    pointer-events: all;
+    padding: 0;
+}
+
+.code-block-wrapper pre[data-terminal="true"] .copy-button svg,
+.code-block-wrapper pre.language-bash .copy-button svg,
+.code-block-wrapper pre.language-shell .copy-button svg,
+.code-block-wrapper pre.language-terminal .copy-button svg,
+pre[data-terminal="true"] .copy-button svg,
+pre.language-bash .copy-button svg,
+pre.language-shell .copy-button svg,
+pre.language-terminal .copy-button svg {
+    width: 12px;
+    height: 12px;
+    color: #00b418;
 }
 
 .code-block-wrapper pre[data-terminal="true"] .copy-button:hover,
@@ -519,8 +554,10 @@ pre[data-terminal="true"] .copy-button:hover,
 pre.language-bash .copy-button:hover,
 pre.language-shell .copy-button:hover,
 pre.language-terminal .copy-button:hover {
-    background: rgba(0, 180, 24, 0.3);
+    background: rgba(0, 180, 24, 0.25);
     border-color: #00b418;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 180, 24, 0.3);
 }
 
 .code-block-wrapper pre[data-terminal="true"] .copy-button.copied,
@@ -531,10 +568,33 @@ pre[data-terminal="true"] .copy-button.copied,
 pre.language-bash .copy-button.copied,
 pre.language-shell .copy-button.copied,
 pre.language-terminal .copy-button.copied {
-    background: rgba(0, 180, 24, 0.4);
+    background: rgba(0, 180, 24, 0.3);
     border-color: #00b418;
+    color: #00b418;
 }
 
+.code-block-wrapper pre[data-terminal="true"]::-webkit-scrollbar-thumb,
+.code-block-wrapper pre.language-bash::-webkit-scrollbar-thumb,
+.code-block-wrapper pre.language-shell::-webkit-scrollbar-thumb,
+.code-block-wrapper pre.language-terminal::-webkit-scrollbar-thumb,
+pre[data-terminal="true"]::-webkit-scrollbar-thumb,
+pre.language-bash::-webkit-scrollbar-thumb,
+pre.language-shell::-webkit-scrollbar-thumb,
+pre.language-terminal::-webkit-scrollbar-thumb {
+    background: rgba(0, 180, 24, 0.5);
+}
+
+.code-block-wrapper pre[data-terminal="true"]::-webkit-scrollbar-thumb:hover,
+.code-block-wrapper pre.language-bash::-webkit-scrollbar-thumb:hover,
+.code-block-wrapper pre.language-shell::-webkit-scrollbar-thumb:hover,
+.code-block-wrapper pre.language-terminal::-webkit-scrollbar-thumb:hover,
+pre[data-terminal="true"]::-webkit-scrollbar-thumb:hover,
+pre.language-bash::-webkit-scrollbar-thumb:hover,
+pre.language-shell::-webkit-scrollbar-thumb:hover,
+pre.language-terminal::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 180, 24, 0.7);
+}
+/* Copy button styles CP */
 .copy-button {
     position: absolute;
     top: 0.75rem;
