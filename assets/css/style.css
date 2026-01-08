@@ -268,7 +268,6 @@ code {
     font-family: "Nimbus Mono PS", "Nimbus Mono", monospace;
 }
 
-/* Code Block Container */
 .code-block-wrapper {
     position: relative;
     margin: 1.5rem 0;
@@ -299,8 +298,7 @@ pre code {
     line-height: 1.6;
 }
 
-/* syntax highlighter  */
-
+/* syntax highlighting */
 code .c,
 code .ch,
 code .cm,
@@ -333,7 +331,7 @@ pre .kn,
 pre .kp,
 pre .kr,
 pre .kt {
-    color: var(--accent-primary);
+    color: #9cdcfe;
     font-weight: 500;
 }
 
@@ -369,7 +367,7 @@ pre .nv,
 pre .vc,
 pre .vg,
 pre .vi {
-    color: #9cdcfe;
+    color: var(--accent-primary);
 }
 
 code .s,
@@ -433,7 +431,49 @@ pre .p {
     color: #d4d4d4;
 }
 
-/* Terminal-style Code Blocks ( doesn't gonna work now ) */
+/* code block logic */
+.code-block-wrapper pre[data-terminal="true"],
+pre[data-terminal="true"] {
+    background: var(--terminal-bg);
+    border: 2px solid var(--terminal-border);
+    border-radius: 0.5rem;
+    box-shadow:
+        0 0 20px rgba(0, 255, 65, 0.1),
+        inset 0 0 40px rgba(0, 255, 65, 0.03),
+        0 8px 20px rgba(0, 0, 0, 0.8);
+    padding: 1rem 1.5rem;
+    padding-top: 3rem;
+}
+
+.code-block-wrapper pre[data-terminal="true"]::before,
+pre[data-terminal="true"]::before {
+    content: "● ● ● term";
+    display: block;
+    color: #555;
+    font-size: 1rem;
+    position: absolute;
+    top: 1rem;
+    left: 1.5rem;
+    letter-spacing: 0.5rem;
+}
+
+.code-block-wrapper pre[data-terminal="true"] code,
+pre[data-terminal="true"] code {
+    color: var(--terminal-green);
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+    font-family: "Fira Code", "Consolas", monospace;
+    font-weight: 500;
+    background: transparent;
+}
+
+.code-block-wrapper pre[data-terminal="true"] code::before,
+pre[data-terminal="true"] code::before {
+    content: "$ ";
+    color: var(--terminal-green);
+    font-weight: bold;
+    opacity: 0.8;
+}
+
 .code-block-wrapper pre.language-bash,
 .code-block-wrapper pre.language-shell,
 .code-block-wrapper pre.language-terminal,
@@ -492,7 +532,6 @@ pre.language-terminal code::before {
     opacity: 0.8;
 }
 
-/* Copy Button inside code blocks-*/
 .copy-button {
     position: absolute;
     top: 0.75rem;
@@ -545,7 +584,6 @@ pre.language-terminal code::before {
     height: 18px;
 }
 
-/* Scrollbar for Code Blocks  not really needed but still..... */
 pre::-webkit-scrollbar {
     height: 8px;
 }

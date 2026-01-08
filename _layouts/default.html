@@ -115,17 +115,43 @@
       });
     });
   </script>
-  <!-- debug -->
   <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const codeBlocks = document.querySelectorAll('pre');
-    console.log('Found', codeBlocks.length, 'code blocks');
 
-    codeBlocks.forEach((pre, i) => {
-      console.log(`Block ${i + 1}:`, pre.className);
-    });
+      const codeBlocks = document.querySelectorAll('pre');
+
+      codeBlocks.forEach(function(pre) {
+          const code = pre.querySelector('code');
+          if (!code) return;
+
+          const text = code.textContent;
+          const className = pre.className || '';
+
+          if (pre.hasAttribute('data-terminal') ||
+              className.includes('language-bash') ||
+              className.includes('language-shell') ||
+              className.includes('language-terminal')) {
+              return;
+          }
+
+          const hasTerminalContent =
+              text.includes('$ ') ||
+              text.includes('# ') ||
+              text.includes('sudo ') ||
+              text.includes('apt ') ||
+              text.includes('yum ') ||
+              text.includes('pacman ') ||
+              text.includes('cd ') ||
+              text.includes('ls ') ||
+              text.includes('echo ') ||
+              text.includes('curl ') ||
+              text.includes('wget ');
+
+          if (hasTerminalContent) {
+              pre.setAttribute('data-terminal', 'true');
+          }
+      });
   });
   </script>
-  <!-- debug ends here -->
 </body>
 </html>

