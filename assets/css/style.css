@@ -440,74 +440,79 @@ pre .p {
 }
 /* TERM TRUE */
 pre[data-terminal="true"] {
-    background: radial-gradient(ellipse 50% at center, #1d1d1d 0%, #000 100%);
-    border: 1px solid #140097;
-    border-radius: 6px;
-    padding: 35px 25px 25px !important;
-    margin: 2.5rem 0 !important;
-    min-height: 140px;
-    position: relative;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+    border-radius: 8px !important;
+    padding: 48px 28px 28px !important;
+    margin: 1.5rem 0 !important;
+    position: relative !important;
+    border: 1px solid #140097 !important;
+    background: radial-gradient(ellipse 120px at center, #1d1d1d 0%, #000 100%);
     font-family: "OCR A Extended", monospace !important;
 }
 
 pre[data-terminal="true"]::before {
     content: "";
-    position: absolute;
+    position: absolute !important;
     top: 0;
     left: 0;
     right: 0;
-    height: 11px;
+    height: 24px !important;
     background: linear-gradient(
         90deg,
-        rgba(0, 6, 43, 1) 48%,
-        rgba(0, 1, 37, 0) 91%
+        rgba(0, 6, 43, 1) 30%,
+        rgba(0, 1, 37, 0.8) 70%,
+        rgba(0, 1, 37, 0) 90%
     );
-    border-radius: 0.7px 0.7px 0 0;
-    border-bottom: 1px solid rgba(0, 6, 43, 0.5);
+    border-radius: 8px 8px 0 0 !important;
+    border-bottom: 2px solid rgba(0, 20, 60, 0.9);
+    box-shadow: inset 0 1px 0 rgba(10, 20, 50, 0.6);
 }
 
 pre[data-terminal="true"]::after {
-    content: ">_";
-    position: absolute;
-    top: 5px;
-    left: 6px;
-    background: linear-gradient(90deg, #ededed 0%, #5c5c5c 51%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-size: 8px;
-    font-family: "OCR A Extended", monospace;
-    transform: scale(0.96, 1.04);
-    letter-spacing: 0.3px;
+    content: ">_ shell" !important;
+    position: absolute !important;
+    top: 6px !important;
+    left: 16px !important;
+    color: #e8e8e8 !important;
+    font-size: 12px !important;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    font-weight: 500;
 }
 
 pre[data-terminal="true"] code {
     color: #00b418 !important;
-    font-size: 9.6px !important;
-    font-family: "OCR A Extended", monospace !important;
-    line-height: 1.65;
-    text-shadow: 0 0 4px rgba(0, 180, 24, 0.5);
-    transform: scale(0.967, 1.034);
-    position: relative;
-    top: 16px;
-    stroke: #140097;
-    stroke-width: 0.03px;
+    font-size: 15px !important;
+    line-height: 1.65 !important;
+    padding-top: 8px !important;
+    text-shadow: 0 0 6px rgba(0, 180, 24, 0.6);
 }
 
 pre[data-terminal="true"] .copy-button {
     top: 6px !important;
-    right: 6px !important;
-    width: 32px !important;
-    height: 20px !important;
-    background: rgba(0, 180, 24, 0.15) !important;
-    border-color: rgba(0, 180, 24, 0.35) !important;
+    right: 12px !important;
+    width: 38px !important;
+    height: 22px !important;
+    padding: 0 !important;
+    background: rgba(0, 180, 24, 0.2) !important;
+    border: 1px solid rgba(0, 180, 24, 0.5) !important;
+    border-radius: 10px !important;
+    transition: all 0.25s ease !important;
 }
 
 pre[data-terminal="true"] .copy-button svg {
-    width: 10px !important;
-    height: 10px !important;
-    color: #00b418 !important;
+    width: 12px !important;
+    height: 12px !important;
+    stroke-width: 2 !important;
+    stroke: #00b418 !important;
+    transition: all 0.25s ease !important;
+}
+
+pre[data-terminal="true"] .copy-button.copied {
+    background: rgba(0, 255, 65, 0.3) !important;
+}
+
+pre[data-terminal="true"] .copy-button.copied svg {
+    stroke: #00ff41 !important;
 }
 
 /* CP BTN */
