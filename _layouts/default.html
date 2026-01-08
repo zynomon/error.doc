@@ -27,14 +27,15 @@
   </main>
 
   <!-- Footer -->
-  <footer class="site-footer">
+  < class="site-footer">l
     <div class="footer-left">
       <h2 class="footer-title">𝚎𝚛𝚛𝚘𝚛.𝚘𝚜™</h2>
       <p class="footer-subtitle">born from failure, built for control.</p>
     </div>
+    <hr></hr>
     <div class="footer-links">
-      <a href="https://zynomon.github.io" aria-label="Portfolio">
-        <img src="https://img.shields.io/badge/⌕-blue?style=plastic" alt="Portfolio">
+      <a href="https://zynomon.github.io/error" aria-label="Portfolio">
+        <img src="https://img.shields.io/badge/main-blue?style=plastic" alt="Portfolio">
       </a>
       <a href="https://discord.gg/Jn7FBwu99F" aria-label="Discord">
         <img src="https://img.shields.io/badge/-5865F2?style=plastic&logo=discord&logoColor=white" alt="Discord">
@@ -45,23 +46,26 @@
     </div>
   </footer>
 
-  <!-- vanta.js -->
+  <!-- vanta.js scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.topology.min.js"></script>
-<script>
-VANTA.TOPOLOGY({
-  el: "#vanta-bg",
-  mouseControls: true,
-  touchControls: true,
-  gyroControls: false,
-  minHeight: 200.00,
-  minWidth: 200.00,
-  scale: 1.00,
-  scaleMobile: 1.00,
-  color: 0x000000,
-  backgroundColor: 0xffffff
-});
-</script>
+  <script>
+  VANTA.TOPOLOGY({
+      el: "#vanta-bg",
+      mouseControls: true,
+      touchControls: false,
+      gyroControls: true,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: 0xff,
+      backgroundColor: 0x222222,
+      points: 20.00,
+      maxDistance: 15.00,
+      spacing: 20.00
+    });
+  </script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {

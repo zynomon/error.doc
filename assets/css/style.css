@@ -435,7 +435,7 @@ pre .p {
     color: var(--fg-secondary);
 }
 
-/* Terminal-style Code Blocks ( doesn't gonna work now ) */
+/* Terminal-style Code Blocks ( doesn't gonna work now ) beta
 .code-block-wrapper pre.language-bash,
 .code-block-wrapper pre.language-shell,
 .code-block-wrapper pre.language-terminal,
@@ -493,6 +493,7 @@ pre.language-terminal code::before {
     font-weight: bold;
     opacity: 0.8;
 }
+*/
 
 /* Copy Button inside code blocks-*/
 .copy-button {
