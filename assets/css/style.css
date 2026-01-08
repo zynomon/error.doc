@@ -430,106 +430,109 @@ code .p,
 pre .p {
     color: #d4d4d4;
 }
-
-/* code block logic */
+/* TERM */
 .code-block-wrapper pre[data-terminal="true"],
-pre[data-terminal="true"] {
-    background: var(--terminal-bg);
-    border: 2px solid var(--terminal-border);
-    border-radius: 0.5rem;
-    box-shadow:
-        0 0 20px rgba(0, 255, 65, 0.1),
-        inset 0 0 40px rgba(0, 255, 65, 0.03),
-        0 8px 20px rgba(0, 0, 0, 0.8);
-    padding: 1rem 1.5rem;
-    padding-top: 3rem;
-}
-
-.code-block-wrapper pre[data-terminal="true"]::before,
-pre[data-terminal="true"]::before {
-    content: "● ● ● term";
-    display: block;
-    color: #555;
-    font-size: 1rem;
-    position: absolute;
-    top: 1rem;
-    left: 1.5rem;
-    letter-spacing: 0.5rem;
-}
-
-.code-block-wrapper pre[data-terminal="true"] code,
-pre[data-terminal="true"] code {
-    color: var(--terminal-green);
-    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
-    font-family: "Fira Code", "Consolas", monospace;
-    font-weight: 500;
-    background: transparent;
-}
-
-.code-block-wrapper pre[data-terminal="true"] code::before,
-pre[data-terminal="true"] code::before {
-    content: "$ ";
-    color: var(--terminal-green);
-    font-weight: bold;
-    opacity: 0.8;
-}
-
 .code-block-wrapper pre.language-bash,
 .code-block-wrapper pre.language-shell,
 .code-block-wrapper pre.language-terminal,
+pre[data-terminal="true"],
 pre.language-bash,
 pre.language-shell,
 pre.language-terminal {
-    background: var(--terminal-bg);
-    border: 2px solid var(--terminal-border);
-    border-radius: 0.5rem;
-    box-shadow:
-        0 0 20px rgba(0, 255, 65, 0.1),
-        inset 0 0 40px rgba(0, 255, 65, 0.03),
-        0 8px 20px rgba(0, 0, 0, 0.8);
-    padding: 1rem 1.5rem;
-    padding-top: 3rem;
+    background: #000;
+    border: 2px solid #00062b;
+    border-radius: 6px;
+    padding: 2.5rem 1.5rem 1.5rem;
+    position: relative;
 }
 
+.code-block-wrapper pre[data-terminal="true"]::before,
 .code-block-wrapper pre.language-bash::before,
 .code-block-wrapper pre.language-shell::before,
 .code-block-wrapper pre.language-terminal::before,
+pre[data-terminal="true"]::before,
 pre.language-bash::before,
 pre.language-shell::before,
 pre.language-terminal::before {
-    content: "● ● ● term";
-    display: block;
-    color: #555;
-    font-size: 1rem;
+    content: "";
     position: absolute;
-    top: 1rem;
-    left: 1.5rem;
-    letter-spacing: 0.5rem;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 11px;
+    background: linear-gradient(90deg, #00062b 48%, #000125 91%);
+    border-radius: 6px 6px 0 0;
 }
 
+.code-block-wrapper pre[data-terminal="true"]::after,
+.code-block-wrapper pre.language-bash::after,
+.code-block-wrapper pre.language-shell::after,
+.code-block-wrapper pre.language-terminal::after,
+pre[data-terminal="true"]::after,
+pre.language-bash::after,
+pre.language-shell::after,
+pre.language-terminal::after {
+    content: "shell";
+    position: absolute;
+    top: 1px;
+    right: 1.5rem;
+    color: #ededed;
+    font-family: "OCR A Extended", monospace;
+    font-size: 8px;
+    opacity: 0.9;
+}
+
+.code-block-wrapper pre[data-terminal="true"] code,
 .code-block-wrapper pre.language-bash code,
 .code-block-wrapper pre.language-shell code,
 .code-block-wrapper pre.language-terminal code,
+pre[data-terminal="true"] code,
 pre.language-bash code,
 pre.language-shell code,
 pre.language-terminal code {
-    color: var(--terminal-green);
-    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
-    font-family: "Fira Code", "Consolas", monospace;
+    color: #00b418;
+    text-shadow: 0 0 5px rgba(0, 180, 24, 0.5);
+    font-family: "OCR A Extended", monospace;
     font-weight: 500;
-    background: transparent;
+}
+.code-block-wrapper pre[data-terminal="true"] .copy-button,
+.code-block-wrapper pre.language-bash .copy-button,
+.code-block-wrapper pre.language-shell .copy-button,
+.code-block-wrapper pre.language-terminal .copy-button,
+pre[data-terminal="true"] .copy-button,
+pre.language-bash .copy-button,
+pre.language-shell .copy-button,
+pre.language-terminal .copy-button {
+    top: 3px;
+    right: 5px;
+    width: 24px;
+    height: 16px;
+    background: rgba(0, 180, 24, 0.2);
+    border: 1px solid rgba(0, 180, 24, 0.4);
 }
 
-.code-block-wrapper pre.language-bash code::before,
-.code-block-wrapper pre.language-shell code::before,
-.code-block-wrapper pre.language-terminal code::before,
-pre.language-bash code::before,
-pre.language-shell code::before,
-pre.language-terminal code::before {
-    content: "$ ";
-    color: var(--terminal-green);
-    font-weight: bold;
-    opacity: 0.8;
+.code-block-wrapper pre[data-terminal="true"] .copy-button:hover,
+.code-block-wrapper pre.language-bash .copy-button:hover,
+.code-block-wrapper pre.language-shell .copy-button:hover,
+.code-block-wrapper pre.language-terminal .copy-button:hover,
+pre[data-terminal="true"] .copy-button:hover,
+pre.language-bash .copy-button:hover,
+pre.language-shell .copy-button:hover,
+pre.language-terminal .copy-button:hover {
+    background: rgba(0, 180, 24, 0.3);
+    border-color: #00b418;
+}
+
+.code-block-wrapper pre[data-terminal="true"] .copy-button.copied,
+.code-block-wrapper pre.language-bash .copy-button.copied,
+.code-block-wrapper pre.language-shell .copy-button.copied,
+.code-block-wrapper pre.language-terminal .copy-button.copied,
+pre[data-terminal="true"] .copy-button.copied,
+pre.language-bash .copy-button.copied,
+pre.language-shell .copy-button.copied,
+pre.language-terminal .copy-button.copied {
+    background: rgba(0, 180, 24, 0.4);
+    border-color: #00b418;
 }
 
 .copy-button {
@@ -601,7 +604,6 @@ pre::-webkit-scrollbar-thumb {
 pre::-webkit-scrollbar-thumb:hover {
     background: var(--accent-bright);
 }
-
 /*  --------------------------------------------------------------------------
     ul and ol and dl = variants of lists */
 
