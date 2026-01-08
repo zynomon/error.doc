@@ -48,23 +48,7 @@
   <!-- vanta.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.topology.min.js"></script>
-  <script>
-  VANTA.TOPOLOGY({
-      el: "#vanta-bg",
-      mouseControls: true,
-      touchControls: false,
-      gyroControls: true,
-      minHeight: 200.00,
-      minWidth: 200.00,
-      scale: 1.00,
-      scaleMobile: 1.00,
-      color: 0xff,
-      backgroundColor: 0x222222,
-      points: 20.00,
-      maxDistance: 15.00,
-      spacing: 20.00
-    });
-  </script>
+
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -114,44 +98,6 @@
         wrapper.appendChild(copyButton);
       });
     });
-  </script>
-  <script>
-  document.addEventListener('DOMContentLoaded', function() {
-
-      const codeBlocks = document.querySelectorAll('pre');
-
-      codeBlocks.forEach(function(pre) {
-          const code = pre.querySelector('code');
-          if (!code) return;
-
-          const text = code.textContent;
-          const className = pre.className || '';
-
-          if (pre.hasAttribute('data-terminal') ||
-              className.includes('language-bash') ||
-              className.includes('language-shell') ||
-              className.includes('language-terminal')) {
-              return;
-          }
-
-          const hasTerminalContent =
-              text.includes('$ ') ||
-              text.includes('# ') ||
-              text.includes('sudo ') ||
-              text.includes('apt ') ||
-              text.includes('yum ') ||
-              text.includes('pacman ') ||
-              text.includes('cd ') ||
-              text.includes('ls ') ||
-              text.includes('echo ') ||
-              text.includes('curl ') ||
-              text.includes('wget ');
-
-          if (hasTerminalContent) {
-              pre.setAttribute('data-terminal', 'true');
-          }
-      });
-  });
   </script>
 </body>
 </html>
