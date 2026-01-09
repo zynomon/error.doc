@@ -904,13 +904,7 @@ figcaption {
 hr {
     border: none;
     height: 2px;
-    background: linear-gradient(
-        to right,
-
-        var(--fg),
-        var(--fg),
-        transparent
-    );
+    background: linear-gradient(to right, var(--fg), var(--fg), transparent);
     margin: 3rem 0;
     opacity: 0.6;
 }
