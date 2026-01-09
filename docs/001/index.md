@@ -1,7 +1,10 @@
 ---
 layout: default
-title: configuring bootloader
-order: 1
+title: "configuring bootloader"
+description: "This guide explains how to configure the bootloader. an example for embed testing"
+embed-color: "#5a5a5a"
+icon: https://zynomon.github.io/error.doc/docs/001/001.svg
+embed-thumbnail: https://zynomon.github.io/error.doc/docs/001/thumb.svg
 ---
 
 # > configuring bootloader

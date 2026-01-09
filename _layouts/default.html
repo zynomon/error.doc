@@ -3,10 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>error.doc › {{ page.title }}</title>
-  <link rel="icon" type="image/svg+xml" href="{{ "/assets/images/edock.svg" | relative_url }}">
+
+  <!--  Detection -->
+  {% assign raw_content = content | strip_html | strip_newlines %}
+  {% assign first_line = raw_content | split: '.' | first | truncate: 60 %}
+  {% assign first_200_words = raw_content | truncatewords: 200 %}
+  {% assign default_icon = "/assets/images/edock.svg" | relative_url %}
+  {% assign favicon = page.icon | default: default_icon %}
+  {% assign embed_image = page.embed-thumbnail | default: favicon %}
+
+  <!-- site definitions + embed -->
+  <title>error.doc › {{ first_line }}</title>
+  <link rel="icon" type="image/svg+xml" href="{{ favicon }}">
+  <link rel="apple-touch-icon" href="{{ favicon }}">
+  <meta name="description" content="{{ first_200_words }}">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="error.doc">
+  <meta property="og:title" content="{{ first_line }}">
+  <meta property="og:description" content="{{ first_200_words }}">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  <meta property="og:image" content="{{ embed_image }}">
+  <meta property="og:image:type" content="image/svg+xml">
+  <meta name="theme-color" content="{{ page.embed-color | default: '#0D0F12' }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ first_line }}">
+  <meta name="twitter:description" content="{{ first_200_words }}">
+  <meta name="twitter:image" content="{{ embed_image }}">
   <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
 </head>
+
+<!--vanta bg -->
+
 <body>
   <div id="vanta-bg"></div>
 
@@ -29,25 +56,27 @@
   <!-- Footer -->
   <footer class="site-footer">
     <div class="footer-left">
-      <h2 class="footer-title">𝚎𝚛𝚛𝚘𝚛.𝚘𝚜™</h2>
-      <p class="footer-subtitle">born from failure, built for control.</p>
+      <h2 class="footer-title"> 𝚎𝚛𝚛𝚘𝚛.𝚘𝚜™</h2>
+      <p class="footer-subtitle"> born from failure, built for control.</p>
     </div>
 
-    <hr></hr>
+    <hr>
+
     <div class="footer-links">
-      <a href="https://zynomon.github.io/error" aria-label="Portfolio">
-        <img src="https://img.shields.io/badge/main-blue?style=plastic" alt="Portfolio">
+      <a href="https://zynomon.github.io/error" aria-label="error">
+        <img src="https://img.shields.io/badge/main-blue?style=plastic&logo=tux&logoColor=white" alt="error">
       </a>
       <a href="https://discord.gg/Jn7FBwu99F" aria-label="Discord">
         <img src="https://img.shields.io/badge/-5865F2?style=plastic&logo=discord&logoColor=white" alt="Discord">
       </a>
       <a href="https://zynomon.github.io/error/e.html" aria-label="Repository">
-        <img src="https://img.shields.io/badge/repo-black?style=plastic" alt="Repository">
+        <img src="https://img.shields.io/badge/-black?style=plastic&logo=server&logoColor=white" alt="Repository">
       </a>
+
     </div>
   </footer>
 
-  <!-- vanta.js scripts -->
+  <!-- vanta.js and other scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.topology.min.js"></script>
   <script>

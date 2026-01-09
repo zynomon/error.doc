@@ -435,7 +435,7 @@ pre .p {
     color: var(--fg-secondary);
 }
 
-/* Terminal-style Code Blocks ( doesn't gonna work now ) beta
+/* Terminal-style Code Blocks ( doesn't gonna work now )  - beta
 .code-block-wrapper pre.language-bash,
 .code-block-wrapper pre.language-shell,
 .code-block-wrapper pre.language-terminal,
@@ -817,7 +817,7 @@ blockquote.danger {
     background: rgba(255, 68, 68, 0.08);
 }
 
-/* Alert Blocks */
+/* Alert Blocks ---------- */
 .alert {
     margin: 2rem 0;
     padding: 1.5rem;
@@ -909,8 +909,6 @@ hr {
 
         var(--fg),
         var(--fg),
-        var(--glass-border),
-        var(--glass-border),
         transparent
     );
     margin: 3rem 0;
@@ -924,8 +922,24 @@ hr.bold {
         to right,
         var(--fg),
         var(--fg),
+        var(--fg),
+        var(--fg),
+        var(--glass-border),
         var(--glass-border),
         transparent
+    );
+    margin: 3rem 0;
+    opacity: 0.6;
+}
+
+hr.thin {
+    border: none;
+    height: 2px;
+    background: linear-gradient(
+        to right,
+        var(--glass-border),
+        transparent,
+        var(--glass-border)
     );
     margin: 3rem 0;
     opacity: 0.6;
