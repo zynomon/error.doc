@@ -1,6 +1,6 @@
 ---
-title: VOID
-description: VOID is a branch of error.os which is can be called testing but it's not, it's the iso's that boots but has some issues due to it 'can boot' argument, we ship it regardless so users can get the preview of it.
+title: "VOID"
+description: "VOID is a branch of error.os which is can be called testing but it's not, it's the iso's that boots but has some issues due to it 'can boot' argument, we ship it regardless so users can get the preview of it."
 embed-thumbnail: https://github.com/zynomon/error/raw/web-side/icons/void.jpg
 icon: https://github.com/zynomon/error/raw/web-side/icons/void.jpg
 ---

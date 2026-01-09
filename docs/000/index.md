@@ -22,7 +22,7 @@ Error exists in every type of operating system. Others hide it behind terms like
 # Capabilities & Requirements
 
 <div align="center">
-<img src="https://via.placeholder.com/640x480/2d2d2d/ffffff?text=Error.OS+Screenshot" width="640" height="480" alt="Error.OS Screenshot" />
+    <img width="640" height="480" alt="image" src="https://github.com/user-attachments/assets/9f57c7e9-dc75-4353-b298-511e557c48dc" />
 </div>
 
 We currently ship several ISO variants:
