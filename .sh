@@ -52,4 +52,4 @@ EOF
     echo "Created: $folder_path/index.md"
 done
 
-echo "All folders and files created successfully!"
+echo "done"

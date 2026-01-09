@@ -1,42 +1,121 @@
-# Contributor Covenant Code of Conduct
+## Code of Conduct
 
-## Our Pledge
+By participating in this project, you agree to:
+- Be respectful and professional in all communications
+- Focus on technical accuracy and clarity
+- Accept constructive feedback gracefully
+- Help maintain the project's quality standards
 
-In the interest of fostering an open and welcoming environment, we as
-contributors and maintainers pledge to making participation in our project and
-our community a harassment-free experience for everyone, regardless of age, body
-size, disability, ethnicity, sex characteristics, gender identity and expression,
-level of experience, education, socio-economic status, nationality, personal
-appearance, race, religion, or sexual identity and orientation.
+## What We're Looking For
 
-## Our Standards
+### High Priority
+- Technical accuracy and correctness
+- Clear, concise explanations
+- Up-to-date information about Error.OS and Linux
+- Fixes for typos, broken links, or incorrect information
+- Additional examples or use cases
 
-Examples of behavior that contributes to creating a positive environment include:
+### Lower Priority
+- Minor formatting improvements
+- Grammar and spelling corrections (unless they affect meaning)
 
-* Using welcoming and inclusive language
-* Being respectful of differing viewpoints and experiences
-* Gracefully accepting constructive criticism
-* Focusing on what is best for the community
-* Showing empathy towards other community members
+## Prerequisites
 
-Examples of unacceptable behavior by participants include:
+Before you contribute, ensure you have:
+1. **Solid understanding of Linux** (preferably Debian-based systems)
+2. **Experience with Error.OS** or similar distributions
+3. **Knowledge of Markdown** formatting
+4. **Attention to detail** for technical accuracy
 
-* The use of sexualized language or imagery and unwelcome sexual attention or advances
-* Trolling, insulting/derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or electronic address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
- professional setting
+## How to Contribute
 
-## Our Responsibilities
+### 1. Reporting Issues
+Found an error or have a suggestion?
+- Use the Issues section on GitHub
+- Clearly describe the problem
+- Include steps to reproduce (if applicable)
+- Specify which document/line needs attention
 
-Project maintainers are responsible for clarifying the standards of acceptable
-behavior and are expected to take appropriate and fair corrective action in
-response to any instances of unacceptable behavior.
+### 2. Making Changes
 
-Project maintainers have the right and responsibility to remove, edit, or
-reject comments, commits, code, wiki edits, issues, and other contributions
-that are not aligned to this Code of Conduct, or to ban temporarily or
-permanently any contributor for other behaviors that they deem inappropriate,
-threatening, offensive, or harmful.
+#### Small Changes (Typo fixes, minor corrections)
+1. Fork the repository
+2. Create a new branch: `git checkout -b fix-typo-description`
+3. Make your changes
+4. Commit with descriptive message
+5. Submit a Pull Request
 
+#### Major Changes (New sections, technical updates)
+1. **First, open an Issue** to discuss your proposed changes
+2. Wait for maintainer feedback before proceeding
+3. Follow the same process as small changes
+4. Include detailed explanation of your changes in the PR
+
+### 3. Adding New Documentation
+
+If you want to add new documentation:
+
+1. **Check with maintainers first** - Open an issue proposing your new document
+2. **Follow the existing structure**:
+   - Use proper front matter (layout, title, description)
+   - Maintain consistent formatting
+   - Include practical examples where relevant
+3. **Technical requirements**:
+   - All commands must be tested on Error.OS
+   - Configuration examples must be valid and safe
+   - Screen outputs should be accurate
+
+## Documentation Standards
+
+### Formatting Guidelines
+- Use Markdown (.md) files
+- Follow existing file structure
+- Use headings appropriately (## for sections, ### for subsections)
+- Add comments for complex sections
+
+### Technical Accuracy
+- All commands must be tested
+- Version numbers must be specified when relevant
+- Configuration files should be complete and functional
+- Warning notes for dangerous operations
+
+### Style Guidelines
+- Use clear, concise language
+- Avoid jargon without explanation
+- Include practical examples
+- Add troubleshooting sections for complex topics
+
+## Review Process
+
+All contributions go through:
+1. **Automated checks** (if configured)
+2. **Technical review** by maintainers
+3. **Accuracy verification** against Error.OS
+4. **Formatting/style review**
+
+## Getting Help
+
+If you need help:
+1. Check existing documentation first
+2. Review closed issues/PRs for similar questions
+3. Contact maintainers through Issues (use the "question" label)
+
+## Recognition
+
+Contributors will be:
+- Listed in the CONTRIBUTORS.md file (if applicable)
+- Credited in release notes for significant contributions
+- Acknowledged in the documentation they helped improve
+
+## Legal
+
+By contributing, you agree that:
+1. Your contributions are your own original work
+2. You have the right to submit the work
+3. Your contributions will be licensed under the project's license
+
+---
+
+Thank you for helping improve error.os documentation! Your contributions help make Linux more accessible to everyone.
+
+**Remember**: Quality over quantity. A single accurate, well-explained contribution is worth more than multiple rushed or incorrect ones.
