@@ -20,6 +20,8 @@ Please wait while downloading the file it may take a while.
 
 ### Checksum
 > as if now in neospace we deliver 2 ways to verify the integrity of the downloaded file.
+
+
 #### manual
 you can manually download from the internet archive website and we showed you how to verify the checksums.
 
@@ -32,7 +34,7 @@ sums.7z contains all checksums in a single file. so if you extract the file make
         <img src="https://custom-icon-badges.demolab.com/badge/-5391FE?logo=powershell-white&logoColor=fff" alt="pwsh badge" />
         <b>Windows (pwsh) version</b> <span style="font-size:14px;">(click to expand)</span>
     </summary>
-<code>
+<pre><code>
 
 New-Item -ItemType Directory -Force -Path "$HOME/downloads/iso"
 Set-Location "$HOME/downloads/iso"
@@ -55,7 +57,7 @@ $expectedMd5 = (Get-Content "md5sum.txt").Split(" ")[0]
 $actualMd5   = (Get-FileHash -Algorithm MD5 -Path "error.os_Neospace_2025.iso").Hash
 if ($expectedMd5.ToUpper() -eq $actualMd5.ToUpper()) { "MD5 verification passed" } else { "MD5 verification FAILED" }
 
-</code>
+</code></pre>
 </details>
 
 <details>
@@ -63,7 +65,7 @@ if ($expectedMd5.ToUpper() -eq $actualMd5.ToUpper()) { "MD5 verification passed"
         <img src="https://img.shields.io/badge/-black?logo=gnu-bash" alt="bash badge" />
         <b>Linux (bash) version</b> <span style="font-size:14px;">(click to expand)</span>
     </summary>
-<code>
+<pre><code>
 
 mkdir -p ~/downloads/iso
 cd ~/downloads/iso
@@ -75,7 +77,7 @@ sha512sum -c iso_verification.sha512.txt
 sha256sum -c sha256sum.txt
 md5sum -c md5sum.txt
 
-</code>
+</code></pre>
 </details>
 
 
@@ -88,10 +90,14 @@ here are few ways to boot up the iso file:
 > .
 
 ### 1. Setting up a bootable USB drive
+
 Here are few ways ways to setup a bootable USB drive in different operating systems:
-- [Linux](./docs/001/linux.md)
-- [Windows](./docs/001/windows.md)
-- [Android](./docs/001/android.md)
+---
+
+- [![Linux](https://img.shields.io/badge/-FCC624?logo=linux&logoColor=black)](./linux.html) [Linux](./linux.html)
+- [![Windows](https://custom-icon-badges.demolab.com/badge/-0078D6?logo=windows11&logoColor=white)](./windows.html) [Windows](./windows.html)
+- [![Android](https://img.shields.io/badge/-3DDC84?logo=android&logoColor=white)](./android.html) [Android](./android.html)
+
 
 ### 2. Virtualization
 For virtualization, you can use tools like VirtualBox or VMware to create a virtual machine and boot from the ISO file. Here are some guides for setting up virtual machines with different operating systems:
