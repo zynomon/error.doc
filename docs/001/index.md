@@ -31,11 +31,10 @@ sums.7z contains all checksums in a single file. so if you extract the file make
 ### Scripts to automate the process
 <details>
     <summary>
-        <img src="https://custom-icon-badges.demolab.com/badge/-5391FE?logo=powershell-white&logoColor=fff" alt="pwsh badge" />
+        <img align="left" size="16" src="https://custom-icon-badges.demolab.com/badge/-5391FE?logo=powershell-white&logoColor=fff" alt="pwsh badge" />
         <b>Windows (pwsh) version</b> <span style="font-size:14px;">(click to expand)</span>
     </summary>
 <pre><code>
-
 New-Item -ItemType Directory -Force -Path "$HOME/downloads/iso"
 Set-Location "$HOME/downloads/iso"
 
@@ -56,17 +55,15 @@ if ($expectedSha256.ToUpper() -eq $actualSha256.ToUpper()) { "SHA256 verificatio
 $expectedMd5 = (Get-Content "md5sum.txt").Split(" ")[0]
 $actualMd5   = (Get-FileHash -Algorithm MD5 -Path "error.os_Neospace_2025.iso").Hash
 if ($expectedMd5.ToUpper() -eq $actualMd5.ToUpper()) { "MD5 verification passed" } else { "MD5 verification FAILED" }
-
 </code></pre>
 </details>
 
 <details>
     <summary>
-        <img src="https://img.shields.io/badge/-black?logo=gnu-bash" alt="bash badge" />
+        <img align="left" size="16" src="https://img.shields.io/badge/-black?logo=gnu-bash" alt="bash badge" />
         <b>Linux (bash) version</b> <span style="font-size:14px;">(click to expand)</span>
     </summary>
 <pre><code>
-
 mkdir -p ~/downloads/iso
 cd ~/downloads/iso
 wget https://archive.org/download/error.os_Neospace_2025/error.os_Neospace_2025.iso
@@ -76,7 +73,6 @@ gpg --verify iso_verification.gpg error.os_Neospace_2025.iso
 sha512sum -c iso_verification.sha512.txt
 sha256sum -c sha256sum.txt
 md5sum -c md5sum.txt
-
 </code></pre>
 </details>
 
@@ -86,20 +82,11 @@ here are few ways to boot up the iso file:
 1. Virtualization
 2. Bootable USB drive
 
-> our following guide covers both of them
-> .
+our following guide covers both of them, however, it is recommended to use a virtual machine for a quick look at the operating system before installing it on your computer, and we don't recommend using a bootable USB drive for this purpose, it is because IF **YOU ARE NEW IN LINUX AND FEAR TO TAKE RISKS WE CAN'T ASSURE YOU WILL SUCCEED**. However, if you are confident and want to try it, you can follow the instructions below.
 
-### 1. Setting up a bootable USB drive
-
-Here are few ways ways to setup a bootable USB drive in different operating systems:
 ---
 
-- [![Linux](https://img.shields.io/badge/-FCC624?logo=linux&logoColor=black)](./linux.html) [Linux](./linux.html)
-- [![Windows](https://custom-icon-badges.demolab.com/badge/-0078D6?logo=windows11&logoColor=white)](./windows.html) [Windows](./windows.html)
-- [![Android](https://img.shields.io/badge/-3DDC84?logo=android&logoColor=white)](./android.html) [Android](./android.html)
-
-
-### 2. Virtualization
+### 1. Virtualization
 For virtualization, you can use tools like VirtualBox or VMware to create a virtual machine and boot from the ISO file. Here are some guides for setting up virtual machines with different operating systems:
 download a virtualization software like VirtualBox or VMware and follow the instructions to create a virtual machine and boot from the ISO file.
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
@@ -112,4 +99,38 @@ After that setup the virtual machine and boot from the ISO file.
 - disk 10 gb
 - for the rest keep as your liking,
 
+
 --
+
+### 2. Setting up a bootable USB drive
+
+Here are few ways ways to setup a bootable USB drive in different operating systems:
+---
+
+<div style="overflow:auto; margin-bottom:8px;">
+  <a href="./linux.html"><img src="https://img.shields.io/badge/-FCC624?logo=linux&logoColor=black" alt="Linux" style="float:left; margin-right:8px;" /></a>
+  <a href="./linux.html">Linux</a>
+</div>
+<div style="overflow:auto; margin-bottom:8px;">
+  <a href="./windows.html"><img src="https://custom-icon-badges.demolab.com/badge/-0078D6?logo=windows11&logoColor=white" alt="Windows" style="float:left; margin-right:8px;" /></a>
+  <a href="./windows.html">Windows</a>
+</div>
+<div style="overflow:auto; margin-bottom:8px;">
+  <a href="./android.html"><img src="https://img.shields.io/badge/-3DDC84?logo=android&logoColor=white" alt="Android" style="float:left; margin-right:8px;" /></a>
+  <a href="./android.html">Android</a>
+</div>
+
+---
+
+
+#### Next steps,
+<div style="text-align:center; font-size:3rem;">
+001 -> <a href="./../002">002</a>
+</div>
+
+## Related pages
+[008 - Hardware Driver management in linux](./../008)
+[009 - Troubleshooting in linux](./../009)
+[010 - What to do and don'ts , in linux](./../010)
+
+---
