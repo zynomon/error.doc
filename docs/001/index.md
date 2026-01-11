@@ -113,4 +113,3 @@ After that setup the virtual machine and boot from the ISO file.
 - for the rest keep as your liking,
 
 --
-# TO BE CONTINUED
