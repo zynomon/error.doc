@@ -107,17 +107,10 @@ After that setup the virtual machine and boot from the ISO file.
 Here are few ways ways to setup a bootable USB drive in different operating systems:
 ---
 
-<style>
-.download-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:8px}
-.download-card{display:flex;align-items:center;padding:12px;border-radius:8px;background:#fff;border:1px solid #e6e6e6;text-decoration:none;color:inherit;box-shadow:0 2px 6px rgba(0,0,0,0.06);transition:transform .12s ease,box-shadow .12s ease}
-.download-card:hover{transform:translateY(-4px);box-shadow:0 6px 18px rgba(0,0,0,0.12)}
-.card-icon{width:48px;height:48px;flex:0 0 48px;margin-right:12px}
-.card-title{font-weight:600;font-size:1rem;margin:0 0 4px}
-.card-desc{font-size:0.86rem;color:#555;margin:0}
-</style>
 
-<div class="download-cards">
-  <a class="download-card" href="./linux.html" role="button" aria-label="Linux instructions">
+
+<div class="docs-cards">
+  <a class="docs-card" href="./linux.html" role="button" aria-label="Linux instructions">
     <img class="card-icon" src="https://img.shields.io/badge/-FCC624?logo=linux&logoColor=black" alt="Linux badge" />
     <div>
       <div class="card-title">Linux</div>
@@ -125,7 +118,7 @@ Here are few ways ways to setup a bootable USB drive in different operating syst
     </div>
   </a>
 
-  <a class="download-card" href="./windows.html" role="button" aria-label="Windows instructions">
+  <a class="docs-card" href="./windows.html" role="button" aria-label="Windows instructions">
     <img class="card-icon" src="https://custom-icon-badges.demolab.com/badge/-0078D6?logo=windows11&logoColor=white" alt="Windows badge" />
     <div>
       <div class="card-title">Windows</div>
@@ -133,7 +126,7 @@ Here are few ways ways to setup a bootable USB drive in different operating syst
     </div>
   </a>
 
-  <a class="download-card" href="./android.html" role="button" aria-label="Android instructions">
+  <a class="docs-card" href="./android.html" role="button" aria-label="Android instructions">
     <img class="card-icon" src="https://img.shields.io/badge/-3DDC84?logo=android&logoColor=white" alt="Android badge" />
     <div>
       <div class="card-title">Android</div>
