@@ -25,7 +25,7 @@
     {% assign raw_content = content | strip_html | strip_newlines %}
     {% assign page_desc = raw_content | truncatewords: 200 %}
     {% endunless %}
-    {% assign default_icon = "/assets/images/edock.svg" | relative_url %}
+    {% assign default_icon = "https://zynomon.github.io/error/icons/doc/doc.svg" | relative_url %}
     {% assign favicon = page.icon | default: default_icon %}
     {% if page.embed-thumbnail %}
     {% assign embed_image = page.embed-thumbnail %}

@@ -111,7 +111,7 @@ Here are few ways ways to setup a bootable USB drive in different operating syst
 
 <div class="docs-cards" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; align-items:center;">
   <a class="docs-card" href="./linux.html" role="button" aria-label="Linux instructions" style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem; text-decoration:none;">
-    <img class="card-icon" src="https://cdn.simpleicons.org/linux" alt="Linux logo" width="40" height="40" style="width:2.25rem; height:2.25rem; object-fit:contain; flex:0 0 auto;" />
+    <img class="card-icon" src="https://zynomon.github.io/error/icons/doc/linux.svg" alt="Linux logo" width="40" height="40" style="width:2.25rem; height:2.25rem; object-fit:contain; flex:0 0 auto;" />
     <div style="min-width:0;">
       <div class="card-title">Linux</div>
       <div class="card-desc">Instructions for creating a bootable USB or using common Linux tools.</div>
@@ -119,7 +119,7 @@ Here are few ways ways to setup a bootable USB drive in different operating syst
   </a>
 
   <a class="docs-card" href="./windows.html" role="button" aria-label="Windows instructions" style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem; text-decoration:none;">
-      <img class="card-icon" src="https://custom-icon-badges.demolab.com/badge/-0078D6?logo=windows11&logoColor=white" alt="Windows logo" width="40" height="40" style="width:2.25rem; height:2.25rem; object-fit:contain; flex:0 0 auto;" />
+      <img class="card-icon" src="https://zynomon.github.io/error/icons/doc/windows.svg" alt="Windows logo" width="40" height="40" style="width:2.25rem; height:2.25rem; object-fit:contain; flex:0 0 auto;" />
     <div style="min-width:0;">
       <div class="card-title">Windows</div>
       <div class="card-desc">Tools and steps for writing the ISO to USB on Windows.</div>
@@ -127,7 +127,7 @@ Here are few ways ways to setup a bootable USB drive in different operating syst
   </a>
 
   <a class="docs-card" href="./android.html" role="button" aria-label="Android instructions" style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem; text-decoration:none;">
-    <img class="card-icon" src="https://cdn.simpleicons.org/android" alt="Android logo" width="40" height="40" style="width:2.25rem; height:2.25rem; object-fit:contain; flex:0 0 auto;" />
+    <img class="card-icon" src="https://zynomon.github.io/error/icons/doc/android.svg" alt="Android logo" width="40" height="40" style="width:2.25rem; height:2.25rem; object-fit:contain; flex:0 0 auto;" />
     <div style="min-width:0;">
       <div class="card-title">Android</div>
       <div class="card-desc">Guide for flashing or mounting the ISO on Android devices.</div>
