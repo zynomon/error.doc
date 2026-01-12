@@ -119,7 +119,7 @@ Here are few ways ways to setup a bootable USB drive in different operating syst
   </a>
 
   <a class="docs-card" href="./windows.html" role="button" aria-label="Windows instructions" style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem; text-decoration:none;">
-    <img class="card-icon" src="https://cdn.simpleicons.org/windows" alt="Windows logo" width="40" height="40" style="width:2.25rem; height:2.25rem; object-fit:contain; flex:0 0 auto;" />
+      <img class="card-icon" src="https://custom-icon-badges.demolab.com/badge/-0078D6?logo=windows11&logoColor=white" alt="Windows logo" width="40" height="40" style="width:2.25rem; height:2.25rem; object-fit:contain; flex:0 0 auto;" />
     <div style="min-width:0;">
       <div class="card-title">Windows</div>
       <div class="card-desc">Tools and steps for writing the ISO to USB on Windows.</div>
