@@ -4,7 +4,6 @@ title: "Downloading and checksum"
 description: "Guide for downloading files and verifying checksums"
 embed-thumbnail: https://zynomon.github.io/error.doc/docs/001/thumb.png
 icon: https://zynomon.github.io/error/icons/doc/doc.svg
-
 ---
 
 # Downloading and checksum
@@ -113,7 +112,7 @@ Here are few ways ways to setup a bootable USB drive in different operating syst
     <img class="card-icon" src="https://zynomon.github.io/error/icons/doc/linux.svg" alt="Linux logo" />
     <div>
       <div class="card-title">Linux</div>
-      <div class="card-desc">Instructions for creating a bootable USB or using common Linux tools.</div>
+      <div class="card-desc">Instructions for creating a bootable USB by using common Linux tools.</div>
     </div>
   </a>
 
@@ -121,7 +120,7 @@ Here are few ways ways to setup a bootable USB drive in different operating syst
     <img class="card-icon" src="https://zynomon.github.io/error/icons/doc/windows.svg" alt="Windows logo" />
     <div>
       <div class="card-title">Windows</div>
-      <div class="card-desc">Tools and steps for writing the ISO to USB on Windows.</div>
+      <div class="card-desc">Instructions for creating a bootable USB by using common Windows tools.</div>
     </div>
   </a>
 
@@ -129,7 +128,7 @@ Here are few ways ways to setup a bootable USB drive in different operating syst
     <img class="card-icon" src="https://zynomon.github.io/error/icons/doc/android.svg" alt="Android logo" />
     <div>
       <div class="card-title">Android</div>
-      <div class="card-desc">Guide for flashing or mounting the ISO on Android devices.</div>
+      <div class="card-desc"></div>
     </div>
   </a>
 </div>
