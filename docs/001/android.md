@@ -40,3 +40,11 @@ icon: https://zynomon.github.io/error/icons/doc/android.svg
     </tbody>
   </table>
 </div>
+
+<h3 style="font-size:4rem;">Prerequisites</h3>
+
+Yes, people do brick their systems by booting using an unknown operating system or if the user is new in this field however, this guide will help you to repent that + make a bootable usb drive.
+
+#### Step 1: Install Required Apps
+
+-- soon more coming..
