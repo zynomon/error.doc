@@ -1,25 +1,42 @@
 ---
 layout: default
-title: "Downloading and checksum - Make a bootable usb in Android"
-description: "Guide for downloading files and verifying checksums this branch follows making bootable solution in android"
+title: "Downloading and checksum - Make a bootable USB in Android"
+description: "Guide for downloading files and verifying checksums. This branch follows making a bootable solution in Android."
 embed-thumbnail: https://zynomon.github.io/error.doc/docs/001/thumb.png
 icon: https://zynomon.github.io/error/icons/doc/android.svg
 ---
 
 <div align="left">
-<img src="https://zynomon.github.io/error/icons/doc/android.svg" height="64" width="64" alt="Android Icon"> 
-<h2>Requirements</h2>
-<details>This guide is for Android users who want to create a bootable USB drive from an ISO file. when a system is bricked or doesn't has any bootable os yet</details>
-<table>
-    <th>Stuff</th>
-    <td>USB Drive or SD card reader</td>
-    <td>ISO File Downloaded</td>
-    <td>USB OTG</td>
-    <td>Charge</td>
-    <th>WHY?</th>
-    <td>USB Drive or SD card reader is needed to create a bootable USB drive.</td>
-    <td>ISO File Downloaded is also needed without it what will be flashed?.</td>
-    <td>USB OTG is needed to connect the USB drive to the Android device.</td>
-    <td>More than 40% charge is needed to ensure the device is stable during the process.</td>
-</table>
+  <img src="https://zynomon.github.io/error/icons/doc/android.svg" height="64" width="64" alt="Android Icon"> 
+  <h2>Requirements</h2>
+  <p>
+    This guide is for Android users who want to create a bootable USB drive from an ISO file,
+    useful when a system is bricked or does not have any bootable OS yet.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Stuff</th>
+        <th>Why?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>USB Drive or SD card reader</td>
+        <td>Needed to create a bootable USB drive.</td>
+      </tr>
+      <tr>
+        <td>ISO File Downloaded</td>
+        <td>Without the ISO, there is nothing to flash.</td>
+      </tr>
+      <tr>
+        <td>USB OTG</td>
+        <td>Required to connect the USB drive to the Android device.</td>
+      </tr>
+      <tr>
+        <td>Charge</td>
+        <td>More than 40% battery ensures stability during the process.</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
