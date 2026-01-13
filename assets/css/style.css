@@ -1280,18 +1280,19 @@ footer a:hover {
 
 .docs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
     margin: 2rem 0;
 }
 
 .docs-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    align-items: start;
     padding: 1.5rem;
     background: var(--glass-bg);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
     border: 1px solid var(--glass-border);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-md);
@@ -1307,12 +1308,36 @@ footer a:hover {
     box-shadow: var(--shadow-xl), var(--glow-md);
 }
 
+.docs-card .card-img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--border-radius-md);
+    margin-bottom: 1rem;
+    background: var(--panel);
+    box-shadow: var(--shadow-sm);
+}
+
+.docs-card .card-title {
+    font-family: "OCR A Std", monospace;
+    font-weight: 600;
+    font-size: var(--step-up-1);
+    margin-bottom: 0.75rem;
+    color: var(--accent-bright);
+}
+
+.docs-card .card-desc {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--fg-secondary);
+}
+
 .docs-card code {
     background: rgba(65, 105, 225, 0.2);
     color: var(--accent-bright);
     padding: 0.4rem 0.8rem;
     border: 1px solid var(--accent-primary);
-    font-size: 1rem;
+    font-size: 0.9rem;
+    border-radius: var(--border-radius-sm);
 }
 
 /*  --------------------------------------------------------------------------
