@@ -6,7 +6,7 @@ embed-thumbnail: https://zynomon.github.io/error.doc/docs/001/thumb.png
 icon: https://zynomon.github.io/error/icons/doc/android.svg
 ---
 
-![Android Icon](https://zynomon.github.io/error/icons/doc/android.svg) Android.
+# ![Android Icon](https://zynomon.github.io/error/icons/doc/android.svg) Android.
 
 <div align="left">
   <p>
