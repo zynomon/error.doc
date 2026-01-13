@@ -10,8 +10,8 @@ icon: https://zynomon.github.io/error/icons/doc/android.svg
 
 <div align="left">
   <p>
-    This guide is for Android users who want to create a bootable USB drive from an ISO file,
-    useful when a system is bricked or does not have any bootable OS yet.
+    This guide is for Android users who want to create a Bootable USB drive from an ISO file,
+    useful when a system is bricked or does not have any Bootable OS yet.
   </p>
   <table>
     <thead>
