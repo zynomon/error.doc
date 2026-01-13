@@ -7,8 +7,9 @@ icon: https://zynomon.github.io/error/icons/doc/android.svg
 ---
 
 <div align="left">
-  <img src="https://zynomon.github.io/error/icons/doc/android.svg" height="64" width="64" alt="Android Icon"> 
-  <h2>Requirements</h2>
+    <h2>
+  <img src="https://zynomon.github.io/error/icons/doc/android.svg" height="64" width="64"> 
+  Requirements</h2>
   <p>
     This guide is for Android users who want to create a bootable USB drive from an ISO file,
     useful when a system is bricked or does not have any bootable OS yet.
