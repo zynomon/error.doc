@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Downloading and checksum - Make a bootable USB in Android"
+title: "Downloading and checksum : Android"
 description: "Guide for downloading files and verifying checksums. This branch follows making a bootable solution in Android."
 embed-thumbnail: https://zynomon.github.io/error.doc/docs/001/thumb.png
 icon: https://zynomon.github.io/error/icons/doc/android.svg
