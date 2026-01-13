@@ -6,10 +6,9 @@ embed-thumbnail: https://zynomon.github.io/error.doc/docs/001/thumb.png
 icon: https://zynomon.github.io/error/icons/doc/android.svg
 ---
 
+![Android Icon](https://zynomon.github.io/error/icons/doc/android.svg) Android.
+
 <div align="left">
-    <h2>
-  <img src="https://zynomon.github.io/error/icons/doc/android.svg" height="64" width="64"> 
-  Requirements</h2>
   <p>
     This guide is for Android users who want to create a bootable USB drive from an ISO file,
     useful when a system is bricked or does not have any bootable OS yet.
@@ -45,7 +44,3 @@ icon: https://zynomon.github.io/error/icons/doc/android.svg
 <h3 style="font-size:4rem;">Prerequisites</h3>
 
 Yes, people do brick their systems by booting using an unknown operating system or if the user is new in this field however, this guide will help you to repent that + make a bootable usb drive.
-
-<div align="left"> <img src="https://zynomon.github.io/error/icons/doc/downloader.svg" height="64" width="64" alt="Downloader Icon">
-
--- soon more coming..

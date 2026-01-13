@@ -1434,6 +1434,27 @@ footer a:hover {
         page-break-inside: avoid;
     }
 
+    h1:has(img) {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--fg-primary);
+        font-family:
+            "Courier New", "Courier", "Lucida Console", "OCR A Std", monospace;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
+
+    h1 img {
+        width: 48px;
+        height: 48px;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+        margin: 0;
+        vertical-align: middle;
+    }
+
     h1,
     h2,
     h3,
