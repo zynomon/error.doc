@@ -45,6 +45,6 @@ icon: https://zynomon.github.io/error/icons/doc/android.svg
 
 Yes, people do brick their systems by booting using an unknown operating system or if the user is new in this field however, this guide will help you to repent that + make a bootable usb drive.
 
-#### Step 1: Install Required Apps
+<div align="left"> <img src="https://zynomon.github.io/error/icons/doc/downloader.svg" height="64" width="64" alt="Downloader Icon">
 
 -- soon more coming..
