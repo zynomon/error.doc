@@ -144,8 +144,11 @@ Here are few ways ways to setup a bootable USB drive in different operating syst
 </div>
 
 ## Related pages
+
 - [008 - Hardware Driver management in linux](./../008)
+
 - [009 - Troubleshooting in linux](./../009)
+
 - [010 - What to do and don'ts , in linux](./../010)
 
 ---

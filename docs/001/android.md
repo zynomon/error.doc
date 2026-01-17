@@ -70,3 +70,45 @@ icon: https://zynomon.github.io/error/icons/doc/android.svg
     Img: A SD card reader with SD card inserted
   </sub>
 </div>
+
+<h4>OTG</h4>
+<img=>
+<sub>A standard USB OTG converter</sub>
+OTG is the next step since maximum android device doesn't comes with a big usb port
+you have to get an USB OTG <sub>Universal Serial Bus On The Go</sub>, buy it according to your charger port if your charger uses USB-C then get that kind of OTG with USB-C if micro usb ( older port ) then get micro usb OTG 
+
+---
+
+### NOW YOU ARE READY,
+follow this steps,
+
+#### 1. install from playstore
+<img>
+<sub>Well for now we have to compromise these ads, soon we will make our own flashing app,</sub>
+    
+#### 2. Connect your OTG , then The bootable device
+
+<img>
+<sub>By looking at OTG you may get it where to connect , make sure to not move it a little bit</sub>
+
+#### 3. Now go to <App>
+ - first you will see your SD card or pendrive device,  
+<sub> if not then either your OTG got disconnected or your USB device is corrupted </sub>
+ - then open the iso file ( assuming you are coming from (here)[https://zynomon.github.io/error.doc/docs/001] )
+ - then click at flash to start flashing the usb
+ - wait it may take a while do not touch your android device if it has weaker IO ports,
+<sub> weak charging port disconnects anytime with fraction of touch</sub>
+ - after finishing, plugin that usb to your computer or laptop device
+ - now turn it on by power button and start spamming the f12 key ( del key if asus motherboard / f10 key for dell motherboard )
+ - you will enter in bios,
+ - locate boot configuration and set your USB device as #1 ( first )
+ - press f10 , save and leave
+
+ ### Congratulations you just booted up error.os , 
+ still the path ahead is more time catching check the 
+ 
+<div style="text-align:center; font-size:3rem;">
+001 -> <a href="./../002">002</a>
+</div>
+ 
+ instead of installing your own, because the bootloader shows all kinds of options dont worry everything will be fixed in NS26
