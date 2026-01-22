@@ -128,7 +128,7 @@ Here are few ways ways to setup a bootable USB drive in different operating syst
     <img class="card-icon" src="https://zynomon.github.io/error/icons/doc/android.svg" alt="Android logo" />
     <div>
       <div class="card-title">Android</div>
-      <div class="card-desc"></div>
+      <div class="card-desc">Instruction for creating a bootable device using android os and existing tools.</div>
     </div>
   </a>
 </div>
