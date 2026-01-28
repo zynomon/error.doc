@@ -110,5 +110,5 @@ follow this steps,
 <div style="text-align:center; font-size:3rem;">
 001 -> <a href="./../002">002</a>
 </div>
- 
+
  instead of installing your own, because the bootloader shows all kinds of options dont worry everything will be fixed in NS26
