@@ -10,12 +10,14 @@ embed-thumbnail: https://zynomon.github.io/error.doc/docs/004/thumb.png
 After installation, you will have a set of applications in your device as alternatives to more storage space eating ones. These applications are made by error.os team.
 These are the applications included:
 
-error.doc
-err_
-vex
-onu
+- error.doc
+- err_
+- vex
+- onu
 
 ### error.doc
+
+<img width="512" height="512" src="https://github.com/zynomon/error/tree/web-side/icons/doc/doc.svg" alt="error.doc logo">
 error.doc is a documentation viewer qt wrapper for this page  *and also a manpage viewer ( to do ).*
 
 ### Vex
