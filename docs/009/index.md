@@ -12,4 +12,7 @@ Yet no operation is perfect, *nothing can be precise and perfect without a cost*
 
 So instead of blaming the system, let me teach you how you can resolve issues with how much you have, 
 
-First of all linux has opensource programs community and documentations but their biggest flaw is they tend to be harder to read, Article or topics are harder to understand unless you try to apply it, this documentation isn't all about how you would deal with different people and different opensource project documentation, it's also about a friendly preview of some of the common application you will deal with everyday. 
+First of all linux has opensource programs community and documentations but their biggest flaw is they tend to be harder to read, Article or topics are harder to understand unless you try to apply it, this documentation isn't all about how you would deal with different people and different opensource project documentation, it's also about a friendly preview of some of the common application you will deal with everyday.
+
+### 1. Identify the issue
+every Outcome has a cause  the cause could be the developer who built behind the program you are using or trying to use, try to think of this scene from few moment before it happening,
