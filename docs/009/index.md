@@ -5,7 +5,8 @@ description: "Common troubleshooting steps and solutions"
 embed-thumbnail: https://zynomon.github.io/error.doc/docs/009/thumb.png
 ----
 
-<div align=right><h3>L</h3><sub>inux</sub><p> is an open source kernel and  gnu is the base of it, gnu packs needed stuffs like bootloader, shell and more... To make linux work as the core of any operating system. </p></div>
+
+<div align=left><h3>L</h3><sub>inux</sub><p> is an open source kernel and  gnu is the base of it, GNU<sub>stands for gnu isn't unix , doesn't makes sense at all right? </sub> packs needed stuffs like bootloader, shell and more... To make linux work as the core of any operating system. </p></div>
 
 Yet no operation is perfect, *nothing can be precise and perfect without a cost* 
 
