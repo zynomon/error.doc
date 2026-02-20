@@ -1,12 +1,12 @@
 ---
 layout: default
 title: "Home"
-description: "Welcome to the official documentation of error.os - A Debian-based Linux distribution"
+description: "Welcome to the official documentation of error.os , A Debian-based Linux distribution"
 ---
 
 # Welcome to error.os documentation
 
-A comprehensive guide to error.os, a Debian GNU/Linux based distribution with a focus on minimalism, customization, and transparency.
+A comprehensive guide to error.os, a Debian GNU/Linux based distribution 
 
 ## Quick Start
 - **Getting Started**: [Downloading error.os](https://zynomon.github.io/error.doc/docs/001)
