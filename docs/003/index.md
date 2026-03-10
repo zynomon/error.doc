@@ -364,3 +364,12 @@ sudo find /var/www/html -type f -exec chmod 644 {} \;
 
 </details>
 
+## Bash operators
+bash supports tons of cool features, 
+first is pipe
+  ```bash
+<cmd1> || <cmd2>
+```
+it makes cmd1's output as the cmd2's argument
+
+
