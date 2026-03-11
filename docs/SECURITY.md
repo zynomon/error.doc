@@ -1,6 +1,6 @@
 # Security
 
-**Report vulnerabilities privately** to: <zynomon@proton.me>
+**Report vulnerabilities privately** to: [zynomon@proton.me]
 
 **Do not** include:
 - Real credentials or secrets
