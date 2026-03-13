@@ -367,9 +367,34 @@ sudo find /var/www/html -type f -exec chmod 644 {} \;
 ## Bash operators
 bash supports tons of cool features, 
 first is pipe
+
   ```bash
 <cmd1> || <cmd2>
 ```
-it makes cmd1's output as the cmd2's argument
+
+it makes cmd1's output as the cmd2's last argument 
 
 
+### ; and &&
+
+when you are getting lazy to wait for a command to run you can just
+
+<cmd1> && <cmd2>
+it means execute cmd1 then cmd2 ( if cmd1 finished executing) 
+examples would be
+
+```bash
+sudo apt update && sudo apt install pipx
+```
+
+
+<cmd1> ; <cmd2>
+it means execute cmd1 or cmd2 ( if cmd1 fails try with cmd2) 
+you know where it's useful? 
+yes of course it's where you don't know if a command exists or not and you dont wanttot wait for bash to give you the input access
+so you can just
+
+```bash
+apt search alien ; apt search human
+```
+it meand check for alien in aptrepository OR try checking human in apt repository. simple as that. 
