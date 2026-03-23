@@ -27,7 +27,6 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/error.doc.desktop
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/install/error.doc.svg
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps
     COMPONENT icon)
-include(InstallRequiredSystemLibraries)
 
 set(CPACK_PACKAGE_NAME "error_doc")
 set(CPACK_PACKAGE_VENDOR "error.os")
