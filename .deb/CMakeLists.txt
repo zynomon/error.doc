@@ -27,11 +27,12 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/error.doc.desktop
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/install/error.doc.svg
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps
     COMPONENT icon)
+include(InstallRequiredSystemLibraries)
 
 set(CPACK_PACKAGE_NAME "error_doc")
 set(CPACK_PACKAGE_VENDOR "error.os")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
-    "Error Doc is a Qt-based documentation viewer check project at github.com/zynomon/error.doc"
+    "error.doc is a Qt-based documentation viewer check project at github.com/zynomon/error.doc"
 )
 set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
@@ -41,6 +42,6 @@ set(CPACK_PACKAGE_CONTACT "Zynomon Aelius <zynomon@proton.me>")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Zynomon Aelius")
 
 set(CPACK_GENERATOR "DEB;TGZ;ZIP")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libqt6core6, libqt6gui6, libqt6widgets6, libqt6webenginewidgets6")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt6core6, libqt6gui6, libqt6widgets6, libqt6texttospeech6")
 
 include(CPack)

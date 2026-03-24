@@ -255,7 +255,6 @@ public:
                    "<h2>Page Not Found</h2>"
                    "<p>The requested page <code>%1</code> could not be found.</p>"
                    "<p><a href=':/'>Return to Welcome</a></p>"
-                   "<hr><small>error.doc Documentation Viewer</small>"
                    "</body></html>"
                    ).arg(path.toHtmlEscaped());
     }
@@ -808,6 +807,68 @@ public:
     void speakSelected() override {}
 };
 
+class TTSManager : public QObject {
+    Q_OBJECT
+
+public:
+    static TTSManager& instance() {
+        static TTSManager inst;
+        return inst;
+    }
+
+    void speak(const QString &text) {
+        if (!m_speech) {
+            m_speech = new QTextToSpeech(this);
+        }
+
+        applySettings();
+        m_speech->say(text);
+    }
+
+    void stop() {
+        if (m_speech) {
+            m_speech->stop();
+        }
+    }
+
+    void applySettings() {
+        if (!m_speech) return;
+
+        auto &s = Settings::instance();
+
+        m_speech->setRate(s.ttsRate());
+
+        m_speech->setPitch(s.ttsPitch());
+
+        m_speech->setVolume(s.ttsVolume());
+
+        QString engine = s.ttsEngine();
+        if (!engine.isEmpty() && m_speech->engine() != engine) {
+            m_speech->setEngine(engine);
+        }
+
+        QString voiceName = s.ttsVoice();
+        if (!voiceName.isEmpty() && voiceName != "Default") {
+            QList<QVoice> voices = m_speech->availableVoices();
+            for (const QVoice &voice : voices) {
+                if (voice.name() == voiceName) {
+                    m_speech->setVoice(voice);
+                    break;
+                }
+            }
+        }
+    }
+
+    QTextToSpeech* speech() { return m_speech; }
+
+private:
+    TTSManager() : m_speech(nullptr) {
+        connect(&Settings::instance(), &Settings::settingsChanged,
+                this, &TTSManager::applySettings);
+    }
+
+    QTextToSpeech *m_speech;
+};
 
 
 class ErrorDocEngine : public ContentEngine {
@@ -833,7 +894,7 @@ public:
     }
 
 protected:
- QVariant loadResource(int type, const QUrl &url) {
+    QVariant loadResource(int type, const QUrl &url) {
         if (url.scheme() == "icon") {
             QIcon icon = QIcon::fromTheme(url.path());
             if (!icon.isNull()) {
@@ -986,47 +1047,11 @@ public:
 
         auto *splitterLayout = new QHBoxLayout();
 
-        auto *infoWidget = new QWidget(this);
-        auto *infoLayout = new QVBoxLayout(infoWidget);
-
-        m_iconLabel = new QLabel(this);
-        m_iconLabel->setAlignment(Qt::AlignCenter);
-        m_iconLabel->setFixedSize(100, 100);
-
-        m_titleLabel = new QLabel(this);
-        QFont titleFont = m_titleLabel->font();
-        titleFont.setPointSize(titleFont.pointSize() + 2);
-        titleFont.setBold(true);
-        m_titleLabel->setFont(titleFont);
-        m_titleLabel->setAlignment(Qt::AlignCenter);
-        m_titleLabel->setWordWrap(true);
-
-        m_dateLabel = new QLabel(this);
-        m_dateLabel->setAlignment(Qt::AlignCenter);
-
-        m_pathLabel = new QLabel(this);
-        m_pathLabel->setAlignment(Qt::AlignCenter);
-        m_pathLabel->setWordWrap(true);
-
-        m_descLabel = new QLabel(this);
-        m_descLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-        m_descLabel->setWordWrap(true);
-
-        infoLayout->addWidget(m_iconLabel);
-        infoLayout->addWidget(m_titleLabel);
-        infoLayout->addWidget(m_dateLabel);
-        infoLayout->addWidget(m_pathLabel);
-        infoLayout->addWidget(m_descLabel);
-        infoLayout->addStretch();
-
-        infoWidget->setMaximumWidth(250);
-
         auto *browserWidget = new QWidget(this);
         auto *browserLayout = new QVBoxLayout(browserWidget);
         browserLayout->setContentsMargins(0, 0, 0, 0);
 
         m_browser = new QTextBrowser(this);
-        m_browser->setFont(QFont("Monospace"));
         m_browser->setContextMenuPolicy(Qt::CustomContextMenu);
 
         m_findBar = new FindBar(m_browser, this);
@@ -1035,11 +1060,57 @@ public:
         browserLayout->addWidget(m_browser);
         browserLayout->addWidget(m_findBar);
 
+        auto *infoWidget = new QWidget(this);
+        auto *infoLayout = new QVBoxLayout(infoWidget);
+        infoLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+
+        m_iconLabel = new QLabel(this);
+        m_iconLabel->setAlignment(Qt::AlignCenter);
+        m_iconLabel->setFixedSize(128, 128);
+        m_iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+        infoLayout->addStretch();
+        infoLayout->addWidget(m_iconLabel, 0, Qt::AlignCenter);
+        infoLayout->addSpacing(10);
+
+        m_titleLabel = new QLabel(this);
+        QFont titleFont = m_titleLabel->font();
+        titleFont.setPointSize(titleFont.pointSize() + 2);
+        titleFont.setBold(true);
+        m_titleLabel->setFont(titleFont);
+        m_titleLabel->setAlignment(Qt::AlignLeft);
+        m_titleLabel->setWordWrap(true);
+
+        m_dateLabel = new QLabel(this);
+        m_dateLabel->setAlignment(Qt::AlignLeft);
+
+        m_pathLabel = new QLabel(this);
+        m_pathLabel->setAlignment(Qt::AlignLeft);
+        m_pathLabel->setWordWrap(true);
+
+        m_descLabel = new QLabel(this);
+        m_descLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+        m_descLabel->setWordWrap(true);
+
+        QFrame *separator = new QFrame(this);
+        separator->setFrameShape(QFrame::HLine);
+        separator->setFrameShadow(QFrame::Sunken);
+
+        infoLayout->addWidget(m_titleLabel);
+        infoLayout->addWidget(m_dateLabel);
+        infoLayout->addWidget(m_pathLabel);
+        infoLayout->addWidget(separator);
+        infoLayout->addWidget(m_descLabel);
+        infoLayout->addStretch();
+
+        infoWidget->setMaximumWidth(300);
+        infoWidget->setMinimumWidth(250);
+
         auto *splitter = new QSplitter(Qt::Horizontal, this);
-        splitter->addWidget(infoWidget);
         splitter->addWidget(browserWidget);
-        splitter->setStretchFactor(0, 0);
-        splitter->setStretchFactor(1, 1);
+        splitter->addWidget(infoWidget);
+        splitter->setStretchFactor(0, 1);
+        splitter->setStretchFactor(1, 0);
 
         splitterLayout->addWidget(splitter);
         mainLayout->addLayout(splitterLayout);
@@ -1062,8 +1133,10 @@ public:
         loadManpage(name, section);
         m_findBar->hide();
     }
+
     QString selectedText() const override { return m_browser->textCursor().selectedText(); }
     QString allText() const override { return m_browser->toPlainText(); }
+
     void find() override {
         m_findBar->show();
         m_findBar->setFocus();
@@ -1108,7 +1181,7 @@ private:
     void loadManpage(const QString &name, const QString &section) {
         QIcon icon = QIcon::fromTheme(name);
         if (icon.isNull()) icon = QIcon::fromTheme("text-x-generic");
-        m_iconLabel->setPixmap(icon.pixmap(100, 100));
+        m_iconLabel->setPixmap(icon.pixmap(128, 128));
         emit iconChanged(name);
 
         m_titleLabel->setText(QString("<b>%1(%2)</b>").arg(name).arg(section));
@@ -1157,14 +1230,30 @@ private:
 
     QString formatManpage(const QString &raw) {
         QStringList lines = raw.split('\n');
-        QString html = "<html><head><style>pre { margin: 0; } h2 { margin-top: 20px; }</style></head><body>";
+
+        if (!lines.isEmpty()) {
+            lines.removeFirst();
+        }
+
+        QString html = "<html><body>";
 
         for (const QString &line : std::as_const(lines)) {
             QString trimmed = line.trimmed();
             if (!trimmed.isEmpty() && HEADER_REGEX.match(trimmed).hasMatch()) {
-                html += QString("<h2>%1</h2>").arg(trimmed);
+                QString headerText = trimmed;
+                QStringList words = headerText.split(' ', Qt::SkipEmptyParts);
+                QStringList capitalizedWords;
+                for (const QString &word : words) {
+                    if (!word.isEmpty()) {
+                        QString capWord = word.toLower();
+                        capWord[0] = capWord[0].toUpper();
+                        capitalizedWords.append(capWord);
+                    }
+                }
+                QString formattedHeader = capitalizedWords.join(' ');
+                html += QString("<h1>%1</h1><hr>").arg(formattedHeader);
             } else {
-                html += QString("<pre>%1</pre>").arg(line.toHtmlEscaped());
+                html += line.toHtmlEscaped() + "<br>";
             }
         }
 
@@ -1188,7 +1277,7 @@ private:
                 if (trimmed.startsWith("SYNOPSIS") || trimmed.startsWith("DESCRIPTION")) {
                     break;
                 }
-                desc += line + "\n";
+                desc += line + " ";
                 if (desc.length() > 200) break;
             }
         }
@@ -1201,12 +1290,11 @@ private:
     FindBar *m_findBar;
 };
 
-
 class SettingsPage : public QScrollArea {
     Q_OBJECT
 
 public:
-    explicit SettingsPage(QWidget *parent = nullptr) : QScrollArea(parent) {
+    explicit SettingsPage(QWidget *parent = nullptr) : QScrollArea(parent), m_skipVoiceTest(true) {
         setWidgetResizable(true);
         setFrameShape(QFrame::NoFrame);
 
@@ -1297,6 +1385,18 @@ public:
         m_ttsVoice = new QComboBox(this);
         ttsLayout->addRow("Voice:", m_ttsVoice);
 
+        auto *testGroup = new QGroupBox("Test Text-to-Speech", this);
+        auto *testLayout = new QHBoxLayout(testGroup);
+
+        m_testTextEdit = new QLineEdit(this);
+        m_testTextEdit->setPlaceholderText("Enter text to test...");
+        m_testTextEdit->setText("This is a test of the selected voice.");
+
+        m_testSpeakBtn = new QPushButton(QIcon::fromTheme("media-playback-start"), "Test", this);
+
+        testLayout->addWidget(m_testTextEdit);
+        testLayout->addWidget(m_testSpeakBtn);
+
         auto *btnLayout = new QHBoxLayout();
         auto *saveBtn = new QPushButton(QIcon::fromTheme("document-save"), "Save Settings", this);
         auto *resetBtn = new QPushButton(QIcon::fromTheme("edit-clear"), "Reset All", this);
@@ -1311,6 +1411,7 @@ public:
         layout->addWidget(uiGroup);
         layout->addWidget(termGroup);
         layout->addWidget(ttsGroup);
+        layout->addWidget(testGroup);
         layout->addLayout(btnLayout);
         layout->addStretch();
 
@@ -1327,8 +1428,10 @@ public:
         connect(m_ttsEngine, QOverload<int>::of(&QComboBox::currentIndexChanged),
                 this, &SettingsPage::onEngineChanged);
 
-        loadSettings();
+        connect(m_testSpeakBtn, &QPushButton::clicked, this, &SettingsPage::testSpeak);
+        connect(m_testTextEdit, &QLineEdit::returnPressed, this, &SettingsPage::testSpeak);
 
+        loadSettings();
         QTimer::singleShot(100, this, &SettingsPage::populateVoices);
     }
 
@@ -1356,7 +1459,6 @@ private slots:
         s.setShortcutRefresh(m_refreshShortcut->keySequence().toString());
 
         s.setShowTabAlways(m_showTabAlways->isChecked());
-
         s.setTerminal(m_terminal->currentText());
 
         QString engine = m_ttsEngine->currentText();
@@ -1367,9 +1469,10 @@ private slots:
         s.setTtsVolume(m_ttsVolume->value() / 100.0);
         s.setTtsVoice(m_ttsVoice->currentText());
 
-        emit settingsChanged();
+        TTSManager::instance().applySettings();
 
-        QMessageBox::information(this, "Settings", "Settings saved successfully.\nSome changes may require restart.");
+        emit settingsChanged();
+        QMessageBox::information(this, "Settings", "Settings saved successfully.");
     }
 
     void resetSettings() {
@@ -1379,6 +1482,7 @@ private slots:
         if (result == QMessageBox::Yes) {
             Settings::instance().reset();
             loadSettings();
+            TTSManager::instance().applySettings();
             emit settingsChanged();
             QMessageBox::information(this, "Settings", "Settings reset to defaults.");
         }
@@ -1403,18 +1507,57 @@ private slots:
         m_ttsVolumeLabel->setText(QString("%1%").arg(value));
     }
 
+    void testSpeak() {
+        QString text = m_testTextEdit->text();
+        if (text.isEmpty()) {
+            QMessageBox::information(this, "Test", "Please enter text to test.");
+            return;
+        }
+
+        QTextToSpeech *testSpeech = new QTextToSpeech(this);
+
+        QString engine = m_ttsEngine->currentText();
+        if (engine != "Default" && !engine.isEmpty()) {
+            testSpeech->setEngine(engine);
+        }
+
+        testSpeech->setRate(m_ttsRate->value() / 10.0);
+        testSpeech->setPitch(m_ttsPitch->value() / 10.0);
+        testSpeech->setVolume(m_ttsVolume->value() / 100.0);
+
+        QString voiceName = m_ttsVoice->currentText();
+        if (!voiceName.isEmpty() && voiceName != "Default") {
+            QList<QVoice> voices = testSpeech->availableVoices();
+            for (const QVoice &voice : voices) {
+                if (voice.name() == voiceName) {
+                    testSpeech->setVoice(voice);
+                    break;
+                }
+            }
+        }
+
+        connect(testSpeech, &QTextToSpeech::stateChanged, this, [testSpeech](QTextToSpeech::State state) {
+            if (state == QTextToSpeech::Ready || state == QTextToSpeech::Error) {
+                testSpeech->deleteLater();
+            }
+        });
+
+        testSpeech->say(text);
+    }
+
     void onEngineChanged(int index) {
         Q_UNUSED(index)
+        m_skipVoiceTest = true;
         populateVoices();
-        testCurrentVoice();
     }
 
     void onVoiceChanged(int index) {
         Q_UNUSED(index)
-        if (m_testSpeech) {
-            m_testSpeech->stop();
-            m_testSpeech->say("This is a test of the selected voice.");
+        if (m_skipVoiceTest) {
+            m_skipVoiceTest = false;
+            return;
         }
+
     }
 
     void populateVoices() {
@@ -1422,7 +1565,6 @@ private slots:
 
         if (!m_testSpeech) {
             m_testSpeech = new QTextToSpeech(this);
-            connect(m_testSpeech, &QTextToSpeech::stateChanged, this, &SettingsPage::onSpeechStateChanged);
         }
 
         QString engine = m_ttsEngine->currentText();
@@ -1452,27 +1594,6 @@ private slots:
 
         connect(m_ttsVoice, QOverload<int>::of(&QComboBox::currentIndexChanged),
                 this, &SettingsPage::onVoiceChanged);
-    }
-
-    void testCurrentVoice() {
-        if (m_testSpeech && m_ttsVoice->currentIndex() >= 0) {
-            QString voiceName = m_ttsVoice->currentText();
-            if (voiceName != "Default") {
-                QList<QVoice> voices = m_testSpeech->availableVoices();
-                for (const QVoice &voice : voices) {
-                    if (voice.name() == voiceName) {
-                        m_testSpeech->setVoice(voice);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    void onSpeechStateChanged(QTextToSpeech::State state) {
-
-        if (state == QTextToSpeech::Ready) {
-        }
     }
 
     void loadSettings() {
@@ -1532,9 +1653,12 @@ private:
     QLabel *m_ttsVolumeLabel;
     QComboBox *m_ttsVoice;
 
-    QTextToSpeech *m_testSpeech = nullptr;
-};
+    QLineEdit *m_testTextEdit;
+    QPushButton *m_testSpeakBtn;
 
+    QTextToSpeech *m_testSpeech = nullptr;
+    bool m_skipVoiceTest;
+};
 class BookmarksPage : public QWidget {
     Q_OBJECT
 
@@ -1545,8 +1669,8 @@ public:
         auto *layout = new QVBoxLayout(this);
 
         auto *toolbar = new QHBoxLayout();
-        auto *deleteBtn = new QPushButton(QIcon::fromTheme("edit-delete"), "Delete Selected", this);
-        auto *deleteAllBtn = new QPushButton(QIcon::fromTheme("edit-clear"), "Delete All", this);
+        auto *deleteBtn = new QPushButton(QIcon::fromTheme("edit-clear"), "Delete Selected", this);
+        auto *deleteAllBtn = new QPushButton(QIcon::fromTheme("edit-delete"), "Delete All", this);
 
         toolbar->addWidget(deleteBtn);
         toolbar->addWidget(deleteAllBtn);
@@ -1654,20 +1778,9 @@ public:
         titleLabel->setAlignment(Qt::AlignCenter);
 
         auto *infoLabel = new QLabel(
-            "<p><b>Version:</b> 1.0</p>"
+            "<p><b>Version:</b> 1.2</p>"
             "<h3>About</h3>"
-            "<p>Documentation viewer for error.os with custom URL system.</p>"
-            "<h3>Here are some  features, if you dont know.</h3>"
-            "<ul>"
-            "<li>Custom URL scheme (:/err/, :/man/, :/doc/)</li>"
-            "<li>Threaded manpage loading with safety</li>"
-            "<li>Split manpage view with info panel</li>"
-            "<li>Text highlighting with color picker</li>"
-            "<li>Find bar (Ctrl+F) for err/ and man/ pages</li>"
-            "<li>Custom HTML tags: &lt;file&gt;, &lt;icon&gt;, &lt;page&gt;, &lt;bash&gt;</li>"
-            "<li>Bookmark management with delete context menu</li>"
-            "<li>Tab system with auto-hide tab bar</li>"
-            "<li>Recent 3 URLs for forward navigation</li>"
+           "This documentation takes a time on startup is the main disatvantage except that using this is easy"
             "</ul>",
             this
             );
@@ -1740,39 +1853,6 @@ private:
     InfoPage *m_infoPage;
 };
 
-
-class TTSManager : public QObject {
-    Q_OBJECT
-
-public:
-    static TTSManager& instance() {
-        static TTSManager inst;
-        return inst;
-    }
-
-    void speak(const QString &text) {
-        if (!m_speech) {
-            m_speech = new QTextToSpeech(this);
-        }
-
-        auto &s = Settings::instance();
-        m_speech->setRate(s.ttsRate());
-        m_speech->setPitch(s.ttsPitch());
-        m_speech->setVolume(s.ttsVolume());
-
-        m_speech->say(text);
-    }
-
-    void stop() {
-        if (m_speech) {
-            m_speech->stop();
-        }
-    }
-
-private:
-    TTSManager() : m_speech(nullptr) {}
-    QTextToSpeech *m_speech;
-};
 
 class ContentArea : public QStackedWidget {
     Q_OBJECT
@@ -1966,7 +2046,6 @@ public:
         m_searchEdit->setClearButtonEnabled(true);
         setStyleSheet("QTreeWidget { padding-top: 30px; }");
 
-        QTimer::singleShot(100, this, &NavigationTree::initializeManpages);
         connect(m_searchEdit, &QLineEdit::textChanged, this, &NavigationTree::filterTree);
     }
 
@@ -2016,7 +2095,7 @@ public:
         if (!manItem) return;
 
         auto *loadingItem = new QTreeWidgetItem(manItem);
-        loadingItem->setText(0, "Loading manpages...");
+        loadingItem->setText(0, "Loading manpages...  ");
         manItem->setExpanded(true);
 
         auto *worker = new ManpageLoaderWorker(this);
@@ -2027,8 +2106,8 @@ public:
                     }
                     delete loadingItem;
                     worker->deleteLater();
+                    emit manpagesLoaded();
                 });
-
         worker->loadManpages();
     }
 
@@ -2036,10 +2115,19 @@ signals:
     void navigationRequested(const QString &url);
     void navigationRequestedNewTab(const QString &url);
     void bookmarkRequested(const QString &url, const QString &title);
+    void manpagesLoaded();
 
 private slots:
     void onItemActivated(QTreeWidgetItem *item) {
         if (!item) return;
+
+        bool hasChildren = (item->childCount() > 0);
+
+        if (hasChildren) {
+            item->setExpanded(!item->isExpanded());
+            return;
+        }
+
         QString url = item->data(0, Qt::UserRole).toString();
         if (!url.isEmpty() && url != ":/" && url != ":/err/" && url != ":/man/" && url != ":/doc/") {
             emit navigationRequested(url);
@@ -2119,8 +2207,7 @@ private:
         errItem->setText(0, "err/");
         errItem->setIcon(0, QIcon::fromTheme("internet-web-browser"));
         errItem->setData(0, Qt::UserRole, ":/err/");
-        scanQrcDirectoryRecursive(":/docs", errItem);
-        scanQrcDirectoryRecursive(":/err", errItem);
+        scanQrcDirectoryRecursive(":/", errItem);
 
         auto *manItem = new QTreeWidgetItem(this);
         manItem->setText(0, "man/");
@@ -2149,57 +2236,60 @@ private:
     }
 
     void scanQrcDirectoryRecursive(const QString &path, QTreeWidgetItem *parent) {
-        QDirIterator it(path, QDirIterator::Subdirectories);
+        QDirIterator it(path, QDirIterator::NoIteratorFlags);
         QMap<QString, QTreeWidgetItem*> dirs;
+
+        QStringList htmlFiles;
+        QStringList subdirs;
 
         while (it.hasNext()) {
             QString file = it.next();
             QFileInfo info(file);
 
-            if (info.isDir()) continue;
-            if (!info.fileName().endsWith(".html")) continue;
-
-            QString relativePath = file.mid(QString(":/").length());
-            QString dirPath = QFileInfo(file).path().mid(QString(":/").length());
-
-            QTreeWidgetItem *parentItem = parent;
-
-            if (!dirPath.isEmpty() && dirPath != "." && dirPath != "/") {
-                QStringList dirs_parts = dirPath.split('/', Qt::SkipEmptyParts);
-                QString currentPath = "";
-
-                for (const QString &dir : std::as_const(dirs_parts)) {
-                    currentPath += (currentPath.isEmpty() ? "" : "/") + dir;
-
-                    if (!dirs.contains(currentPath)) {
-                        auto *dirItem = new QTreeWidgetItem(parentItem);
-                        dirItem->setText(0, dir);
-                        dirItem->setIcon(0, QIcon::fromTheme("folder"));
-                        dirItem->setData(0, Qt::UserRole, QString());
-                        dirs[currentPath] = dirItem;
-                        parentItem = dirItem;
-                    } else {
-                        parentItem = dirs[currentPath];
-                    }
-                }
+            if (info.isDir()) {
+                if (info.fileName().startsWith(".")) continue;
+                subdirs << file;
+            } else if (info.fileName().endsWith(".html")) {
+                htmlFiles << file;
             }
+        }
 
-            auto *item = new QTreeWidgetItem(parentItem);
+        if (htmlFiles.isEmpty() && subdirs.isEmpty()) {
+            return;
+        }
+
+        for (const QString &dir : subdirs) {
+            QFileInfo info(dir);
+            QTreeWidgetItem *dirItem = new QTreeWidgetItem(parent);
+            dirItem->setText(0, info.fileName());
+            dirItem->setIcon(0, QIcon::fromTheme("folder"));
+            dirItem->setData(0, Qt::UserRole, QString());
+            scanQrcDirectoryRecursive(dir, dirItem);
+
+            if (dirItem->childCount() == 0) {
+                delete dirItem;
+            }
+        }
+
+        for (const QString &file : htmlFiles) {
+            QFileInfo info(file);
+            auto *item = new QTreeWidgetItem(parent);
             QString displayName = info.baseName();
             item->setText(0, displayName);
             item->setIcon(0, QIcon::fromTheme("text-html"));
 
-            QString urlPath = relativePath;
+            QString urlPath = file;
+
+            if (urlPath.startsWith(":/")) {
+                urlPath = urlPath.mid(2);
+            }
             if (urlPath.endsWith(".html")) {
                 urlPath.chop(5);
             }
-            if (urlPath.startsWith("/")) {
-                urlPath = urlPath.mid(1);
-            }
+
             item->setData(0, Qt::UserRole, ":/err/" + urlPath);
         }
     }
-
     void parseManpages(const QString &output, QTreeWidgetItem *parent) {
         QStringList lines = output.split('\n', Qt::SkipEmptyParts);
         QHash<QString, QTreeWidgetItem*> sections;
@@ -2254,7 +2344,6 @@ private:
     QString m_currentUrl;
     QLineEdit *m_searchEdit;
 };
-
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
@@ -2263,132 +2352,163 @@ public:
         setWindowTitle("error.doc");
         setWindowIcon(QIcon::fromTheme("error.doc", QIcon::fromTheme("help-browser")));
         resize(1200, 800);
-        
+
         QDialog *splash = new QDialog(nullptr, Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
         splash->setAttribute(Qt::WA_TranslucentBackground);
-        splash->setFixedSize(200, 150);
-        
+       splash->setFixedSize(300, 0);
         QVBoxLayout *splashLayout = new QVBoxLayout(splash);
         splashLayout->setAlignment(Qt::AlignCenter);
-        
+
         QLabel *iconLabel = new QLabel(splash);
         iconLabel->setPixmap(QIcon::fromTheme("error.doc", QIcon::fromTheme("help-browser")).pixmap(64, 64));
         iconLabel->setAlignment(Qt::AlignCenter);
-        
-        QLabel *textLabel = new QLabel("Loading...", splash);
+
+        QLabel *textLabel = new QLabel("Loading...\nit may take a while, be patient", splash);
         textLabel->setAlignment(Qt::AlignCenter);
-        
+
         splashLayout->addWidget(iconLabel);
         splashLayout->addWidget(textLabel);
-        
+
         splash->show();
         QApplication::processEvents();
-        
+
         m_bookmarkStore = new BookmarkStore(this);
         m_ttsManager = &TTSManager::instance();
-        
-        m_backwardUrls.clear();
-        m_backwardTitles.clear();
-        m_backwardIcons.clear();
-        
+
+        m_recentUrls.clear();
+        m_recentTitles.clear();
+        m_recentIcons.clear();
+
         auto *centralWidget = new QWidget(this);
         auto *mainLayout = new QVBoxLayout(centralWidget);
         mainLayout->setContentsMargins(0, 0, 0, 0);
         mainLayout->setSpacing(0);
-        
+
         createToolbar();
         mainLayout->addWidget(m_toolbar);
-        
+
         setupUrlCompleter();
-        
+
         auto *splitter = new QSplitter(Qt::Horizontal, this);
-        
+
         auto *treeContainer = new QWidget(this);
         auto *treeLayout = new QVBoxLayout(treeContainer);
         treeLayout->setContentsMargins(0, 0, 0, 0);
-        
+
         m_treeSearchEdit = new QLineEdit(this);
         m_treeSearchEdit->setPlaceholderText("Search tree...");
         m_treeSearchEdit->setClearButtonEnabled(true);
-        
+
         m_navTree = new NavigationTree(this);
         m_navTree->setSearchBar(m_treeSearchEdit);
-        
+
         treeLayout->addWidget(m_treeSearchEdit);
         treeLayout->addWidget(m_navTree);
-        
+
         m_tabWidget = new QTabWidget(this);
         m_tabWidget->setTabsClosable(true);
         m_tabWidget->setMovable(true);
         m_tabWidget->tabBar()->setVisible(false);
-        
+
         addNewTab(":/");
-        
+
         connect(m_tabWidget, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
         connect(m_tabWidget, &QTabWidget::currentChanged, this, &MainWindow::onTabChanged);
         connect(m_treeSearchEdit, &QLineEdit::textChanged, m_navTree, &NavigationTree::recursiveSearch);
-        
+
         splitter->addWidget(treeContainer);
         splitter->addWidget(m_tabWidget);
         splitter->setStretchFactor(0, 1);
         splitter->setStretchFactor(1, 4);
-        
+
         mainLayout->addWidget(splitter);
         setCentralWidget(centralWidget);
-        
+
         updateTabBarVisibility();
         setupShortcuts();
-        
+
         connect(m_navTree, &NavigationTree::navigationRequested,
                 this, &MainWindow::navigateCurrentTab);
         connect(m_navTree, &NavigationTree::bookmarkRequested,
                 this, &MainWindow::addBookmark);
-        
+        connect(m_navTree, &NavigationTree::manpagesLoaded,
+                this, [this, splash]() {
+                    show();
+                    splash->accept();
+                    splash->deleteLater();
+                });
+
         connect(m_bookmarkStore, &BookmarkStore::changed, this, &MainWindow::onBookmarksChanged);
-        
         connect(&Settings::instance(), &Settings::settingsChanged,
                 this, &MainWindow::reloadShortcuts);
-    
-        QTimer::singleShot(500, [splash]() {
-            splash->accept();
-            splash->deleteLater();
-        });
-        
+
         m_navTree->initializeManpages();
-        
-        updateBackwardButton();
     }
+
 private slots:
     void navigateCurrentTab(const QString &url) {
         if (TabContent *tab = currentTab()) {
             QString currentUrl = tab->contentArea()->currentUrl()->url();
-            QString currentTitle = extractTitleFromUrl(currentUrl);
-            QString currentIcon = getIconForUrl(currentUrl);
+            QString currentTitle = tab->contentArea()->currentEngine()->windowTitle();
+            QIcon currentIcon = m_tabWidget->tabIcon(m_tabWidget->currentIndex());
 
             if (!currentUrl.isEmpty() && currentUrl != ":/") {
-                addToBackwardHistory(currentUrl, currentTitle, currentIcon);
+                addToRecent(currentUrl, currentTitle, currentIcon);
             }
 
             tab->contentArea()->navigate(url);
             updateUrlBar(url);
             m_navTree->setCurrentUrl(url);
-            updateBackwardButton();
+            updateBackButton();
         }
     }
 
     void addNewTab(const QString &url = ":/") {
         auto *tab = new TabContent(m_bookmarkStore, this);
-        int index = m_tabWidget->addTab(tab, "New Tab");
+
+        QString title;
+        QTreeWidgetItemIterator it(m_navTree);
+        while (*it) {
+            QTreeWidgetItem *item = *it;
+            if (item->data(0, Qt::UserRole).toString() == url) {
+                title = item->text(0);
+                break;
+            }
+            ++it;
+        }
+
+        if (title.isEmpty()) {
+            title = url.mid(url.lastIndexOf('/') + 1);
+            if (title.isEmpty() || url == ":/") {
+                title = "Welcome";
+            }
+        }
+
+        int index = m_tabWidget->addTab(tab, title);
         m_tabWidget->setCurrentIndex(index);
-        m_tabWidget->setTabIcon(index, QIcon::fromTheme("error.doc", QIcon::fromTheme("help-browser")));
+
+        QIcon initialIcon;
+        it = QTreeWidgetItemIterator(m_navTree);
+        while (*it) {
+            QTreeWidgetItem *item = *it;
+            if (item->data(0, Qt::UserRole).toString() == url) {
+                initialIcon = item->icon(0);
+                break;
+            }
+            ++it;
+        }
+
+        if (!initialIcon.isNull()) {
+            m_tabWidget->setTabIcon(index, initialIcon);
+        }
 
         connect(tab->contentArea(), &ContentArea::urlChanged, this, [this, index](const QString &url) {
             if (m_tabWidget->currentIndex() == index) {
                 updateUrlBar(url);
                 m_navTree->setCurrentUrl(url);
-                updateBackwardButton();
+                updateBackButton();
             }
-            updateTabTitle(index, url);
+            updateTabFromUrl(index, url);
         });
 
         connect(tab->contentArea(), &ContentArea::titleChanged, this, [this, index](const QString &title) {
@@ -2416,15 +2536,14 @@ private slots:
         tab->contentArea()->navigate(url);
         updateTabBarVisibility();
     }
-
     void closeTab(int index) {
         if (m_tabWidget->count() <= 1) {
             if (TabContent *tab = currentTab()) {
                 tab->contentArea()->navigate(":/");
-                m_backwardUrls.clear();
-                m_backwardTitles.clear();
-                m_backwardIcons.clear();
-                updateBackwardButton();
+                m_recentUrls.clear();
+                m_recentTitles.clear();
+                m_recentIcons.clear();
+                updateBackButton();
             }
         } else {
             QWidget *widget = m_tabWidget->widget(index);
@@ -2440,7 +2559,7 @@ private slots:
                 QString url = tab->contentArea()->currentUrl()->url();
                 updateUrlBar(url);
                 m_navTree->setCurrentUrl(url);
-                updateBackwardButton();
+                updateBackButton();
 
                 ContentEngine *engine = tab->contentArea()->currentEngine();
                 if (engine) {
@@ -2459,53 +2578,82 @@ private slots:
         }
     }
 
-    void navigateBackward() {
-        if (!m_backwardUrls.isEmpty()) {
-            QString url = m_backwardUrls.takeFirst();
-            QString title = m_backwardTitles.takeFirst();
-            QString icon = m_backwardIcons.takeFirst();
+    void navigateBack() {
+        if (!m_recentUrls.isEmpty()) {
+            QString url = m_recentUrls.takeFirst();
+            QString title = m_recentTitles.takeFirst();
+            QIcon icon = m_recentIcons.takeFirst();
 
             if (TabContent *tab = currentTab()) {
                 tab->contentArea()->navigate(url);
                 updateUrlBar(url);
                 m_navTree->setCurrentUrl(url);
-                updateBackwardButton();
+                updateBackButton();
             }
         }
     }
 
-    void addToBackwardHistory(const QString &url, const QString &title, const QString &icon = "") {
-        int index = m_backwardUrls.indexOf(url);
+    void addToRecent(const QString &url, const QString &title, const QIcon &icon) {
+        int index = m_recentUrls.indexOf(url);
         if (index != -1) {
-            m_backwardUrls.removeAt(index);
-            m_backwardTitles.removeAt(index);
-            if (index < m_backwardIcons.size()) m_backwardIcons.removeAt(index);
+            m_recentUrls.removeAt(index);
+            m_recentTitles.removeAt(index);
+            if (index < m_recentIcons.size()) m_recentIcons.removeAt(index);
         }
 
-        m_backwardUrls.prepend(url);
-        m_backwardTitles.prepend(title);
-        m_backwardIcons.prepend(icon);
+        m_recentUrls.prepend(url);
+        m_recentTitles.prepend(title);
+        m_recentIcons.prepend(icon);
 
-        while (m_backwardUrls.size() > 3) {
-            m_backwardUrls.removeLast();
-            m_backwardTitles.removeLast();
-            if (m_backwardIcons.size() > 3) m_backwardIcons.removeLast();
+        while (m_recentUrls.size() > 3) {
+            m_recentUrls.removeLast();
+            m_recentTitles.removeLast();
+            if (m_recentIcons.size() > 3) m_recentIcons.removeLast();
         }
     }
 
-    void updateBackwardButton() {
-        if (!m_backwardBtn) return;
+    void updateBackButton() {
+        if (!m_backBtn) return;
 
-        m_backwardBtn->setEnabled(!m_backwardUrls.isEmpty());
+        m_backMenu->clear();
 
-        if (!m_backwardUrls.isEmpty()) {
-            QString tooltip = "Back to:<br>";
-            for (int i = 0; i < m_backwardUrls.size() && i < 3; i++) {
-                tooltip += QString("• %1<br>").arg(m_backwardTitles.value(i, m_backwardUrls[i]));
+        if (!m_recentUrls.isEmpty()) {
+            for (int i = 0; i < m_recentUrls.size(); ++i) {
+                QAction *action = new QAction(m_recentIcons.value(i), m_recentTitles.value(i), m_backMenu);
+                action->setData(m_recentUrls[i]);
+                m_backMenu->addAction(action);
             }
-            m_backwardBtn->setToolTip(tooltip);
+            m_backMenu->addSeparator();
+            QAction *clearAction = m_backMenu->addAction(QIcon::fromTheme("edit-clear"), "Clear History");
+            connect(clearAction, &QAction::triggered, [this]() {
+                m_recentUrls.clear();
+                m_recentTitles.clear();
+                m_recentIcons.clear();
+                updateBackButton();
+            });
         } else {
-            m_backwardBtn->setToolTip("Back");
+            QAction *action = m_backMenu->addAction("No recent pages");
+            action->setEnabled(false);
+        }
+
+        connect(m_backMenu, &QMenu::triggered, this, [this](QAction *action) {
+            QString url = action->data().toString();
+            if (!url.isEmpty()) {
+                navigateCurrentTab(url);
+            }
+        });
+
+        m_backBtn->setEnabled(!m_recentUrls.isEmpty());
+
+        if (!m_recentUrls.isEmpty()) {
+            QString tooltip = "Back to:<br>";
+            for (int i = 0; i < m_recentUrls.size() && i < 3; i++) {
+                tooltip += QString("• %1<br>").arg(m_recentTitles.value(i, m_recentUrls[i]));
+            }
+            tooltip += "Long press for more options";
+            m_backBtn->setToolTip(tooltip);
+        } else {
+            m_backBtn->setToolTip("Back");
         }
     }
 
@@ -2544,14 +2692,14 @@ private slots:
 
     void showBookmarks() {
         if (TabContent *tab = currentTab()) {
-            BookmarkDialog dlg(m_bookmarkStore,
-                               tab->contentArea()->currentUrl()->url(),
-                               windowTitle(), this);
+            QString url = tab->contentArea()->currentUrl()->url();
+            QString title = url.mid(url.lastIndexOf('/') + 1);
+
+            BookmarkDialog dlg(m_bookmarkStore, url, title, this);
             connect(&dlg, &BookmarkDialog::navigateTo, this, &MainWindow::navigateCurrentTab);
             dlg.exec();
         }
     }
-
     void addBookmark(const QString &url, const QString &title) {
         Bookmark bm;
         bm.id = QDateTime::currentDateTime().toString(Qt::ISODate) + "_" +
@@ -2580,126 +2728,11 @@ private slots:
             delete shortcut;
         }
         m_shortcuts.clear();
-
         setupShortcuts();
-    }
-
-    void setupUrlCompleter() {
-        if (!m_urlBar) {
-            qWarning() << "Cannot setup completer: URL bar is null";
-            return;
-        }
-
-        m_completer = new QCompleter(this);
-        m_urlBar->setCompleter(m_completer);
-
-        QStringListModel *model = new QStringListModel(this);
-        m_completer->setModel(model);
-        m_completer->setCaseSensitivity(Qt::CaseInsensitive);
-        m_completer->setFilterMode(Qt::MatchContains);
-
-        updateCompleterModel();
-    }
-
-    void updateCompleterModel() {
-        if (!m_completer) return;
-
-        QStringList displayList;
-        for (int i = 0; i < m_backwardUrls.size(); ++i) {
-            displayList << QString("%1 - %2").arg(m_backwardTitles.value(i, "Unknown"), m_backwardUrls[i]);
-        }
-
-        QAbstractItemModel *currentModel = m_completer->model();
-        if (!currentModel) {
-            QStringListModel *newModel = new QStringListModel(this);
-            m_completer->setModel(newModel);
-            currentModel = newModel;
-        }
-
-        if (auto *model = qobject_cast<QStringListModel*>(currentModel)) {
-            model->setStringList(displayList);
-        }
-
-        if (m_urlBar) {
-            m_completer->setCompletionPrefix(m_urlBar->text());
-        }
-    }
-
-    void setupShortcuts() {
-        auto &settings = Settings::instance();
-
-        QString optionsKey = settings.shortcutOptions();
-        QShortcut *optionsShortcut = new QShortcut(QKeySequence(optionsKey), this);
-        connect(optionsShortcut, &QShortcut::activated, this, &MainWindow::toggleOptionsMenu);
-        m_shortcuts.append(optionsShortcut);
-
-        QString newTabKey = settings.shortcutNewTab();
-        QShortcut *newTabShortcut = new QShortcut(QKeySequence(newTabKey), this);
-        connect(newTabShortcut, &QShortcut::activated, [this]() { addNewTab(); });
-        m_shortcuts.append(newTabShortcut);
-
-        QString closeTabKey = settings.shortcutCloseTab();
-        QShortcut *closeTabShortcut = new QShortcut(QKeySequence(closeTabKey), this);
-        connect(closeTabShortcut, &QShortcut::activated, [this]() {
-            if (m_tabWidget->count() > 0) {
-                closeTab(m_tabWidget->currentIndex());
-            }
-        });
-        m_shortcuts.append(closeTabShortcut);
-
-        QString findKey = settings.shortcutFind();
-        QShortcut *findShortcut = new QShortcut(QKeySequence(findKey), this);
-        connect(findShortcut, &QShortcut::activated, this, &MainWindow::findInPage);
-        m_shortcuts.append(findShortcut);
-
-        QString speakKey = settings.shortcutSpeak();
-        QShortcut *speakShortcut = new QShortcut(QKeySequence(speakKey), this);
-        connect(speakShortcut, &QShortcut::activated, this, &MainWindow::speakText);
-        m_shortcuts.append(speakShortcut);
-
-        QString stopKey = settings.shortcutStopSpeech();
-        QShortcut *stopShortcut = new QShortcut(QKeySequence(stopKey), this);
-        connect(stopShortcut, &QShortcut::activated, this, &MainWindow::stopSpeech);
-        m_shortcuts.append(stopShortcut);
-
-        QString bookmarksKey = settings.shortcutBookmarks();
-        QShortcut *bookmarksShortcut = new QShortcut(QKeySequence(bookmarksKey), this);
-        connect(bookmarksShortcut, &QShortcut::activated, this, &MainWindow::showBookmarks);
-        m_shortcuts.append(bookmarksShortcut);
-
-        QString refreshKey = settings.shortcutRefresh();
-        QShortcut *refreshShortcut = new QShortcut(QKeySequence(refreshKey), this);
-        connect(refreshShortcut, &QShortcut::activated, this, &MainWindow::refresh);
-        m_shortcuts.append(refreshShortcut);
-    }
-
-    void updateTabBarVisibility() {
-        if (!m_tabWidget) return;
-        bool showAlways = Settings::instance().showTabAlways();
-        m_tabWidget->tabBar()->setVisible(showAlways || m_tabWidget->count() > 1);
-    }
-
-    void updateTabTitle(int index, const QString &url) {
-        if (!m_tabWidget) return;
-
-        QString title = extractTitleFromUrl(url);
-        if (title.isEmpty() || title == "Documentation") {
-            title = "New Tab";
-        }
-        m_tabWidget->setTabText(index, title);
-
-        QString iconName = getIconForUrl(url);
-        if (!iconName.isEmpty()) {
-            QIcon icon = QIcon::fromTheme(iconName);
-            if (!icon.isNull()) {
-                m_tabWidget->setTabIcon(index, icon);
-            }
-        }
     }
 
     void onBookmarksChanged() {
         if (!m_tabWidget) return;
-
         for (int i = 0; i < m_tabWidget->count(); ++i) {
             if (auto *tab = qobject_cast<TabContent*>(m_tabWidget->widget(i))) {
                 if (tab->contentArea()->currentUrl()->isDoc() &&
@@ -2715,11 +2748,15 @@ private:
         m_toolbar = new QToolBar(this);
         m_toolbar->setMovable(false);
 
-        m_backwardBtn = new QToolButton(this);
-        m_backwardBtn->setIcon(QIcon::fromTheme("go-previous"));
-        m_backwardBtn->setToolTip("Back");
-        m_backwardBtn->setEnabled(false);
-        connect(m_backwardBtn, &QToolButton::clicked, this, &MainWindow::navigateBackward);
+        m_backBtn = new QToolButton(this);
+        m_backBtn->setIcon(QIcon::fromTheme("go-previous"));
+        m_backBtn->setToolTip("Back (long press for history)");
+        m_backBtn->setPopupMode(QToolButton::MenuButtonPopup);
+
+        m_backMenu = new QMenu(this);
+        m_backBtn->setMenu(m_backMenu);
+
+        connect(m_backBtn, &QToolButton::clicked, this, &MainWindow::navigateBack);
 
         m_urlBar = new QLineEdit(this);
         m_urlBar->setPlaceholderText("Enter URL (:/err/, :/man/, :/doc/)");
@@ -2760,7 +2797,7 @@ private:
         bookmarkBtn->setToolTip("Bookmarks");
         connect(bookmarkBtn, &QToolButton::clicked, this, &MainWindow::showBookmarks);
 
-        m_toolbar->addWidget(m_backwardBtn);
+        m_toolbar->addWidget(m_backBtn);
         m_toolbar->addWidget(m_urlBar);
         m_toolbar->addWidget(refreshBtn);
         m_toolbar->addWidget(newTabBtn);
@@ -2771,42 +2808,119 @@ private:
         m_toolbar->addWidget(bookmarkBtn);
     }
 
+    void setupUrlCompleter() {
+        if (!m_urlBar) return;
+
+        m_completer = new QCompleter(this);
+        m_urlBar->setCompleter(m_completer);
+
+        QStringListModel *model = new QStringListModel(this);
+        m_completer->setModel(model);
+        m_completer->setCaseSensitivity(Qt::CaseInsensitive);
+        m_completer->setFilterMode(Qt::MatchContains);
+
+        updateCompleterModel();
+    }
+
+    void updateCompleterModel() {
+        if (!m_completer || !m_navTree) return;
+
+        QStringList allUrls;
+        QTreeWidgetItemIterator it(m_navTree);
+        while (*it) {
+            QTreeWidgetItem *item = *it;
+            QString url = item->data(0, Qt::UserRole).toString();
+            if (!url.isEmpty()) {
+                allUrls << url;
+            }
+            ++it;
+        }
+        allUrls.removeDuplicates();
+
+        QAbstractItemModel *currentModel = m_completer->model();
+        if (!currentModel) {
+            QStringListModel *newModel = new QStringListModel(this);
+            m_completer->setModel(newModel);
+            currentModel = newModel;
+        }
+
+        if (auto *model = qobject_cast<QStringListModel*>(currentModel)) {
+            model->setStringList(allUrls);
+        }
+
+        if (m_urlBar) {
+            m_completer->setCompletionPrefix(m_urlBar->text());
+        }
+    }
+
+    void setupShortcuts() {
+        auto &settings = Settings::instance();
+
+        QShortcut *optionsShortcut = new QShortcut(QKeySequence(settings.shortcutOptions()), this);
+        connect(optionsShortcut, &QShortcut::activated, this, &MainWindow::toggleOptionsMenu);
+        m_shortcuts.append(optionsShortcut);
+
+        QShortcut *newTabShortcut = new QShortcut(QKeySequence(settings.shortcutNewTab()), this);
+        connect(newTabShortcut, &QShortcut::activated, [this]() { addNewTab(); });
+        m_shortcuts.append(newTabShortcut);
+
+        QShortcut *closeTabShortcut = new QShortcut(QKeySequence(settings.shortcutCloseTab()), this);
+        connect(closeTabShortcut, &QShortcut::activated, [this]() {
+            if (m_tabWidget->count() > 0) closeTab(m_tabWidget->currentIndex());
+        });
+        m_shortcuts.append(closeTabShortcut);
+
+        QShortcut *findShortcut = new QShortcut(QKeySequence(settings.shortcutFind()), this);
+        connect(findShortcut, &QShortcut::activated, this, &MainWindow::findInPage);
+        m_shortcuts.append(findShortcut);
+
+        QShortcut *speakShortcut = new QShortcut(QKeySequence(settings.shortcutSpeak()), this);
+        connect(speakShortcut, &QShortcut::activated, this, &MainWindow::speakText);
+        m_shortcuts.append(speakShortcut);
+
+        QShortcut *stopShortcut = new QShortcut(QKeySequence(settings.shortcutStopSpeech()), this);
+        connect(stopShortcut, &QShortcut::activated, this, &MainWindow::stopSpeech);
+        m_shortcuts.append(stopShortcut);
+
+        QShortcut *bookmarksShortcut = new QShortcut(QKeySequence(settings.shortcutBookmarks()), this);
+        connect(bookmarksShortcut, &QShortcut::activated, this, &MainWindow::showBookmarks);
+        m_shortcuts.append(bookmarksShortcut);
+
+        QShortcut *refreshShortcut = new QShortcut(QKeySequence(settings.shortcutRefresh()), this);
+        connect(refreshShortcut, &QShortcut::activated, this, &MainWindow::refresh);
+        m_shortcuts.append(refreshShortcut);
+    }
+
+    void updateTabBarVisibility() {
+        if (!m_tabWidget) return;
+        bool showAlways = Settings::instance().showTabAlways();
+        m_tabWidget->tabBar()->setVisible(showAlways || m_tabWidget->count() > 1);
+    }
+
+    void updateTabFromUrl(int index, const QString &url) {
+        if (!m_tabWidget) return;
+        QTreeWidgetItemIterator it(m_navTree);
+        while (*it) {
+            QTreeWidgetItem *item = *it;
+            if (item->data(0, Qt::UserRole).toString() == url) {
+                QString title = item->text(0);
+                if (title.isEmpty()) title = "New Tab";
+                m_tabWidget->setTabText(index, title);
+                QIcon icon = item->icon(0);
+                if (!icon.isNull()) {
+                    m_tabWidget->setTabIcon(index, icon);
+                }
+                break;
+            }
+            ++it;
+        }
+    }
+
     void updateUrlBar(const QString &url) {
         if (m_urlBar) {
             m_urlBar->setText(url);
             updateCompleterModel();
         }
-    }
-
-    QString extractTitleFromUrl(const QString &url) {
-        if (url == ":/") return "Welcome";
-        if (url.startsWith(":/err/")) {
-            QString path = url.mid(6);
-            if (path.contains('/')) return path.section('/', -1);
-            return path;
-        }
-        if (url.startsWith(":/man/")) {
-            QString path = url.mid(6);
-            return path.section('/', -1);
-        }
-        if (url.startsWith(":/doc/")) {
-            QString page = url.mid(6);
-            return page.isEmpty() ? "Documentation" : page;
-        }
-        return "";
-    }
-
-    QString getIconForUrl(const QString &url) {
-        if (url == ":/") return "help-browser";
-        if (url.startsWith(":/err/")) return "text-html";
-        if (url.startsWith(":/man/")) return "utilities-terminal";
-        if (url.startsWith(":/doc/")) {
-            QString page = url.mid(6);
-            if (page == "settings") return "preferences-system";
-            if (page == "bookmarks") return "bookmarks";
-            if (page == "info") return "help-about";
-        }
-        return "";
     }
 
     TabContent* currentTab() {
@@ -2820,16 +2934,16 @@ private:
     QLineEdit *m_urlBar = nullptr;
     QLineEdit *m_treeSearchEdit = nullptr;
     QToolButton *m_highlightBtn = nullptr;
-    QToolButton *m_backwardBtn = nullptr;
+    QToolButton *m_backBtn = nullptr;
+    QMenu *m_backMenu = nullptr;
     TTSManager *m_ttsManager = nullptr;
     QCompleter *m_completer = nullptr;
     QList<QShortcut*> m_shortcuts;
 
-    QStringList m_backwardUrls;
-    QStringList m_backwardTitles;
-    QStringList m_backwardIcons;
+    QStringList m_recentUrls;
+    QStringList m_recentTitles;
+    QList<QIcon> m_recentIcons;
 };
-
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QApplication::setApplicationName("error_doc");

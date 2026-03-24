@@ -1,9 +1,9 @@
 [Desktop Entry]
 Type=Application
-Version=1.0
+Version=1.2
 Name=Error Doc
 Name[bn]=এরর ডক
-Comment=Error.os Documentation viewer and upcoming manpage reader.
+Comment=Error.os Documentation viewer and manpage reader.
 Comment[bn]=ডকুমেন্টেশন ভিউয়ার 
 Exec=error_doc
 Icon=error.doc
