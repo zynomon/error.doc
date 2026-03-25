@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <file>home.html</file>
+        <file>apps/apps.html</file>
+        <file>commands.html</file>
+        <file>developing.html</file>
+        <file>driver.html</file>
+        <file>gaming.html</file>
+        <file>NS26-Handbook.html</file>
+        <file>server.html</file>
+        <file>apps/vex/Known-issues.html</file>
+        <file>apps/vex/Plugin.html</file>
+        <file>apps/vex/Syntax.html</file>
+        <file>apps/vex/Theme.html</file>
+        <file>apps/err_/Everything About err_.html</file>
+        <file>apps/onu/Downloader.html</file>
+        <file>apps/onu/Issues.html</file>
+        <file>apps/onu/Plugin and QSS.html</file>
+        <file>apps/onu/Settings.html</file>
+    </qresource>
+</RCC>

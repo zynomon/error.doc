@@ -1,0 +1,250 @@
+<page icon="applications-games">
+<h1text-htmlGuide</h1>
+
+<hr />
+
+<h2>Table of Contents</h2>
+
+<ul>
+  <li><a href="#what-you-need">1. What You Need Before Starting</a></li>
+  <li><a href="#enable-32bit">2. Enabling 32-bit Architecture</a></li>
+  <li><a href="#graphics-drivers">3. Installing Graphics Drivers</a>
+    <ul>
+      <li><a href="#nvidia">NVIDIA</a></li>
+      <li><a href="#amd">AMD / Radeon</a></li>
+      <li><a href="#intel">Intel Integrated Graphics</a></li>
+    </ul>
+  </li>
+  <li><a href="#steam">4. Installing Steam</a></li>
+  <li><a href="#proton">5. Understanding Proton</a></li>
+  <li><a href="#lutris">6. Lutris Game Launcher</a></li>
+  <li><a href="#heroic">7. Heroic Games Launcher</a></li>
+  <li><a href="#performance">8. Performance Tweaks</a></li>
+  <li><a href="#troubleshooting">9. Troubleshooting Common Issues</a></li>
+</ul>
+
+<hr />
+
+<h2 id="what-you-need">1. What You Need Before Starting</h2>
+
+<p>Before diving in, make sure you have:</p>
+
+<ul>
+  <li>A working Debian-based distribution (Debian, Ubuntu, Linux Mint, Pop!_OS, or similar)</li>
+  <li>An internet connection</li>
+  <li>Root access or sudo privileges</li>
+  <li>At least 20GB free space for games (more if you play larger titles)</li>
+  <li>A graphics card that supports Vulkan (most do from the last 8-10 years)</li>
+</ul>
+
+<p>Open a terminal. You will use it for most of the installation steps. Copy and paste the commands, and press Enter after each one. If something asks for your password, type it in (you will not see characters as you type, that is normal).</p>
+
+<hr />
+
+<h2 id="enable-32bit">2. Enabling 32-bit Architecture</h2>
+
+<p>Many games, especially older ones and Windows games running through compatibility layers, need 32-bit libraries. Most Debian-based systems ship with 64-bit by default, so you need to add 32-bit support if it is not already enabled.</p>
+
+<p>Run this command:</p>
+
+<pre><code>sudo dpkg --add-architecture i386</code></pre>
+
+<p>Then update your package list:</p>
+
+<pre><code>sudo apt update</code></pre>
+
+<p>That is it. Your system can now install both 64-bit and 32-bit packages.</p>
+
+<hr />
+
+<h2 id="graphics-drivers">3. Installing Graphics Drivers</h2>
+
+<p>Proper graphics drivers are the most important part. Here is how to set them up based on your hardware.</p>
+
+<h3 id="nvidia">NVIDIA</h3>
+
+<p>NVIDIA requires proprietary drivers. On Debian-based systems, this is straightforward.</p>
+
+<p>First, enable the non-free and contrib repositories if you are on Debian. Edit your sources list:</p>
+
+<pre><code>sudo nano /etc/apt/sources.list</code></pre>
+
+<p>Find lines that say <code>main</code> and add <code>contrib non-free</code> after them. They should look like:</p>
+
+<pre><code>deb http://deb.debian.org/debian/ bookworm main contrib non-free
+deb http://deb.debian.org/debian/ bookworm-updates main contrib non-free
+deb http://security.debian.org/debian-security bookworm-security main contrib non-free</code></pre>
+
+<p>If you are on Ubuntu or a derivative, the drivers are in the default repositories. Install the recommended driver:</p>
+
+<pre><code>sudo apt update
+sudo apt install nvidia-driver firmware-misc-nonfree</code></pre>
+
+<p>On Ubuntu, you can also use the proprietary GPU driver PPA for newer drivers:</p>
+
+<pre><code>sudo add-apt-repository ppa:graphics-drivers/ppa
+sudo apt update
+sudo apt install nvidia-driver-550</code></pre>
+
+<p>Reboot when finished:</p>
+
+<pre><code>sudo reboot</code></pre>
+
+<h3 id="amd">AMD / Radeon</h3>
+
+<p>AMD cards work with open-source drivers that come with most Debian-based distributions. They are already there, but you may want newer versions for better gaming performance. For Vulkan support (needed for Proton and many games), install:</p>
+
+<pre><code>sudo apt update
+sudo apt install mesa-vulkan-drivers mesa-vulkan-drivers:i386</code></pre>
+
+<p>If you are on Ubuntu or a derivative, the Kisak or Oibaf PPAs offer newer Mesa drivers:</p>
+
+<pre><code>sudo add-apt-repository ppa:kisak/kisak-mesa
+sudo apt update
+sudo apt upgrade</code></pre>
+
+<p>On Debian, you can enable backports for newer drivers:</p>
+
+<pre><code>echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-free" | sudo tee /etc/apt/sources.list.d/backports.list
+sudo apt update
+sudo apt install -t bookworm-backports mesa-vulkan-drivers mesa-vulkan-drivers:i386</code></pre>
+
+<h3 id="intel">Intel Integrated Graphics</h3>
+
+<p>Intel drivers are open-source and included. Just install Vulkan support for better compatibility:</p>
+
+<pre><code>sudo apt update
+sudo apt install mesa-vulkan-drivers mesa-vulkan-drivers:i386</code></pre>
+
+<p>That is all you need.</p>
+
+<hr />
+
+<h2 id="steam">4. Installing Steam</h2>
+
+<p>Steam is the easiest way to get thousands of games. On Debian, enable non-free if you have not already, then:</p>
+
+<pre><code>sudo apt update
+sudo apt install steam-installer</code></pre>
+
+<p>On Ubuntu and derivatives, Steam is in the multiverse repository:</p>
+
+<pre><code>sudo add-apt-repository multiverse
+sudo apt update
+sudo apt install steam</code></pre>
+
+<p>After installation, launch Steam from your application menu. The first launch will download updates and set up the Steam runtime. Log in with your Steam account and start downloading games.</p>
+
+<hr />
+
+<h2 id="proton">5. Understanding Proton</h2>
+
+<p>Proton is a tool built into Steam that lets you run Windows games on Linux. Most games that are not native to Linux work through Proton. Here is how to enable it:</p>
+
+<p>In Steam, go to Steam > Settings > Compatibility. Check "Enable Steam Play for all other titles". Steam will restart and now nearly every game in your library can be installed and played.</p>
+
+<p>Some games work better with specific Proton versions. You can change this per game by right-clicking the game, selecting Properties > Compatibility, and choosing a different Proton version. Proton Experimental and Proton GE (a community version) often have the latest fixes.</p>
+
+<p>To install Proton GE:</p>
+
+<pre><code>wget https://github.com/GloriousEggroll/proton-ge-custom/releases/latest
+# Then extract the downloaded file to ~/.steam/root/compatibilitytools.d/
+# Create the folder if it does not exist</code></pre>
+
+<p>Start with the built-in Proton versions first. They work for most games.</p>
+
+<hr />
+
+<h2 id="lutris">6. Lutris Game Launcher</h2>
+
+<p>Lutris handles games from many sources: GOG, Epic Games Store, Humble Bundle, and standalone installers. It manages Wine versions, runners, and settings for you.</p>
+
+<p>Install Lutris:</p>
+
+<pre><code>sudo apt update
+sudo apt install lutris</code></pre>
+
+<p>On Ubuntu, you may want the official Lutris PPA for the latest version:</p>
+
+<pre><code>sudo add-apt-repository ppa:lutris-team/lutris
+sudo apt update
+sudo apt install lutris</code></pre>
+
+<p>After installation, visit the Lutris website, find your game, and click the install button. Lutris will handle the rest. It automatically sets up Wine, Proton, or native runners based on what the game needs.</p>
+
+<hr />
+
+<h2 id="heroic">7. Heroic Games Launcher</h2>
+
+<p>Heroic is a lightweight launcher for Epic Games Store and GOG games. It is great if you have a library on those platforms.</p>
+
+<p>Install Heroic:</p>
+
+<pre><code>wget -O- https://heroicgameslauncher.com/heroic_amd64.deb
+sudo dpkg -i heroic_amd64.deb
+sudo apt install -f</code></pre>
+
+<p>Or on Debian-based systems with Flatpak support:</p>
+
+<pre><code>flatpak install flathub com.heroicgameslauncher.hgl</code></pre>
+
+<p>Log in to your Epic or GOG account, and your library appears. Heroic can launch games with Proton or Wine, and it supports cloud saves.</p>
+
+<hr />
+
+<h2 id="performance">8. Performance Tweaks</h2>
+
+<p>A few simple adjustments can make games run better.</p>
+
+<p><strong>Gamemode:</strong> A daemon that optimizes system performance while gaming. Install it:</p>
+
+<pre><code>sudo apt install gamemode</code></pre>
+
+<p>Then add <code>gamemoderun %command%</code> to Steam launch options for each game. Lutris and Heroic have Gamemode toggles built in.</p>
+
+<p><strong>Disable compositing:</strong> If you use GNOME or KDE, desktop compositing can add input lag. On KDE, press Alt+Shift+F12 to toggle compositing off while gaming. On GNOME, you can install an extension like "Disable Compositor for Fullscreen Windows".</p>
+
+<p><strong>CPU governor:</strong> Set your CPU to performance mode:</p>
+
+<pre><code>sudo apt install cpufrequtils
+echo 'GOVERNOR="performance"' | sudo tee /etc/default/cpufrequtils
+sudo systemctl restart cpufrequtils</code></pre>
+
+<p><strong>Swappiness:</strong> Reduce swapping to avoid stutters:</p>
+
+<pre><code>echo "vm.swappiness=10" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p</code></pre>
+
+<hr />
+
+<h2 id="troubleshooting">9. Troubleshooting Common Issues</h2>
+
+<p><strong>Game does not launch on Steam:</strong> Try a different Proton version. Right-click the game > Properties > Compatibility > Force the use of a specific Steam Play compatibility tool. Proton Experimental or Proton GE often fix launch issues.</p>
+
+<p><strong>No audio in game:</strong> Install additional Wine libraries:</p>
+
+<pre><code>sudo apt install wine wine32 wine64 libwine libwine-development</code></pre>
+
+<p><strong>Game runs but has graphical glitches:</strong> Update your graphics drivers. For AMD, try the Kisak PPA. For NVIDIA, install the latest driver from the graphics-drivers PPA.</p>
+
+<p><strong>Steam fails to start:</strong> Launch from terminal to see error messages:</p>
+
+<pre><code>steam</code></pre>
+
+<p>Missing libraries are the most common cause. Install any reported missing packages with apt.</p>
+
+<p><strong>Gamepad not working:</strong> Install Steam Device Input support or check your distribution's gamepad drivers. Most modern controllers work out of the box.</p>
+
+<p><strong>Low FPS compared to Windows:</strong> Check if the game is using the correct graphics card (especially on laptops). Run:</p>
+
+<pre><code>DRI_PRIME=1 %command%</code></pre>
+
+<p>in Steam launch options to force discrete GPU usage.</p>
+
+<p><strong>Game crashes with Vulkan errors:</strong> Verify Vulkan is installed correctly:</p>
+
+<pre><code>vulkaninfo</code></pre>
+
+<p>If that command fails, reinstall Vulkan drivers for your GPU.</p>
+
+<hr />

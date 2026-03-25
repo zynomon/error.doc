@@ -1,0 +1,686 @@
+<page icon="preferences-plugin">
+
+<h1>Onu Browser Plugins and QSS Themes  Guide</h1>
+
+<p>Onu supports two main ways to extend and customize the browser: plugins (dynamic extensions) and QSS themes (style sheets). This guide explains how both systems work, how to create your own, and how to use them effectively.</p>
+
+<hr />
+
+<h2>Table of Contents</h2>
+
+<ul>
+  <li><a href="#plugin-architecture">1. Plugin Architecture</a>
+    <ul>
+      <li><a href="#iextension-interface">IExtension Interface</a></li>
+      <li><a href="#extension-metadata">Extension Metadata</a></li>
+      <li><a href="#extension-lifecycle">Extension Lifecycle</a></li>
+    </ul>
+  </li>
+  <li><a href="#creating-plugins">2. Creating a Plugin</a>
+    <ul>
+      <li><a href="#basic-structure">Basic Structure</a></li>
+      <li><a href="#cmake-configuration">CMake Configuration</a></li>
+      <li><a href="#plugin-example">Full Example: QR Code Generator</a></li>
+    </ul>
+  </li>
+  <li><a href="#plugin-api">3. Plugin API Reference</a>
+    <ul>
+      <li><a href="#available-classes">Available Classes</a></li>
+      <li><a href="#what-plugins-can-do">What Plugins Can Do</a></li>
+      <li><a href="#best-practices">Best Practices</a></li>
+    </ul>
+  </li>
+  <li><a href="#qss-themes">4. QSS Themes</a>
+    <ul>
+      <li><a href="#what-is-qss">What is QSS</a></li>
+      <li><a href="#theme-structure">Theme Structure</a></li>
+      <li><a href="#writing-themes">Writing Themes</a></li>
+      <li><a href="#example-themes">Example Themes</a></li>
+      <li><a href="#theme-selectors">Useful Selectors</a></li>
+    </ul>
+  </li>
+  <li><a href="#troubleshooting">5. Troubleshooting</a></li>
+</ul>
+
+<hr />
+
+<h2 id="plugin-architecture">1. Plugin Architecture</h2>
+
+<p>Onu plugins are dynamic libraries (.so on Linux, .dll on Windows) that implement the <code>IExtension</code> interface. They are discovered automatically from <file url="~/.config/Onu/Conf/extensions">~/.config/Onu/Conf/extensions</file> and can be enabled or disabled through the Extension Manager.</p>
+
+<h3 id="iextension-interface">IExtension Interface</h3>
+
+<p>Every plugin must implement the <code>IExtension</code> class. Here is the interface definition:</p>
+
+<pre><code>class IExtension {
+public:
+    virtual ~IExtension() {}
+    virtual ExtensionMetadata metadata() const = 0;
+    virtual bool apply(QMainWindow* window, Browser_Backend* backend) = 0;
+    virtual QString injectScript() const { return QString(); }
+    virtual void onPageCreated(QWebEnginePage* page) { Q_UNUSED(page); }
+    virtual QList&lt;QAction*&gt; getContextMenuActions(QWebEngineView* view) const {
+        Q_UNUSED(view);
+        return QList&lt;QAction*&gt;();
+    }
+};</code></pre>
+
+<p><strong>Required methods:</strong></p>
+<ul>
+  <li><code>metadata()</code> — Returns information about the extension (name, version, maintainer, description, icon)</li>
+  <li><code>apply()</code> — Called when the extension is enabled. Use this to add toolbars, menu items, or set up functionality</li>
+</ul>
+
+<p><strong>Optional methods:</strong></p>
+<ul>
+  <li><code>injectScript()</code> — Returns JavaScript code to inject into every webpage</li>
+  <li><code>onPageCreated()</code> — Called when a new web page is created. Useful for setting up page-specific hooks</li>
+  <li><code>getContextMenuActions()</code> — Returns custom actions to add to the right-click context menu</li>
+</ul>
+
+<h3 id="extension-metadata">Extension Metadata</h3>
+
+<p>The <code>ExtensionMetadata</code> struct holds basic information about your plugin:</p>
+
+<pre><code>struct ExtensionMetadata {
+    QString name;           // Display name
+    QString version;        // Version string
+    QString maintainer;     // Author or maintainer name
+    QString description;    // Short description
+    QIcon icon;             // Icon shown in extension manager
+};</code></pre>
+
+<p>This metadata appears in the Extension Manager and helps users identify your plugin.</p>
+
+<h3 id="extension-lifecycle">Extension Lifecycle</h3>
+
+<p>Here is how plugins are managed:</p>
+
+<ol>
+  <li><strong>Discovery:</strong> Onu scans <file url="~/.config/Onu/Conf/extensions">~/.config/Onu/Conf/extensions</file> for .so/.dll/.dylib files on startup</li>
+  <li><strong>Loading:</strong> Each library is loaded with <code>QPluginLoader</code> and checked for the <code>IExtension</code> interface</li>
+  <li><strong>State loading:</strong> The extension's enabled/disabled state is read from <file url="~/.config/Onu/Data/encrypted.conf">encrypted.conf</file></li>
+  <li><strong>Application:</strong> If enabled, <code>apply()</code> is called during browser startup</li>
+  <li><strong>Page interaction:</strong> For each new page, <code>onPageCreated()</code> is called and <code>injectScript()</code> is executed</li>
+  <li><strong>Context menus:</strong> When right-clicking, <code>getContextMenuActions()</code> is called to add custom actions</li>
+</ol>
+
+<hr />
+
+<h2 id="creating-plugins">2. Creating a Plugin</h2>
+
+<h3 id="basic-structure">Basic Structure</h3>
+
+<p>A minimal plugin looks like this:</p>
+
+<pre><code>#include &lt;QObject&gt;
+#include &lt;QtPlugin&gt;
+#include &lt;QMainWindow&gt;
+#include &lt;QAction&gt;
+#include "extense.H"
+
+class MyExtension : public QObject, public IExtension {
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID IExtension_iid)
+    Q_INTERFACES(IExtension)
+
+public:
+    ExtensionMetadata metadata() const override {
+        ExtensionMetadata md;
+        md.name = "My Extension";
+        md.version = "1.0";
+        md.maintainer = "Your Name";
+        md.description = "Does something useful";
+        md.icon = QIcon::fromTheme("applications-graphics");
+        return md;
+    }
+
+    bool apply(QMainWindow* window, Browser_Backend* backend) override {
+        Q_UNUSED(backend);
+
+        QToolBar* toolbar = window->findChild&lt;QToolBar*&gt;("NavigationToolbar");
+        if (toolbar) {
+            QAction* action = new QAction("My Action", this);
+            connect(action, &QAction::triggered, [window]() {
+                // Do something
+            });
+            toolbar->addAction(action);
+        }
+        return true;
+    }
+};
+
+#include "main.moc"</code></pre>
+
+<h3 id="cmake-configuration">CMake Configuration</h3>
+
+<p>Here is a CMakeLists.txt that builds a plugin:</p>
+
+<pre><code>cmake_minimum_required(VERSION 3.16)
+project(MyExtension LANGUAGES CXX)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+
+# If you need the Onu headers, add the path to your Onu source
+target_include_directories(MyExtension PRIVATE
+    /path/to/onu/source
+)
+
+add_library(MyExtension SHARED
+    main.cxx
+)
+
+target_link_libraries(MyExtension
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Widgets
+)
+
+set_target_properties(MyExtension PROPERTIES
+    PREFIX ""
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)</code></pre>
+
+<p>After building, copy the resulting .so/.dll file to <file url="~/.config/Onu/Conf/extensions">~/.config/Onu/Conf/extensions</file>.</p>
+
+<h3 id="plugin-example">Full Example: QR Code Generator</h3>
+
+<p>The QR Code Generator plugin demonstrates many plugin capabilities:</p>
+
+<ul>
+  <li>Adding a toolbar button with shortcut (Ctrl+Shift+Q)</li>
+  <li>Adding context menu items for pages</li>
+  <li>Creating complex dialogs with settings</li>
+  <li>Generating and saving images (PNG and SVG)</li>
+  <li>Using third-party libraries (libqrencode)</li>
+  <li>Real-time preview with sliders and color pickers</li>
+</ul>
+
+<p><strong>Key features shown:</strong></p>
+
+<pre><code>// Adding a toolbar button with shortcut
+QAction* action = new QAction(
+    QIcon::fromTheme("qrscanner-symbolic"),
+    "QR Code",
+    this
+);
+action->setShortcut(QKeySequence("Ctrl+Shift+Q"));
+connect(action, &QAction::triggered, this, [this]() {
+    generateQRFromCurrentPage();
+});
+navToolbar->addAction(action);
+
+// Adding context menu items
+QList&lt;QAction*&gt; getContextMenuActions(QWebEngineView* view) const override {
+    QList&lt;QAction*&gt; actions;
+    QAction* qrAction = new QAction("Generate QR Code", view);
+    connect(qrAction, &QAction::triggered, this, [this, urlStr, title]() {
+        const_cast&lt;QR_Creator*&gt;(this)->generateQR(urlStr, title);
+    });
+    actions.append(qrAction);
+    return actions;
+}
+
+// Getting the current active web view
+QWebEngineView* getCurrentWebView() {
+    if (!m_window) return nullptr;
+    QWidget* central = m_window->centralWidget();
+    QList&lt;QWebEngineView*&gt; views = central->findChildren&lt;QWebEngineView*&gt;();
+    auto it = std::find_if(views.begin(), views.end(), [](QWebEngineView* view) {
+        return view && view->isVisible();
+    });
+    return it != views.end() ? *it : nullptr;
+}</code></pre>
+
+<hr />
+
+<h2 id="plugin-api">3. Plugin API Reference</h2>
+
+<h3 id="available-classes">Available Classes</h3>
+
+<p>Plugins have access to these Onu classes (when included from the Onu source):</p>
+
+<ul>
+  <li><code>Browser_Backend</code> — Manage favorites, history, sessions, and tabs</li>
+  <li><code>Settings_Backend</code> — Read and write settings (public and encrypted)</li>
+  <li><code>Icon_Man</code> — Save and load icons from cache</li>
+  <li><code>Dialogs</code> — Open built-in dialogs (favorites, history, settings, etc.)</li>
+  <li><code>Onu_Window</code> — The main browser window</li>
+  <li><code>Onu_Web</code> — Web page class with extended functionality</li>
+  <li><code>Create_Toolbars</code> — Access to toolbar widgets</li>
+</ul>
+
+<p>To use these, include the appropriate headers and link against the Onu libraries.</p>
+
+<h3 id="what-plugins-can-do">What Plugins Can Do</h3>
+
+<ul>
+  <li><strong>Add toolbar buttons</strong> — Add actions to any toolbar (Navigation, Favorites, etc.)</li>
+  <li><strong>Add menu items</strong> — Add actions to the main menu or context menus</li>
+  <li><strong>Inject JavaScript</strong> — Run custom scripts on every page load</li>
+  <li><strong>Modify page behavior</strong> — Connect to web engine signals and events</li>
+  <li><strong>Access settings</strong> — Read and write browser settings (public or encrypted)</li>
+  <li><strong>Manage favorites/history</strong> — Add, remove, or modify favorites and history entries</li>
+  <li><strong>Create dialogs</strong> — Open custom windows with Qt widgets</li>
+  <li><strong>Intercept network requests</strong> — Through the request interceptor system</li>
+  <li><strong>Add keyboard shortcuts</strong> — Register global shortcuts</li>
+  <li><strong>Use third-party libraries</strong> — Link against any library your plugin needs</li>
+</ul>
+
+<h3 id="best-practices">Best Practices</h3>
+
+<ul>
+  <li><strong>Check for nullptr:</strong> Always verify that window pointers and toolbars exist before using them</li>
+  <li><strong>Clean up connections:</strong> Use Qt's parent-child ownership model to avoid memory leaks</li>
+  <li><strong>Use signals and slots:</strong> Connect to existing signals rather than overriding behavior when possible</li>
+  <li><strong>Respect user settings:</strong> Check if features are enabled before applying changes</li>
+  <li><strong>Be thread-safe:</strong> Remember that Qt's UI must be accessed from the main thread only</li>
+  <li><strong>Handle missing resources:</strong> If your plugin requires external files, check for their existence gracefully</li>
+</ul>
+
+<hr />
+
+<h2 id="qss-themes">4. QSS Themes</h2>
+
+<h3 id="what-is-qss">What is QSS</h3>
+
+<p>QSS (Qt Style Sheets) is a CSS-like language that controls the appearance of Qt applications. Onu uses QSS to theme the entire browser interface. You can create custom themes by writing .qss files and placing them in <file url="~/.config/Onu/Conf/themes">~/.config/Onu/Conf/themes</file>.</p>
+
+<p>Onu ships with two built-in themes: <strong>Onu-Dark</strong> and <strong>Onu-Light</strong>. You can use these as starting points for your own themes.</p>
+
+<h3 id="theme-structure">Theme Structure</h3>
+
+<p>A theme file is a plain text .qss file. Here is the basic structure:</p>
+
+<pre><code>/* Onu-Dark.qss - Example dark theme */
+
+/* Global styles */
+QWidget {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    selection-background-color: #264f78;
+}
+
+/* Main window */
+QMainWindow {
+    background-color: #1e1e1e;
+}
+
+/* Toolbars */
+QToolBar {
+    background-color: #2d2d2d;
+    border: none;
+    spacing: 3px;
+    padding: 2px;
+}
+
+QToolBar::handle {
+    image: url(:/images/handle.png);
+}
+
+/* Tab bar */
+QTabBar::tab {
+    background-color: #2d2d2d;
+    color: #d4d4d4;
+    padding: 6px 12px;
+    margin: 2px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+QTabBar::tab:selected {
+    background-color: #3c3c3c;
+    border-bottom: 2px solid #007acc;
+}
+
+QTabBar::tab:hover {
+    background-color: #3c3c3c;
+}
+
+/* Address bar */
+QLineEdit {
+    background-color: #3c3c3c;
+    border: 1px solid #4c4c4c;
+    border-radius: 4px;
+    padding: 4px 8px;
+    selection-background-color: #007acc;
+}
+
+QLineEdit:focus {
+    border-color: #007acc;
+}
+
+/* Buttons */
+QPushButton {
+    background-color: #3c3c3c;
+    border: 1px solid #4c4c4c;
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: #d4d4d4;
+}
+
+QPushButton:hover {
+    background-color: #4c4c4c;
+}
+
+QPushButton:pressed {
+    background-color: #2d2d2d;
+}
+
+/* Scroll bars */
+QScrollBar:vertical {
+    background-color: #2d2d2d;
+    width: 12px;
+    margin: 0px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #4c4c4c;
+    border-radius: 6px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: #5c5c5c;
+}
+
+/* Menu bar */
+QMenuBar {
+    background-color: #2d2d2d;
+    color: #d4d4d4;
+}
+
+QMenuBar::item:selected {
+    background-color: #3c3c3c;
+}
+
+QMenu {
+    background-color: #2d2d2d;
+    border: 1px solid #4c4c4c;
+}
+
+QMenu::item:selected {
+    background-color: #007acc;
+}</code></pre>
+
+<h3 id="writing-themes">Writing Themes</h3>
+
+<p><strong>Finding widget names:</strong> To style specific widgets, you need to know their object names. Onu uses these object names:</p>
+
+<ul>
+  <li><code>NavigationToolbar</code> — The main navigation toolbar</li>
+  <li><code>SearchToolbar</code> — The address bar toolbar</li>
+  <li><code>FavoritesToolbar</code> — The favorites sidebar toolbar</li>
+  <li><code>RecentToolbar</code> — The recent history toolbar</li>
+  <li><code>TabToolbar</code> — The tab bar toolbar</li>
+</ul>
+
+<p>You can style them with selectors like:</p>
+
+<pre><code>QToolBar#NavigationToolbar {
+    background-color: #2d2d2d;
+}</code></pre>
+
+<p><strong>Common selectors:</strong></p>
+
+<pre><code>/* Type selector */
+QPushButton { ... }
+
+/* Class selector (all widgets of a class) */
+.QToolButton { ... }
+
+/* ID selector (specific object) */
+QLineEdit#addressBar { ... }
+
+/* Pseudo-states */
+QPushButton:hover { ... }
+QPushButton:pressed { ... }
+QPushButton:checked { ... }
+QPushButton:disabled { ... }
+
+/* Child widgets */
+QTabBar::tab { ... }
+QScrollBar::handle { ... }
+QMenu::item { ... }</code></pre>
+
+<h3 id="example-themes">Example Themes</h3>
+
+<p><strong>Minimal Dark Theme:</strong></p>
+
+<pre><code>QWidget {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+QToolBar {
+    background-color: #1e1e1e;
+    border: none;
+}
+
+QTabBar::tab:selected {
+    background-color: #2e2e2e;
+    border-bottom: 2px solid #bb86fc;
+}
+
+QPushButton {
+    background-color: #2e2e2e;
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+
+QPushButton:hover {
+    background-color: #3e3e3e;
+}</code></pre>
+
+<p><strong>Minimal Light Theme:</strong></p>
+
+<pre><code>QWidget {
+    background-color: #f5f5f5;
+    color: #212121;
+}
+
+QToolBar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+QTabBar::tab:selected {
+    background-color: #ffffff;
+    border-bottom: 2px solid #6200ee;
+}
+
+QPushButton {
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+
+QPushButton:hover {
+    background-color: #d0d0d0;
+}</code></pre>
+
+<p><strong>Colorful Theme (replace with your own colors):</strong></p>
+
+<pre><code>QWidget {
+    background-color: #2d2b55;
+    color: #f0f0f0;
+}
+
+QToolBar {
+    background-color: #3a3770;
+    border: none;
+}
+
+QTabBar::tab:selected {
+    background-color: #4a4790;
+    border-bottom: 2px solid #ff6b6b;
+}
+
+QPushButton {
+    background-color: #ff6b6b;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: #2d2b55;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #ff8787;
+}
+
+QLineEdit {
+    background-color: #3a3770;
+    border: 1px solid #4a4790;
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #f0f0f0;
+}
+
+QLineEdit:focus {
+    border-color: #ff6b6b;
+}</code></pre>
+
+<h3 id="theme-selectors">Useful Selectors</h3>
+
+<p>Here are the main widgets you can style in Onu:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Widget</th>
+      <th>Selector</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Main window</td>
+      <td><code>QMainWindow</code></td>
+      <td>Background color for the entire window</td>
+    </tr>
+    <tr>
+      <td>Central area</td>
+      <td><code>QWidget#qt_centralwidget</code></td>
+      <td>Area containing web views</td>
+    </tr>
+    <tr>
+      <td>Toolbars</td>
+      <td><code>QToolBar</code>, <code>QToolBar#NavigationToolbar</code></td>
+      <td>Background, borders, spacing</td>
+    </tr>
+    <tr>
+      <td>Tab bar</td>
+      <td><code>QTabBar::tab</code>, <code>QTabBar::tab:selected</code></td>
+      <td>Tab appearance, selected/hover states</td>
+    </tr>
+    <tr>
+      <td>Address bar</td>
+      <td><code>QLineEdit</code></td>
+      <td>Background, border, focus state</td>
+    </tr>
+    <tr>
+      <td>Search engine combo</td>
+      <td><code>QComboBox</code></td>
+      <td>Dropdown style</td>
+    </tr>
+    <tr>
+      <td>Buttons</td>
+      <td><code>QPushButton</code>, <code>QToolButton</code></td>
+      <td>Background, hover, pressed states</td>
+    </tr>
+    <tr>
+      <td>Menu bar</td>
+      <td><code>QMenuBar</code>, <code>QMenuBar::item</code></td>
+      <td>Menu bar background and item styling</td>
+    </tr>
+    <tr>
+      <td>Menu items</td>
+      <td><code>QMenu</code>, <code>QMenu::item</code></td>
+      <td>Dropdown menu appearance</td>
+    </tr>
+    <tr>
+      <td>Scroll bars</td>
+      <td><code>QScrollBar:vertical</code>, <code>QScrollBar::handle</code></td>
+      <td>Scroll bar width, handle color</td>
+    </tr>
+    <tr>
+      <td>Find bar</td>
+      <td><code>QWidget#findBar</code></td>
+      <td>The inline find widget</td>
+    </tr>
+    <tr>
+      <td>Dialogs</td>
+      <td><code>QDialog</code>, <code>QMessageBox</code></td>
+      <td>Settings dialog, history dialog, etc.</td>
+    </tr>
+    <tr>
+      <td>Status bar</td>
+      <td><code>QStatusBar</code></td>
+      <td>Bottom status area</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Pseudo-states you can use:</strong></p>
+<ul>
+  <li><code>:hover</code> — Mouse over the widget</li>
+  <li><code>:pressed</code> — Button is being pressed</li>
+  <li><code>:checked</code> — Checkable button is checked</li>
+  <li><code>:disabled</code> — Widget is disabled</li>
+  <li><code>:focus</code> — Widget has keyboard focus</li>
+  <li><code>:selected</code> — Item is selected (for tabs, menu items)</li>
+  <li><code>:active</code> — Window is active</li>
+  <li><code>:inactive</code> — Window is inactive</li>
+</ul>
+
+<hr />
+
+<h2 id="troubleshooting">5. Troubleshooting</h2>
+
+<p><strong>Plugin not appearing in Extension Manager:</strong></p>
+<ul>
+  <li>Check that the .so/.dll file is in <file url="~/.config/Onu/Conf/extensions">~/.config/Onu/Conf/extensions</file></li>
+  <li>Verify the file has execute permissions</li>
+  <li>Check that all required Qt libraries are available</li>
+  <li>Look for error messages in the terminal when starting Onu</li>
+</ul>
+
+<p><strong>Plugin fails to load:</strong></p>
+<ul>
+  <li>Use <code>ldd</code> (Linux) or Dependency Walker (Windows) to check for missing dependencies</li>
+  <li>Ensure the plugin was compiled with the same Qt version as Onu</li>
+  <li>Check that the <code>Q_PLUGIN_METADATA</code> macro uses the correct IID (<code>IExtension_iid</code>)</li>
+</ul>
+
+<p><strong>Theme not showing in settings:</strong></p>
+<ul>
+  <li>Verify the .qss file is in <file url="~/.config/Onu/Conf/themes">~/.config/Onu/Conf/themes</file></li>
+  <li>Check the file has a .qss extension</li>
+  <li>Restart Onu or click Refresh in the Theme Editor</li>
+  <li>Check for syntax errors in the QSS file (invalid properties are silently ignored)</li>
+</ul>
+
+<p><strong>Theme not applying correctly:</strong></p>
+<ul>
+  <li>Use Qt's built-in style checker: <code>qss-validator</code> or online tools</li>
+  <li>Test small changes first to isolate the problem</li>
+  <li>Remember that QSS is case-sensitive for property names</li>
+  <li>Check that selectors match actual widget names</li>
+</ul>
+
+<p><strong>Plugin causes crashes:</strong></p>
+<ul>
+  <li>Run Onu from terminal to see crash messages</li>
+  <li>Check for null pointer dereferences (especially <code>m_window</code> or <code>backend</code>)</li>
+  <li>Ensure connections are properly disconnected when the plugin is disabled</li>
+  <li>Use <code>QPointer</code> for widget pointers that may be deleted</li>
+</ul>
+
+<hr />

@@ -1,0 +1,735 @@
+<page icon="applications-development">
+<h1>Building, Compiling, and Development on Linux, Guide</h1>
+
+<p>So you want to build software from source, compile your own programs, or start developing on Linux. This guide walks you through the tools, workflows, and common practices. Whether you are compiling a single program, building a kernel module, or setting up a full development environment for compiled or interpreted languages, this covers what you need to know.</p>
+
+<hr />
+
+<h2>Table of Contents</h2>
+
+<ul>
+  <li><a href="#why-build-from-source">1. Why Build from Source</a></li>
+  <li><a href="#essential-tools">2. Essential Build Tools</a></li>
+  <li><a href="#understanding-makefiles">3. Understanding Makefiles</a></li>
+  <li><a href="#cmake">4. CMake</a></li>
+  <li><a href="#meson">5. Meson and Ninja</a></li>
+  <li><a href="#autotools">6. Autotools (./configure && make && make install)</a></li>
+  <li><a href="#package-management">7. Installing Build Dependencies</a></li>
+  <li><a href="#compiling-kernel-modules">8. Compiling Kernel Modules</a></li>
+  <li><a href="#static-vs-shared">9. Static vs Shared Libraries</a></li>
+  <li><a href="#pkg-config">10. Using pkg-config</a></li>
+  <li><a href="#interpreted-languages">11. Interpreted Languages</a>
+    <ul>
+      <li><a href="#python-dev">Python</a></li>
+      <li><a href="#ruby-dev">Ruby</a></li>
+      <li><a href="#php-dev">PHP</a></li>
+      <li><a href="#perl-dev">Perl</a></li>
+      <li><a href="#lua-dev">Lua</a></li>
+      <li><a href="#javascript-dev">JavaScript / Node.js</a></li>
+      <li><a href="#bash-dev">Bash Scripting</a></li>
+    </ul>
+  </li>
+  <li><a href="#compiled-languages">12. Compiled Languages</a>
+    <ul>
+      <li><a href="#c-cpp-dev">C and C++</a></li>
+      <li><a href="#rust-dev">Rust</a></li>
+      <li><a href="#go-dev">Go</a></li>
+      <li><a href="#java-dev">Java</a></li>
+      <li><a href="#zig-dev">Zig</a></li>
+      <li><a href="#haskell-dev">Haskell</a></li>
+    </ul>
+  </li>
+  <li><a href="#virtual-environments">13. Virtual Environments and Isolation</a></li>
+  <li><a href="#debugging">14. Debugging Tools</a></li>
+  <li><a href="#version-control">15. Version Control with Git</a></li>
+  <li><a href="#troubleshooting-builds">16. Troubleshooting Build Issues</a></li>
+</ul>
+
+<hr />
+
+<h2 id="why-build-from-source">1. Why Build from Source</h2>
+
+<p>Before diving in, here is why you might want to build software from source instead of using pre-packaged versions:</p>
+
+<ul>
+  <li>You need a newer version than what your distribution provides</li>
+  <li>You want to enable or disable specific features</li>
+  <li>You need to apply a patch that is not yet in the official release</li>
+  <li>You are developing software and need to test changes</li>
+  <li>You want to optimize the build for your specific hardware</li>
+  <li>You are learning how software works under the hood</li>
+</ul>
+
+<p>For interpreted languages like Python, Ruby, or JavaScript, building from source usually means installing the language runtime from source, not the scripts themselves (those just run directly).</p>
+
+<hr />
+
+<h2 id="essential-tools">2. Essential Build Tools</h2>
+
+<p>Before building anything, you need the basic compilation toolchain. Install these first:</p>
+
+<bash>sudo apt update
+sudo apt install build-essential -y</bash>
+
+<p>This installs <code>gcc</code>, <code>g++</code>, <code>make</code>, and other essential tools. You also want these:</p>
+
+<bash>sudo apt install git autoconf automake libtool pkg-config cmake meson ninja-build -y</bash>
+
+<p>For building kernel modules:</p>
+
+<bash>sudo apt install linux-headers-$(uname -r) -y</bash>
+
+<p>For debugging:</p>
+
+<bash>sudo apt install gdb valgrind strace ltrace -y</bash>
+
+<hr />
+
+<h2 id="understanding-makefiles">3. Understanding Makefiles</h2>
+
+<p><code>make</code> is the classic build system. A <file url="Makefile">Makefile</file> describes how to compile a program. The basic workflow is:</p>
+
+<bash>make          # build the default target
+make clean    # remove built files
+make install  # install to system (usually needs sudo)</bash>
+
+<p>A simple Makefile example:</p>
+
+<pre><code>CC = gcc
+CFLAGS = -Wall -O2
+TARGET = myprogram
+SOURCES = main.c utils.c
+
+$(TARGET): $(SOURCES)
+        $(CC) $(CFLAGS) -o $(TARGET) $(SOURCES)
+
+clean:
+        rm -f $(TARGET)
+
+install:
+        cp $(TARGET) /usr/local/bin/</code></pre>
+
+<p>To use it:</p>
+
+<bash>make
+sudo make install</bash>
+
+<hr />
+
+<h2 id="cmake">4. CMake</h2>
+
+<p>CMake is a meta-build system. It generates Makefiles or Ninja files based on a <file url="CMakeLists.txt">CMakeLists.txt</file>. It is widely used for C and C++ projects.</p>
+
+<p>Basic CMake workflow:</p>
+
+<bash>mkdir build
+cd build
+cmake ..
+make
+sudo make install</bash>
+
+<p>Or with Ninja (faster):</p>
+
+<bash>mkdir build
+cd build
+cmake -G Ninja ..
+ninja
+sudo ninja install</bash>
+
+<p>A simple <file url="CMakeLists.txt">CMakeLists.txt</file> example:</p>
+
+<pre><code>cmake_minimum_required(VERSION 3.10)
+project(MyProject)
+
+set(CMAKE_CXX_STANDARD 17)
+
+add_executable(myprogram main.cpp utils.cpp)</code></pre>
+
+<hr />
+
+<h2 id="meson">5. Meson and Ninja</h2>
+
+<p>Meson is a modern build system designed for speed and simplicity. It works with Ninja as the backend.</p>
+
+<p>Basic Meson workflow:</p>
+
+<bash>mkdir build
+cd build
+meson setup ..
+ninja
+sudo ninja install</bash>
+
+<p>A simple <file url="meson.build">meson.build</file> example:</p>
+
+<pre><code>project('myproject', 'c',
+  version : '1.0.0',
+  default_options : ['warning_level=3'])
+
+executable('myprogram', 'main.c', 'utils.c')</code></pre>
+
+<hr />
+
+<h2 id="autotools">6. Autotools (./configure && make && make install)</h2>
+
+<p>The classic three-step build process comes from Autotools (autoconf, automake, libtool).</p>
+
+<bash>./configure --prefix=/usr/local
+make
+sudo make install</bash>
+
+<p>You can pass options to <code>./configure</code> to enable or disable features:</p>
+
+<bash>./configure --enable-feature --disable-other --prefix=/usr/local</bash>
+
+<p>To see available options:</p>
+
+<bash>./configure --help</bash>
+
+<p>If you are building from a Git clone, you may need to generate the configure script first:</p>
+
+<bash>./autogen.sh
+# or
+autoreconf -fi</bash>
+
+<hr />
+
+<h2 id="package-management">7. Installing Build Dependencies</h2>
+
+<p>When building from source, you often need development versions of libraries. These are the <code>-dev</code> or <code>-devel</code> packages that contain headers and static libraries.</p>
+
+<p>To install a library's development files:</p>
+
+<bash>sudo apt install libname-dev</bash>
+
+<p>For example, if a program needs OpenSSL:</p>
+
+<bash>sudo apt install libssl-dev</bash>
+
+<p>If you are building something from source and it fails with "library not found" or "header not found", search for the corresponding <code>-dev</code> package:</p>
+
+<bash>apt search libname-dev</bash>
+
+<p>To install all build dependencies for a package that exists in your distribution:</p>
+
+<bash>sudo apt build-dep package-name</bash>
+
+<p>This installs everything needed to build that package from source.</p>
+
+<hr />
+
+<h2 id="compiling-kernel-modules">8. Compiling Kernel Modules</h2>
+
+<p>Building kernel modules requires the kernel headers that match your running kernel.</p>
+
+<bash>sudo apt install linux-headers-$(uname -r)</bash>
+
+<p>A simple kernel module Makefile:</p>
+
+<pre><code>obj-m += mymodule.o
+
+all:
+        make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+
+clean:
+        make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean</code></pre>
+
+<p>Build it:</p>
+
+<bash>make</bash>
+
+<p>Load the module:</p>
+
+<bash>sudo insmod mymodule.ko</bash>
+
+<p>Check if loaded:</p>
+
+<bash>lsmod | grep mymodule</bash>
+
+<p>Remove it:</p>
+
+<bash>sudo rmmod mymodule</bash>
+
+<hr />
+
+<h2 id="static-vs-shared">9. Static vs Shared Libraries</h2>
+
+<p>When building software, you need to understand the two types of libraries:</p>
+
+<p><strong>Static libraries (.a):</strong> Compiled directly into the executable. The program is larger but self-contained and does not need the library to be present on the system.</p>
+
+<p><strong>Shared libraries (.so):</strong> Loaded at runtime. Multiple programs can share the same library file. This saves disk space and memory but requires the library to be installed.</p>
+
+<p>To compile with a static library:</p>
+
+<bash>gcc -static -o program program.c -lmylib</bash>
+
+<p>To see what shared libraries a program needs:</p>
+
+<bash>ldd /path/to/program</bash>
+
+<p>Shared libraries are searched in paths listed in <file url="/etc/ld.so.conf">/etc/ld.so.conf</file> and <file url="/etc/ld.so.conf.d">/etc/ld.so.conf.d</file>. After adding a new library path, run:</p>
+
+<bash>sudo ldconfig</bash>
+
+<hr />
+
+<h2 id="pkg-config">10. Using pkg-config</h2>
+
+<p><code>pkg-config</code> helps find compiler and linker flags for libraries. Instead of guessing where headers and libraries are, you use pkg-config.</p>
+
+<p>Get compiler flags for a library:</p>
+
+<bash>pkg-config --cflags libssl</bash>
+
+<p>Get linker flags:</p>
+
+<bash>pkg-config --libs libssl</bash>
+
+<p>Check if a library is installed:</p>
+
+<bash>pkg-config --modversion libssl</bash>
+
+<p>In a Makefile, you would use:</p>
+
+<pre><code>CFLAGS += $(shell pkg-config --cflags libssl)
+LDFLAGS += $(shell pkg-config --libs libssl)</code></pre>
+
+<hr />
+
+<h2 id="interpreted-languages">11. Interpreted Languages</h2>
+
+<p>Interpreted languages do not need compilation before running. However, they often have package managers, virtual environments, and sometimes native extensions that do need compilation.</p>
+
+<h3 id="python-dev">Python</h3>
+
+<p>Python is usually pre-installed. For development, you need pip and virtual environments.</p>
+
+<p><strong>Install Python development tools:</strong></p>
+
+<bash>sudo apt install python3 python3-pip python3-venv python3-dev -y</bash>
+
+<p>The <code>python3-dev</code> package includes headers needed for compiling Python extensions.</p>
+
+<p><strong>Virtual environments:</strong> Always use these to keep projects isolated.</p>
+
+<bash>python3 -m venv myproject_env
+source myproject_env/bin/activate
+pip install package_name
+deactivate</bash>
+
+<p><strong>Installing packages:</strong></p>
+
+<bash>pip install package_name
+pip install -r requirements.txt</bash>
+
+<p><strong>Building a Python package from source:</strong></p>
+
+<bash>git clone https://github.com/example/package
+cd package
+pip install .</bash>
+
+<p>Or for editable install (during development):</p>
+
+<bash>pip install -e .</bash>
+
+<p><strong>Common Python build dependencies:</strong></p>
+
+<bash>sudo apt install python3-setuptools python3-wheel python3-cffi -y</bash>
+
+<h3 id="ruby-dev">Ruby</h3>
+
+<p><strong>Install Ruby and development tools:</strong></p>
+
+<bash>sudo apt install ruby ruby-dev bundler -y</bash>
+
+<p><strong>Using gems (Ruby packages):</strong></p>
+
+<bash>gem install package_name
+bundle install  # if there is a Gemfile</bash>
+
+<p><strong>For projects, use rbenv or rvm to manage Ruby versions without touching the system Ruby.</strong></p>
+
+<h3 id="php-dev">PHP</h3>
+
+<p><strong>Install PHP and development tools:</strong></p>
+
+<bash>sudo apt install php php-cli php-dev composer -y</bash>
+
+<p><strong>Composer is the package manager:</strong></p>
+
+<bash>composer install</bash>
+
+<p><strong>For web development, you may also need:</strong></p>
+
+<bash>sudo apt install php-fpm php-mysql php-sqlite3 -y</bash>
+
+<h3 id="perl-dev">Perl</h3>
+
+<p><strong>Install Perl and CPAN (package manager):</strong></p>
+
+<bash>sudo apt install perl perl-modules cpanminus -y</bash>
+
+<p><strong>Install Perl modules:</strong></p>
+
+<bash>cpanm Module::Name</bash>
+
+<p><strong>For local project dependencies, use carton:</strong></p>
+
+<bash>sudo apt install carton
+cd myproject
+carton install</bash>
+
+<h3 id="lua-dev">Lua</h3>
+
+<p><strong>Install Lua and LuaRocks (package manager):</strong></p>
+
+<bash>sudo apt install lua5.4 lua5.4-dev luarocks -y</bash>
+
+<p><strong>Install Lua rocks:</strong></p>
+
+<bash>luarocks install package_name</bash>
+
+<h3 id="javascript-dev">JavaScript / Node.js</h3>
+
+<p>Node.js is the runtime for JavaScript outside the browser. It uses npm or yarn as package managers.</p>
+
+<p><strong>Install Node.js from NodeSource (for newer versions):</strong></p>
+
+<bash>curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install nodejs -y</bash>
+
+<p><strong>Install packages:</strong></p>
+
+<bash>npm install package_name
+npm install  # if there is a package.json</bash>
+
+<p><strong>For global tools:</strong></p>
+
+<bash>sudo npm install -g package_name</bash>
+
+<p><strong>Using yarn (alternative package manager):</strong></p>
+
+<bash>sudo npm install -g yarn
+yarn install</bash>
+
+<p><strong>Building native Node.js addons requires:</strong></p>
+
+<bash>sudo apt install gcc g++ make python3</bash>
+
+<h3 id="bash-dev">Bash Scripting</h3>
+
+<p>Bash scripts run directly. No compilation needed. For development, just make scripts executable:</p>
+
+<bash>chmod +x myscript.sh
+./myscript.sh</bash>
+
+<p><strong>Check syntax without running:</strong></p>
+
+<bash>bash -n myscript.sh</bash>
+
+<hr />
+
+<h2 id="compiled-languages">12. Compiled Languages</h2>
+
+<h3 id="c-cpp-dev">C and C++</h3>
+
+<p>These are the classic compiled languages. The compiler is usually GCC or Clang.</p>
+
+<p><strong>Install compilers:</strong></p>
+
+<bash>sudo apt install gcc g++ clang make -y</bash>
+
+<p><strong>Compile a single C file:</strong></p>
+
+<bash>gcc -o program program.c</bash>
+
+<p><strong>Compile with warnings and optimizations:</strong></p>
+
+<bash>gcc -Wall -Wextra -O2 -o program program.c</bash>
+
+<p><strong>For C++:</strong></p>
+
+<bash>g++ -std=c++17 -o program program.cpp</bash>
+
+<p><strong>Debug build (with symbols):</strong></p>
+
+<bash>gcc -g -o program program.c</bash>
+
+<h3 id="rust-dev">Rust</h3>
+
+<p>Rust uses its own build tool called Cargo.</p>
+
+<p><strong>Install Rust using rustup (recommended):</strong></p>
+
+<bash>curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source $HOME/.cargo/env</bash>
+
+<p><strong>Create a new project:</strong></p>
+
+<bash>cargo new myproject
+cd myproject
+cargo build
+cargo run</bash>
+
+<p><strong>Add dependencies:</strong> Edit <file url="Cargo.toml">Cargo.toml</file> and add packages under <code>[dependencies]</code>.</p>
+
+<p><strong>Build release version (optimized):</strong></p>
+
+<bash>cargo build --release</bash>
+
+<h3 id="go-dev">Go</h3>
+
+<p>Go compiles to a single binary. It has a built-in package manager.</p>
+
+<p><strong>Install Go:</strong></p>
+
+<bash>sudo apt install golang-go -y</bash>
+
+<p>Or for newer versions:</p>
+
+<bash>wget https://go.dev/dl/go1.22.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.22.linux-amd64.tar.gz
+echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+source ~/.bashrc</bash>
+
+<p><strong>Create and build a project:</strong></p>
+
+<bash>mkdir myproject
+cd myproject
+go mod init myproject
+# create main.go
+go build
+./myproject</bash>
+
+<p><strong>Add dependencies:</strong></p>
+
+<bash>go get github.com/example/package</bash>
+
+<h3 id="java-dev">Java</h3>
+
+<p>Java compiles to bytecode that runs on the Java Virtual Machine (JVM).</p>
+
+<p><strong>Install Java Development Kit:</strong></p>
+
+<bash>sudo apt install openjdk-17-jdk -y</bash>
+
+<p><strong>Compile and run:</strong></p>
+
+<bash>javac Program.java
+java Program</bash>
+
+<p><strong>For larger projects, use Maven or Gradle:</strong></p>
+
+<bash>sudo apt install maven gradle -y</bash>
+
+<p><strong>Create a Maven project:</strong></p>
+
+<bash>mvn archetype:generate -DgroupId=com.example -DartifactId=myproject -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+cd myproject
+mvn package
+java -cp target/myproject-1.0-SNAPSHOT.jar com.example.App</bash>
+
+<h3 id="zig-dev">Zig</h3>
+
+<p>Zig is a modern systems programming language with its own build system.</p>
+
+<p><strong>Install Zig:</strong></p>
+
+<bash>wget https://ziglang.org/download/zig-linux-x86_64-0.12.0.tar.xz
+tar -xf zig-linux-x86_64-0.12.0.tar.xz
+sudo mv zig-linux-x86_64-0.12.0 /usr/local/zig
+echo 'export PATH=$PATH:/usr/local/zig' >> ~/.bashrc
+source ~/.bashrc</bash>
+
+<p><strong>Build and run:</strong></p>
+
+<bash>zig build-exe main.zig
+./main
+zig run main.zig</bash>
+
+<h3 id="haskell-dev">Haskell</h3>
+
+<p>Haskell is a functional language with its own build tool, Cabal.</p>
+
+<p><strong>Install Haskell Stack (recommended):</strong></p>
+
+<bash>curl -sSL https://get.haskellstack.org/ | sh</bash>
+
+<p><strong>Create and build a project:</strong></p>
+
+<bash>stack new myproject
+cd myproject
+stack build
+stack exec myproject</bash>
+
+<hr />
+
+<h2 id="virtual-environments">13. Virtual Environments and Isolation</h2>
+
+<p>When developing, especially with interpreted languages, isolating project dependencies prevents conflicts.</p>
+
+<p><strong>Python venv:</strong></p>
+
+<bash>python3 -m venv .venv
+source .venv/bin/activate
+# work...
+deactivate</bash>
+
+<p><strong>Ruby rbenv:</strong></p>
+
+<bash>git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+exec $SHELL
+rbenv install 3.2.0
+rbenv global 3.2.0</bash>
+
+<p><strong>Node.js nvm:</strong></p>
+
+<bash>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+exec $SHELL
+nvm install 20
+nvm use 20</bash>
+
+<p><strong>Rust:</strong> Cargo automatically handles per-project dependencies in <file url="Cargo.toml">Cargo.toml</file>.</p>
+
+<p><strong>Go:</strong> Go modules handle dependencies per project with <file url="go.mod">go.mod</file>.</p>
+
+<p><strong>Docker:</strong> For complete isolation across all languages:</p>
+
+<bash>sudo apt install docker.io
+sudo usermod -aG docker $USER
+# log out and back in</bash>
+
+<p>A simple <file url="Dockerfile">Dockerfile</file> for development:</p>
+
+<pre><code>FROM python:3.11
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+CMD ["python", "main.py"]</code></pre>
+
+<bash>docker build -t myapp .
+docker run -it myapp</bash>
+
+<hr />
+
+<h2 id="debugging">14. Debugging Tools</h2>
+
+<p>When things go wrong, these tools help you figure out why.</p>
+
+<p><strong>GDB (GNU Debugger) for C/C++/Rust:</strong></p>
+
+<bash>gdb ./program
+# inside gdb:
+run
+bt          # backtrace
+break main  # set breakpoint
+print var   # print variable
+quit</bash>
+
+<p><strong>Python debugger:</strong></p>
+
+<bash>python3 -m pdb myscript.py</bash>
+
+<p>Or insert in code:</p>
+
+<pre><code>import pdb; pdb.set_trace()</code></pre>
+
+<p><strong>Node.js debugger:</strong></p>
+
+<bash>node inspect myscript.js</bash>
+
+<p><strong>Valgrind (memory leak detection for C/C++):</strong></p>
+
+<bash>valgrind --leak-check=full ./program</bash>
+
+<p><strong>Strace (trace system calls):</strong></p>
+
+<bash>strace ./program 2>&1 | less</bash>
+
+<p><strong>Ltrace (trace library calls):</strong></p>
+
+<bash>ltrace ./program</bash>
+
+<hr />
+
+<h2 id="version-control">15. Version Control with Git</h2>
+
+<p>Git is essential for development. Even if you are just building from source, you will use it to clone repositories.</p>
+
+<p><strong>Basic Git workflow:</strong></p>
+
+<bash>git clone https://github.com/user/repo.git
+cd repo
+git checkout -b my-feature
+# make changes
+git add .
+git commit -m "description"
+git push origin my-feature</bash>
+
+<p><strong>Useful commands:</strong></p>
+
+<bash>git status          # see what changed
+git log --oneline   # see commit history
+git diff            # see unstaged changes
+git pull            # get latest changes
+git reset --hard    # discard changes (careful)</bash>
+
+<p><strong>Configure Git:</strong></p>
+
+<bash>git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"</bash>
+
+<hr />
+
+<h2 id="troubleshooting-builds">16. Troubleshooting Build Issues</h2>
+
+<p>Builds fail. Here is how to figure out why.</p>
+
+<p><strong>Header not found:</strong> Install the corresponding <code>-dev</code> package.</p>
+
+<bash>apt search libname-dev</bash>
+
+<p><strong>Library not found at link time:</strong> Same as above, or check pkg-config.</p>
+
+<bash>pkg-config --libs libname</bash>
+
+<p><strong>Symbol not found at runtime:</strong> Check if the library is installed and in ldconfig cache:</p>
+
+<bash>ldconfig -p | grep libname</bash>
+
+<p>If the library exists but is in a non-standard location, set <code>LD_LIBRARY_PATH</code>:</p>
+
+<bash>export LD_LIBRARY_PATH=/path/to/lib:$LD_LIBRARY_PATH</bash>
+
+<p><strong>Compiler errors about C++ standard:</strong> Specify the standard in CFLAGS or use a newer compiler.</p>
+
+<bash>export CXXFLAGS="-std=c++17"</bash>
+
+<p><strong>Makefile not found:</strong> The project might use CMake or Meson instead. Look for <file url="CMakeLists.txt">CMakeLists.txt</file> or <file url="meson.build">meson.build</file>.</p>
+
+<p><strong>configure: command not found:</strong> Run <code>./autogen.sh</code> or <code>autoreconf -fi</code> first.</p>
+
+<p><strong>Permission denied when installing:</strong> Use <code>sudo</code> for system installs, or install to a user directory with <code>--prefix=$HOME/.local</code>.</p>
+
+<bash>./configure --prefix=$HOME/.local
+make
+make install</bash>
+
+<p>Then add <code>export PATH=$HOME/.local/bin:$PATH</code> to <file url="~/.bashrc">~/.bashrc</file>.</p>
+
+<p><strong>Python package fails to compile:</strong> Install <code>python3-dev</code> and build dependencies:</p>
+
+<bash>sudo apt install python3-dev build-essential</bash>
+
+<p><strong>npm install fails with node-gyp:</strong> Install build tools:</p>
+
+<bash>sudo apt install gcc g++ make python3</bash>
+
+<p><strong>Check logs:</strong> Many build systems write logs. Look for <file url="config.log">config.log</file> from autotools, or run with <code>-v</code> for verbose output.</p>
+
+<hr />
+
+<p>That covers building, compiling, and development on Linux. Start small, break things, learn from errors, and keep experimenting. The skills you build here will serve you well whether you are contributing to open source, developing your own projects, or just getting software to run that is not in your package manager.</p>

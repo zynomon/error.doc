@@ -1,0 +1,390 @@
+<page icon="preferences-system">
+<h1>Driver Management on Linux</h1>
+
+<p>Drivers are what let your hardware talk to your operating system. On Linux, most drivers are built right into the kernel, which means they work out of the box. But sometimes you need to install, update, or troubleshoot drivers for specific hardware. This guide walks you through how drivers work and how to manage them.</p>
+
+<hr />
+
+<h2>Table of Contents</h2>
+
+<ul>
+  <li><a href="#how-drivers-work">1. How Drivers Work on Linux</a></li>
+  <li><a href="#checking-hardware">2. Checking What Hardware You Have</a></li>
+  <li><a href="#graphics-drivers">3. Graphics Drivers</a>
+    <ul>
+      <li><a href="#nvidia-graphics">NVIDIA</a></li>
+      <li><a href="#amd-graphics">AMD / Radeon</a></li>
+      <li><a href="#intel-graphics">Intel Integrated Graphics</a></li>
+    </ul>
+  </li>
+  <li><a href="#wifi-drivers">4. Wi-Fi and Network Drivers</a></li>
+  <li><a href="#audio-drivers">5. Audio Drivers</a></li>
+  <li><a href="#printer-drivers">6. Printer Drivers</a></li>
+  <li><a href="#bluetooth-drivers">7. Bluetooth Drivers</a></li>
+  <li><a href="#firmware">8. Firmware (Non-Free Drivers)</a></li>
+  <li><a href="#checking-current-drivers">9. Checking Which Drivers Are Loaded</a></li>
+  <li><a href="#updating-drivers">10. Updating Drivers</a></li>
+  <li><a href="#troubleshooting-drivers">11. Troubleshooting Driver Issues</a></li>
+</ul>
+
+<hr />
+
+<h2 id="how-drivers-work">1. How Drivers Work on Linux</h2>
+
+<p>Unlike Windows where you usually download drivers from manufacturer websites, Linux drivers work differently. Most drivers are included in the Linux kernel itself. When you update your kernel, you also update your drivers. This is why keeping your system updated is so important.</p>
+
+<p>Drivers on Linux come in three forms:</p>
+
+<ul>
+  <li><strong>Built into the kernel:</strong> These load automatically when you boot. Most hardware falls into this category.</li>
+  <li><strong>Loadable kernel modules:</strong> These are driver files stored in <file url="/lib/modules">/lib/modules</file> that load when the hardware is detected.</li>
+  <li><strong>User-space drivers:</strong> These run outside the kernel. Graphics drivers (like Mesa) and printer drivers (CUPS) are examples.</li>
+</ul>
+
+<p>Some hardware needs proprietary (non-free) drivers or firmware that cannot be included in the main kernel for licensing reasons. Those need to be installed separately.</p>
+
+<hr />
+
+<h2 id="checking-hardware">2. Checking What Hardware You Have</h2>
+
+<p>Before managing drivers, you need to know what hardware is in your system. Here are the tools to find out.</p>
+
+<p><strong>List all PCI devices (graphics cards, network adapters, storage controllers):</strong></p>
+
+<bash>lspci</bash>
+
+<p>For more detail, add <code>-v</code> or <code>-k</code> to see which kernel driver is in use:</p>
+
+<bash>lspci -k</bash>
+
+<p>If you only want to see your graphics card:</p>
+
+<bash>lspci | grep VGA</bash>
+
+<p><strong>List USB devices:</strong></p>
+
+<bash>lsusb</bash>
+
+<p><strong>Show detailed system hardware information:</strong></p>
+
+<bash>sudo apt install hwinfo -y
+sudo hwinfo --short</bash>
+
+<p><strong>Show CPU information:</strong></p>
+
+<bash>cat /proc/cpuinfo</bash>
+
+<p><strong>Show what kernel modules are currently loaded:</strong></p>
+
+<bash>lsmod</bash>
+
+<hr />
+
+<h2 id="graphics-drivers">3. Graphics Drivers</h2>
+
+<p>Graphics drivers are the most common drivers people need to manage. They have the biggest impact on gaming, video playback, and desktop performance.</p>
+
+<h3 id="nvidia-graphics">NVIDIA</h3>
+
+<p>NVIDIA cards need proprietary drivers. The open-source Nouveau driver works for basic desktop use but is not suitable for gaming or 3D work.</p>
+
+<p><strong>Check what NVIDIA card you have:</strong></p>
+
+<bash>lspci | grep -i nvidia</bash>
+
+<p><strong>Install NVIDIA drivers:</strong></p>
+
+<bash>sudo apt update
+sudo apt install nvidia-driver firmware-misc-nonfree</bash>
+
+<p>For newer cards or better performance, you may want a newer driver version. On systems that support PPAs:</p>
+
+<bash>sudo add-apt-repository ppa:graphics-drivers/ppa
+sudo apt update
+sudo apt install nvidia-driver-550</bash>
+
+<p>After installation, reboot:</p>
+
+<bash>sudo reboot</bash>
+
+<p><strong>Check if NVIDIA drivers are working:</strong></p>
+
+<bash>nvidia-smi</bash>
+
+<p>This should show your GPU and driver version.</p>
+
+<p><strong>Switch between NVIDIA and integrated graphics (on laptops):</strong> NVIDIA Optimus laptops need special handling. Install the switcher:</p>
+
+<bash>sudo apt install nvidia-prime</bash>
+
+<p>Then use prime-select to choose:</p>
+
+<bash>sudo prime-select nvidia
+# or
+sudo prime-select intel</bash>
+
+<p>Log out and back in for changes to take effect.</p>
+
+<h3 id="amd-graphics">AMD / Radeon</h3>
+
+<p>AMD cards use the open-source drivers that come with the kernel. They are called <code>amdgpu</code> (for newer cards) or <code>radeon</code> (for older cards). These work very well, even for gaming.</p>
+
+<p><strong>Check which driver is in use:</strong></p>
+
+<bash>lspci -k | grep -A 2 -i vga</bash>
+
+<p>Look for "Kernel driver in use: amdgpu" or "radeon".</p>
+
+<p><strong>Install Vulkan support (needed for gaming and Proton):</strong></p>
+
+<bash>sudo apt install mesa-vulkan-drivers mesa-vulkan-drivers:i386</bash>
+
+<p><strong>For newer AMD cards, you may want a newer kernel:</strong> On older distributions, consider using a newer kernel or backports to get the latest <code>amdgpu</code> driver improvements.</p>
+
+<bash>sudo apt install linux-image-amd64-backports</bash>
+
+<p><strong>Check Mesa version (the OpenGL/Vulkan userspace driver):</strong></p>
+
+<bash>glxinfo | grep "OpenGL version"</bash>
+
+<h3 id="intel-graphics">Intel Integrated Graphics</h3>
+
+<p>Intel graphics are fully open-source and included. The driver is called <code>i915</code>. You usually do not need to install anything extra.</p>
+
+<p><strong>Install Vulkan support for Intel:</strong></p>
+
+<bash>sudo apt install mesa-vulkan-drivers mesa-vulkan-drivers:i386</bash>
+
+<p>That is all you need. Intel graphics just work.</p>
+
+<hr />
+
+<h2 id="wifi-drivers">4. Wi-Fi and Network Drivers</h2>
+
+<p>Most Wi-Fi chips work out of the box. Some need proprietary firmware.</p>
+
+<p><strong>Check your Wi-Fi chipset:</strong></p>
+
+<bash>lspci | grep -i network</bash>
+
+<p>Or for USB Wi-Fi adapters:</p>
+
+<bash>lsusb</bash>
+
+<p><strong>Common Wi-Fi chipsets and their needs:</strong></p>
+
+<ul>
+  <li><strong>Intel:</strong> Works out of the box. No extra steps.</li>
+  <li><strong>Realtek:</strong> Some work, some need firmware. Check <file url="/lib/firmware">/lib/firmware</file> for missing files.</li>
+  <li><strong>Broadcom:</strong> Often needs proprietary drivers. Install:</li>
+</ul>
+
+<bash>sudo apt install firmware-b43-installer</bash>
+
+<p>Or for newer Broadcom chips:</p>
+
+<bash>sudo apt install broadcom-sta-dkms</bash>
+
+<p><strong>If Wi-Fi is not working, check if firmware is missing:</strong></p>
+
+<bash>dmesg | grep firmware</bash>
+
+<p>This shows what firmware files the kernel is looking for.</p>
+
+<hr />
+
+<h2 id="audio-drivers">5. Audio Drivers</h2>
+
+<p>Audio on Linux uses ALSA (Advanced Linux Sound Architecture) and PulseAudio or PipeWire. Drivers are usually built in.</p>
+
+<p><strong>Check audio hardware:</strong></p>
+
+<bash>lspci | grep -i audio</bash>
+
+<p><strong>List audio devices:</strong></p>
+
+<bash>cat /proc/asound/cards</bash>
+
+<p><strong>If sound is not working, check if the correct card is selected:</strong></p>
+
+<bash>alsamixer</bash>
+
+<p>Press F6 to select the correct sound card. Make sure channels are not muted (MM means muted, press M to unmute).</p>
+
+<p><strong>For USB audio devices:</strong> They usually work immediately. Check with <code>lsusb</code> to confirm the device is detected.</p>
+
+<hr />
+
+<h2 id="printer-drivers">6. Printer Drivers</h2>
+
+<p>Printers on Linux are managed by CUPS (Common Unix Printing System). Most modern printers work with driverless printing (IPP Everywhere).</p>
+
+<p><strong>Install CUPS:</strong></p>
+
+<bash>sudo apt install cups
+sudo systemctl enable cups
+sudo systemctl start cups</bash>
+
+<p>Access the web interface at <code>http://localhost:631</code> to add printers.</p>
+
+<p><strong>For printers that need specific drivers:</strong> Many HP printers work with HPLIP:</p>
+
+<bash>sudo apt install hplip</bash>
+
+<p>For Brother printers, the manufacturer provides .deb packages on their website.</p>
+
+<p><strong>Check if your printer is detected:</strong></p>
+
+<bash>lpstat -t</bash>
+
+<hr />
+
+<h2 id="bluetooth-drivers">7. Bluetooth Drivers</h2>
+
+<p>Bluetooth drivers are included. You may need to install the Bluetooth stack.</p>
+
+<p><strong>Install Bluetooth support:</strong></p>
+
+<bash>sudo apt install bluetooth bluez bluez-tools</bash>
+
+<p><strong>Check Bluetooth controller:</strong></p>
+
+<bash>lsusb | grep -i bluetooth</bash>
+
+<p>Or for internal Bluetooth:</p>
+
+<bash>lspci | grep -i bluetooth</bash>
+
+<p><strong>Start Bluetooth service:</strong></p>
+
+<bash>sudo systemctl enable bluetooth
+sudo systemctl start bluetooth</bash>
+
+<p>If your Bluetooth adapter is not working, check for missing firmware:</p>
+
+<bash>dmesg | grep -i bluetooth</bash>
+
+<hr />
+
+<h2 id="firmware">8. Firmware (Non-Free Drivers)</h2>
+
+<p>Some hardware needs firmware files that are not included by default. These are small files that the driver loads onto the hardware at boot.</p>
+
+<p><strong>Install common firmware packages:</strong></p>
+
+<bash>sudo apt install firmware-linux firmware-linux-nonfree firmware-misc-nonfree</bash>
+
+<p>For Wi-Fi firmware:</p>
+
+<bash>sudo apt install firmware-iwlwifi firmware-realtek firmware-brcm80211</bash>
+
+<p>For audio firmware:</p>
+
+<bash>sudo apt install firmware-sof-signed</bash>
+
+<p>After installing firmware, reboot or reload the driver:</p>
+
+<bash>sudo modprobe -r driver_name && sudo modprobe driver_name</bash>
+
+<hr />
+
+<h2 id="checking-current-drivers">9. Checking Which Drivers Are Loaded</h2>
+
+<p>Here are the most useful commands for seeing what drivers are active.</p>
+
+<p><strong>List all loaded kernel modules with their dependencies:</strong></p>
+
+<bash>lsmod</bash>
+
+<p><strong>Show driver for a specific PCI device:</strong></p>
+
+<bash>lspci -k -s 00:02.0</bash>
+
+<p>Replace the address with your device's PCI address.</p>
+
+<p><strong>Show what driver is controlling a USB device:</strong></p>
+
+<bash>lsusb -t</bash>
+
+<p><strong>Show kernel messages about driver loading:</strong></p>
+
+<bash>dmesg | grep -i driver</bash>
+
+<p><strong>Check graphics driver details:</strong></p>
+
+<bash>glxinfo -B</bash>
+
+<hr />
+
+<h2 id="updating-drivers">10. Updating Drivers</h2>
+
+<p>Since most drivers are in the kernel, updating your kernel updates your drivers.</p>
+
+<p><strong>Update the kernel:</strong></p>
+
+<bash>sudo apt update
+sudo apt upgrade</bash>
+
+<p>This installs the latest kernel available in your distribution's repositories.</p>
+
+<p><strong>If you want a newer kernel than your distribution provides:</strong> You can use backports or a mainline kernel tool. Be careful with this on production systems.</p>
+
+<p><strong>For NVIDIA drivers, update separately:</strong></p>
+
+<bash>sudo apt update
+sudo apt upgrade nvidia-driver-*</bash>
+
+<p><strong>For Mesa graphics drivers:</strong> They update through regular system updates. On some distributions, you can use a PPA for newer Mesa:</p>
+
+<bash>sudo add-apt-repository ppa:kisak/kisak-mesa
+sudo apt update
+sudo apt upgrade</bash>
+
+<hr />
+
+<h2 id="troubleshooting-drivers">11. Troubleshooting Driver Issues</h2>
+
+<p><strong>Hardware not working at all:</strong> First, check if it is detected:</p>
+
+<bash>lspci
+# or
+lsusb</bash>
+
+<p>If not detected, check BIOS settings. Some hardware can be disabled in BIOS.</p>
+
+<p><strong>Driver is loaded but hardware not working:</strong> Check kernel messages for errors:</p>
+
+<bash>dmesg | grep -i error
+dmesg | grep -i fail</bash>
+
+<p><strong>Missing firmware errors:</strong> If <code>dmesg</code> shows "firmware: failed to load", find and install the package that contains that firmware:</p>
+
+<bash>apt search firmware | grep -i keyword</bash>
+
+<p><strong>Graphics issues after update:</strong> If an update broke graphics, you can boot an older kernel from the GRUB menu (hold Shift during boot).</p>
+
+<p><strong>Module not loading at boot:</strong> You can force a module to load early by adding it to <file url="/etc/modules">/etc/modules</file>:</p>
+
+<bash>echo "module_name" | sudo tee -a /etc/modules</bash>
+
+<p><strong>Blacklisting a driver:</strong> If the wrong driver is loading for your hardware, you can blacklist it. Create a file in <file url="/etc/modprobe.d">/etc/modprobe.d</file>:</p>
+
+<bash>echo "blacklist driver_name" | sudo tee /etc/modprobe.d/blacklist-driver.conf</bash>
+
+<p>Then update initramfs and reboot:</p>
+
+<bash>sudo update-initramfs -u
+sudo reboot</bash>
+
+<p><strong>Check what drivers are available for your hardware:</strong> The <code>modinfo</code> command shows details about a kernel module:</p>
+
+<bash>modinfo i915</bash>
+
+<p><strong>Reload a driver without rebooting:</strong></p>
+
+<bash>sudo modprobe -r driver_name
+sudo modprobe driver_name</bash>
+
+<hr />
+
+<p>That covers driver management on Linux. Most of the time, everything just works. When it does not, the tools and commands here will help you figure out what is wrong. The kernel logs (<code>dmesg</code>) are your best friend when troubleshooting driver issues.</p>

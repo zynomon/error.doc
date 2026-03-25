@@ -1,0 +1,184 @@
+<page icon="messagebox_critical">
+<h1>Onu Browser: Understanding Its Current State</h1>
+
+<p>So you are coming from Chrome and wondering about Onu. That is fair. Any browser that is not Chrome or Firefox raises questions about security, stability, and whether you can trust it with your day-to-day browsing. This guide is honest about where Onu stands right now. The good parts, the rough edges, and what you should know before making it your main browser.</p>
+
+<hr />
+
+<h2>Reality Check: Where Onu Is Right Now</h2>
+
+<p>Let us be upfront. Onu is version 0.6. That 0 in the version number is not hiding anything. This is not a finished product. It is a functional browser built by a small team. Or one person, depending on how you count. It works. It can browse the web, play videos, handle multiple tabs, and do most daily tasks. But it does not have the decades of security hardening, the massive testing infrastructure, or the dedicated security team that major browsers have.</p>
+
+<p>If you are someone who needs to do online banking, handle sensitive work documents, or store passwords in your browser, you should be thoughtful about using any browser this early in its development. That is not a knock on Onu. It is just reality for any project with a 0.x version number.</p>
+
+<hr />
+
+<h2>Security Concerns You Should Know</h2>
+
+<p>Here are the areas where Onu differs from more established browsers from a security perspective.</p>
+
+<p><strong>Update Frequency</strong></p>
+
+<p>Major browsers update every few weeks with security patches. Onu does not have automatic updates. You need to manually download new versions when they are released. If you install Onu through your distribution's package manager, you get updates when your distribution decides to push them. That can be weeks or months after a security fix is available.</p>
+
+<p>The Chromium engine that Onu uses, QtWebEngine, gets security updates when Qt releases them. But Onu itself does not automatically pull those updates. You are relying on your package manager or manual intervention to stay current.</p>
+
+<p>What this means for you: If a serious vulnerability is discovered in the web engine, you need to actively update Onu. There is no background updater watching for you.</p>
+
+<p><strong>Sandboxing and Process Isolation</strong></p>
+
+<p>Major browsers run each tab in a separate process with strict sandboxing. If a malicious website exploits a vulnerability in one tab, it is contained. Onu uses QtWebEngine, which does have some process separation, but it is not as aggressive or as thoroughly tested as what you get with mainstream browsers.</p>
+
+<p>QtWebEngine's renderer processes do run separately, but the isolation boundaries are different. The browser process has more direct access to renderer memory than in Chrome's architecture. In practical terms, a successful exploit against the renderer has a higher chance of affecting the main browser process.</p>
+
+<p>What this means for you: The consequences of visiting a malicious site could be more severe. The browser is less likely to contain an exploit to a single tab.</p>
+
+<p><strong>Extension Model</strong></p>
+
+<p>This is a big one. Onu extensions are full system libraries. They are .so or .dll files that run with the same privileges as the browser itself. An extension can read your files, access your network, and do anything the browser can do.</p>
+
+<p>Mainstream browser extensions run in a sandboxed JavaScript environment with strictly declared permissions. You see exactly what permissions an extension needs before installing it. Onu extensions have no permission system. When you enable an extension, you are trusting that code completely. There is no review process, no store, no permission prompts. An extension can access your entire download history, all your saved data, and everything else stored in the browser's configuration.</p>
+
+<p>The QR code extension example shows an extension adding a toolbar button, injecting scripts, and accessing the current page. All without asking permission. That is how all extensions work.</p>
+
+<p>What this means for you: Only install extensions from sources you absolutely trust. There is no safety net. The extension manager shows you metadata like name, maintainer, and description, but there is no verification that the extension actually does what it claims.</p>
+
+<p><strong>Site Isolation</strong></p>
+
+<p>Modern browsers have site isolation. Different websites run in different processes even within the same tab. This prevents one site from reading data from another site in the same process. Onu does not have this. The renderer process handling a tab can see all content loaded in that tab, including cross-origin frames.</p>
+
+<p>What this means for you: In theory, a malicious ad on a trusted site has a better chance of accessing data from the main site than it would in a more isolated browser. The cross-origin policies still apply at the JavaScript level, but the underlying process boundary is shared.</p>
+
+<p><strong>Encryption Implementation</strong></p>
+
+<p>Onu encrypts your history, favorites, and sessions using a custom implementation. It takes your password, hashes it with SHA-256, and uses that to XOR your data. XOR encryption with a static key derived from a password is not industry standard. It works, but it is not the kind of encryption a security auditor would approve for sensitive data.</p>
+
+<p>The default encryption mode uses a key derived from your system's hostname and architecture. That is essentially no encryption. Anyone with access to your computer can read the encrypted.conf file, derive the key the same way, and decrypt everything.</p>
+
+<p>What this means for you: Do not rely on Onu's encryption to protect truly sensitive data. The custom password option is better than the default, but it is still a homegrown solution. For anything that actually needs encryption, use a dedicated password manager like Bitwarden or KeePassXC, and rely on your operating system's disk encryption.</p>
+
+<p><strong>Cookie and Data Handling</strong></p>
+
+<p>Onu stores all browsing data in plain text in your home directory when encryption is disabled. Even with encryption enabled, the key is stored in memory while the browser runs. The "Delete Cookies in Every Session" option works, but it relies on you remembering to enable it. By default, cookies persist between sessions.</p>
+
+<p>The browser does not have per-site data controls. You can clear everything or nothing. There is no way to say "keep cookies for this site but delete for everything else" through the interface. That control exists at the code level but is not exposed to users.</p>
+
+<p>What this means for you: If you care about cookie-based tracking, you need to be deliberate about your settings. The defaults lean toward convenience over privacy.</p>
+
+<hr />
+
+<h2>Stability Issues</h2>
+
+<p>Onu is stable enough for daily browsing, but it has quirks that users coming from mature browsers will notice.</p>
+
+<p><strong>Crash Scenarios</strong></p>
+
+<p>Certain websites trigger crashes more often than in mainstream browsers. Sites with heavy JavaScript, complex WebGL, or aggressive memory usage can cause the renderer to crash. The browser tries to recover, but sometimes the whole window goes down.</p>
+
+<p>Opening too many tabs, especially with video content, can push the memory usage high enough that the system starts swapping or the browser crashes. The downloader with high segment counts can also contribute to memory pressure.</p>
+
+<p><strong>Memory Usage Patterns</strong></p>
+
+<p>Onu does not aggressively release memory when tabs are closed. You might notice that closing a tab does not immediately reduce memory usage. Over time, the browser accumulates memory. A restart every few days keeps things responsive.</p>
+
+<p>This is not unusual for QtWebEngine-based browsers. The engine is designed for embedded use cases and does not have the same memory management optimizations as full Chromium.</p>
+
+<p><strong>QtWebEngine Version Dependencies</strong></p>
+
+<p>Onu's behavior depends heavily on the QtWebEngine version it was built against. If you are on an older distribution with Qt 5.15, you are running a several-year-old version of Chromium under the hood. That means you are missing years of security fixes and web platform improvements.</p>
+
+<p>Newer Onu builds use Qt 6, which brings a more recent Chromium, but that depends on your distribution providing Qt 6 packages or you building from source.</p>
+
+<p>What this means for you: Your experience with Onu will vary dramatically based on your distribution and how you installed it. The same binary that works perfectly on one system might crash constantly on another due to Qt library differences.</p>
+
+<hr />
+
+<h2>Feature Gaps</h2>
+
+<p>Here are things that many browsers have that Onu simply does not do. Not yet, anyway.</p>
+
+<p><strong>Account Sync</strong></p>
+
+<p>There is no account system. Your bookmarks, history, and passwords stay on one machine. If you switch computers, you start over. There is no cloud sync, no profiles, no way to share data between devices. Some people prefer this. Most users expect sync to just work across their devices.</p>
+
+<p><strong>Built-in Password Manager</strong></p>
+
+<p>Onu does not have a password manager. It does not offer to save passwords, does not autofill them, and does not generate secure passwords. If you use a third-party password manager like Bitwarden or KeePassXC, this is fine. If you rely on your browser's built-in password manager, you will need to change your workflow.</p>
+
+<p><strong>Automatic Updates</strong></p>
+
+<p>Already mentioned, but worth repeating. Onu has no auto-updater. You need to check for updates yourself. In the Linux world, this is often handled by your package manager, but that depends on the package being updated. Many distributions do not update browsers outside of major releases.</p>
+
+<p><strong>Extension Web Store</strong></p>
+
+<p>There is no central repository for Onu extensions. You find them on GitHub or forums, download a .so file, and place it in the extensions folder. There is no curation, no security review, no easy way to discover what is available. The QR code extension is bundled with the source code, but it is not distributed with the browser.</p>
+
+<p><strong>Developer Tools Maturity</strong></p>
+
+<p>The developer tools work. They are the standard QtWebEngine inspector. They are not as polished as browser DevTools. The console works, the element inspector works, the network tab works. But features like performance profiling, memory snapshots, and device emulation are either missing or less complete.</p>
+
+<p><strong>Built-in Ad Blocking</strong></p>
+
+<p>Onu has a simple adblock that uses a hosts file. It works for basic blocking, but it is not as comprehensive as dedicated ad blockers. There is no element hiding, no cosmetic filtering, no script blocking per site. The adblocker is a simple domain-based blocker that reads from a text file.</p>
+
+<p><strong>Printing and PDF Support</strong></p>
+
+<p>Onu browser does not have prominent printing support. However, the inner Chromium engine has it. The integration between the browser interface and the underlying printing system is not fully polished.</p>
+
+<p><strong>Chromium Flags</strong></p>
+
+<p>Onu has a field for Chromium flags, but using them is hit or miss. Some flags work. Some crash the browser. Some do nothing. The flag support is whatever QtWebEngine exposes, which is less than full Chromium.</p>
+
+<hr />
+
+<h2>What Actually Works Well</h2>
+
+<p>It is not all bad. Onu does some things well, and for certain users, it might be exactly what they want.</p>
+
+<p><strong>Performance on Low-End Hardware</strong></p>
+
+<p>Onu is lighter than mainstream browsers. Not dramatically, but noticeably. On a machine with 4GB of RAM or less, Onu keeps running when heavier browsers start swapping. The interface is responsive, and tabs take less memory per tab. This is the main reason people use QtWebEngine browsers.</p>
+
+<p><strong>Qt Integration</strong></p>
+
+<p>If you use other Qt applications, Onu fits in. It uses your system's Qt theme, respects your icon theme, and looks like a native application. For people who care about desktop integration, this is a feature, not a bug.</p>
+
+<p><strong>Download Manager</strong></p>
+
+<p>The segmented downloader is genuinely good. It handles large files well, resumes properly, and the smart path organization is useful. For people who download a lot of files, this works better than most browsers' download systems.</p>
+
+<p><strong>Customizability</strong></p>
+
+<p>You can modify anything. The source is open. The QSS theming is extensive. The extension system, for all its security problems, lets you do things browser extensions cannot. You want to add a QR code generator to the toolbar? You can. You want to completely replace the tab bar? That is possible. You want to inject system-level JavaScript? That is built in.</p>
+
+<p><strong>Privacy Defaults</strong></p>
+
+<p>Out of the box, Onu does not phone home. No Google services, no telemetry, no usage tracking. It connects to the sites you visit and nothing else. For people who want a browser that stays out of their business, this matters.</p>
+
+<p><strong>No Corporate Ties</strong></p>
+
+<p>Major browsers are backed by corporations. Onu is not. If your goal is to minimize reliance on any corporate entity, Onu is one option. It uses Chromium under the hood, but the browser itself has no connection to any company unless you deliberately use their services.</p>
+
+<hr />
+
+<h2>Recommendations</h2>
+
+<p>If you are reading this, you are probably deciding whether to try Onu. Here is how to approach it.</p>
+
+<p><strong>Do not replace your main browser immediately.</strong> Keep your current browser installed. Use Onu for a week. See if it fits your workflow. If it crashes, you have a fallback. If something does not work, you have a way to get things done.</p>
+
+<p><strong>Start with the latest version.</strong> The version in your distribution's repositories might be old. Check the Onu GitHub releases page. If you can build from source or use a more recent package, do that. The difference between Qt 5.15 and Qt 6 is significant.</p>
+
+<p><strong>Be selective about extensions.</strong> Only install extensions you trust completely. Look at the source code if you can. The QR code extension is safe because you can read it. Anything you find on a forum? Be careful. There is no review process, no permission system, no safety net.</p>
+
+<p><strong>Use a real password manager.</strong> Onu does not have one anyway. This is a good time to set up Bitwarden, KeePassXC, or whatever you prefer. It works across all browsers, not just Onu.</p>
+
+<p><strong>Enable the custom encryption password.</strong> Do not rely on the default system key. Pick a strong password. The browser will ask for it at startup. It is slightly annoying, but it is better than leaving your history readable by anyone with access to your files.</p>
+
+<p><strong>Watch for updates.</strong> Subscribe to the GitHub repository. Check for new releases every few weeks. Security patches matter. Do not let the browser go stale.</p>
+
+<p><strong>Understand what you are getting.</strong> Onu is a hobby project that happens to be a functional browser. It is not a product with a company behind it. The developer fixes bugs when they have time. Features get added when someone wants them. If that sounds okay to you, Onu might be a good fit for experimentation and learning. If you need guaranteed support and rapid security responses, stick with more established browsers.</p>
+
+<hr />
+
+<p>Onu is interesting. It works. It has strengths that mainstream browsers do not, especially around customization and low-resource usage. It also has real gaps in security and polish that matter. For some people, the trade-offs are worth it for a secondary browser or for tinkering. For others, they are not. The only way to know is to try it. Just keep your expectations realistic and enjoy using Onu for what it is.</p>

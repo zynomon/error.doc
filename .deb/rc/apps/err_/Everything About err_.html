@@ -1,0 +1,129 @@
+
+<h1><strong>Everything about err_</strong></h1>
+<hr />
+<p><strong>err_</strong> (pronounced "error dash") is your friendly system dashboard for <strong>error.os Neospace 2026 Linux</strong>. Think of it as your computer's control center - a simple, graphical tool that helps you see what's inside your machine, install software, manage drivers, and fix common issues without touching the command line.</p>
+<p>Whether you're new to Linux or just want an easier way to manage your system, err_ puts everything you need in one place with a clean, tab-based interface.</p>
+<hr />
+<h1 id="whats-inside">What's Inside</h1>
+<ol>
+<li><a href="#1-system-info">System Info</a> - See what's under the hood</li>
+<li><a href="#2-driver-manager">Driver Manager</a> - Install graphics and printer drivers</li>
+<li><a href="#3-app-installer">App Installer</a> - Discover and install software easily</li>
+<li><a href="#4-app-remover">App Remover</a> - Uninstall programs you don't need</li>
+<li><a href="#5-wine-optimizer">Wine Optimizer</a> - Run Windows apps smoothly</li>
+<li><a href="#6-extra-settings">Extra Settings</a> - Quick links to useful tools</li>
+</ol>
+<hr />
+<h2 id="1-system-info">1. System Info - See What's Under the Hood</h2>
+<p>This panel shows you everything about your computer at a glance. No digging through menus or typing commands - just open this tab and you'll see:</p>
+<ul>
+<li><strong>Operating System</strong> - error.os Neospace 2026 with version details</li>
+<li><strong>Processor</strong> - What CPU you have, its model, and how many cores</li>
+<li><strong>Memory (RAM)</strong> - Total installed memory</li>
+<li><strong>Storage</strong> - How much disk space is used and available</li>
+<li><strong>Hostname</strong> - Your computer's name on the network</li>
+<li><strong>Uptime</strong> - How long since your last restart</li>
+<li><strong>Kernel</strong> - The Linux kernel version</li>
+<li><strong>User Info</strong> - Your username and home folder location</li>
+<li><strong>Install Date</strong> - When error.os was first installed</li>
+<li><strong>Current Time</strong> - System clock</li>
+</ul>
+<p>You can also click the logo three times to play a hidden mini-game - a fun distraction while you wait for installations to complete.</p>
+<p><strong>Quick Actions:</strong> Copy all system info to share with support, or refresh the data anytime.</p>
+<hr />
+<h2 id="2-driver-manager">2. Driver Manager - Keep Your Hardware Happy</h2>
+<p>This tool detects what hardware you have and helps install the right drivers.</p>
+<p><strong>What it detects:</strong></p>
+<ul>
+<li><strong>Graphics Card (GPU)</strong> - Detects NVIDIA, AMD, or Intel graphics</li>
+<li><strong>Processor (CPU)</strong> - Identifies Intel or AMD processors</li>
+</ul>
+<p><strong>What you can do:</strong></p>
+<ul>
+<li><strong>Install NVIDIA drivers</strong> - One click to get the proprietary NVIDIA driver for better gaming and 3D performance</li>
+<li><strong>Install printer drivers</strong> - Sets up CUPS printing system with support for most printers</li>
+<li><strong>Remove unused drivers</strong> - Safely clean up drivers for hardware you don't have (like AMD drivers if you have NVIDIA)</li>
+</ul>
+<p>A terminal window will open for authentication - just enter your password when prompted, and the installation runs automatically.</p>
+<hr />
+<h2 id="3-app-installer">3. App Installer - Discover Great Software</h2>
+<p>Browse and install applications from three different sources, all in one place. Just check the boxes next to apps you want and click Install.</p>
+<p><strong>Package Sources:</strong></p>
+<p><strong>dpkg (Debian Packages)</strong> - Traditional Linux software packages. Includes:
+- Web browsers: Firefox
+- Office: LibreOffice
+- Media: VLC, Audacity, Kdenlive
+- Graphics: GIMP, Inkscape, Krita
+- Games: SuperTuxKart, Extreme Tux Racer, Pingus
+- Education: GCompris, KStars, Stellarium, TuxMath
+- Utilities: FileZilla, Remmina, Simple Scan</p>
+<p><strong>Flatpak</strong> - Sandboxed apps that work across Linux distributions. Includes:
+- Gaming: Steam, Lutris, Heroic Games Launcher
+- Communication: Discord, Telegram, Signal, Element
+- Development: Visual Studio Code, Godot Engine, Zed
+- Creative: Blender, OBS Studio, Kdenlive
+- Emulators: Dolphin, PPSSPP, RetroArch, melonDS
+- And many more</p>
+<p><strong>wget (Direct Downloads)</strong> - Downloads official .deb packages directly from software vendors. Includes:
+- Google Chrome
+- Visual Studio Code
+- Discord
+- Zoom
+- Slack
+- Brave Browser
+- Opera
+- TeamViewer
+- AnyDesk
+- Obsidian</p>
+<p>When you select apps, a terminal window opens to handle the installation. Flatpak will be installed automatically if needed.</p>
+<hr />
+<h2 id="4-app-remover">4. App Remover - Clean Up Unwanted Software</h2>
+<p>This tool helps you uninstall applications you no longer need.</p>
+<p><strong>How to use:</strong>
+1. Start typing the name of an installed application
+2. Autocomplete will suggest matching packages
+3. Select the app and click Remove</p>
+<p><strong>Important Note:</strong> Only remove applications you recognize. If you're unsure what a package does, search online first. Removing system-critical software could break your system.</p>
+<p>A terminal window will open for confirmation and the removal process.</p>
+<hr />
+<h2 id="5-wine-optimizer">5. Wine Optimizer - Run Windows Software</h2>
+<p>Wine lets you run Windows applications on Linux. This tool helps you install, configure, and optimize Wine for the best experience.</p>
+<p><strong>Install / Update Tab:</strong>
+- Check your current Wine version
+- Install Wine Stable (recommended for most users)
+- Install Wine Staging (latest features, may be less stable)
+- Update existing Wine installation</p>
+<p><strong>Optimize Tab:</strong>
+- Gaming Preset - Enables ESYNC, FSYNC, installs DXVK, and optimizes registry settings for maximum gaming performance
+- Balanced Preset - Good for everyday use
+- Compatibility Preset - Better for older applications
+- Individual toggles for ESYNC, FSYNC, DXVK, VKD3D, and Large Address Aware</p>
+<p><strong>Configure Tab:</strong>
+- Create and manage Wine prefixes (separate Windows environments)
+- Set Windows version (Windows 10, 8.1, 7, or XP)
+- Launch winecfg (Wine configuration tool)
+- Launch regedit (Wine registry editor)
+- Launch taskmgr (Wine task manager)</p>
+<p><strong>Cleanup Tab:</strong>
+- Clear Wine cache to free disk space
+- Clean temporary files
+- Remove unused Wine prefixes</p>
+<p>All changes happen through a terminal window where you can see progress and enter your password when needed.</p>
+<hr />
+<h2 id="6-extra-settings">6. Extra Settings - Quick Access to Useful Tools</h2>
+<p>This tab provides quick shortcuts to other helpful resources:</p>
+<p><strong>Wine Optimizer</strong> - Opens the full Wine configuration tool (also available as its own tab)</p>
+<p><strong>System Settings</strong> - Opens your desktop environment's system settings (supports systemsettings or lxqt-config)</p>
+<p><strong>GitHub Repository</strong> - Opens the err_ project page where you can report issues or contribute</p>
+<p><strong>Wallpaper Gallery</strong> - Opens the errpaper website with wallpapers for error.os Neospace</p>
+<p>The bottom of the panel shows version information and a brief description of what err_ does.</p>
+<hr />
+<h2 id="getting-help">Getting Help</h2>
+<p>If you run into any issues:</p>
+<ul>
+<li>Check the terminal output when running installations - it shows what's happening</li>
+<li>Make sure you have an internet connection before installing software</li>
+<li>For driver issues, try restarting after installation</li>
+<li>Visit the GitHub repository to report bugs or ask questions</li>
+</ul>
+<p>err_ is designed to make error.os Neospace 2026 easier to use. It handles the technical details so you can focus on getting things done.</p>

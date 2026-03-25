@@ -52,7 +52,6 @@
 #include <QDialogButtonBox>
 #include <QTabBar>
 #include <QTimer>
-#include <QtConcurrent/QtConcurrent>
 #include <QCompleter>
 #include <QStringListModel>
 #include <QLineEdit>
@@ -208,7 +207,7 @@ signals:
     void settingsChanged();
 
 private:
-    Settings() : m_settings("error.os", "error_doc") {}
+    Settings() : m_settings("error.os", "doc") {}
     QSettings m_settings;
 };
 
@@ -329,10 +328,24 @@ private:
 
     static QString generateIconTag(const QString &iconName) {
         QIcon icon = QIcon::fromTheme(iconName);
-        if (icon.isNull()) icon = QIcon::fromTheme("image-missing");
+        if (icon.isNull()) {
+            return QString("<span style='display: inline-block; width: 16px; height: 16px; background-color: #666; border-radius: 3px; text-align: center; color: white; font-size: 10px; line-height: 16px;'>?</span>");
+        }
 
-        return QString("<img src='data:image/png;base64,%1' alt='%2' style='vertical-align: middle;'>")
-            .arg(iconToBase64(icon))
+        QPixmap pixmap = icon.pixmap(16, 16);
+        if (pixmap.isNull()) {
+            return QString("<span style='display: inline-block; width: 16px; height: 16px; background-color: #666; border-radius: 3px;'> </span>");
+        }
+
+        QByteArray bytes;
+        QBuffer buffer(&bytes);
+        buffer.open(QIODevice::WriteOnly);
+        if (!pixmap.save(&buffer, "PNG")) {
+            return QString("<span>[%1]</span>").arg(iconName);
+        }
+
+        return QString("<img src='data:image/png;base64,%1' alt='%2' style='vertical-align: middle; width: 16px; height: 16px;'>")
+            .arg(QString::fromLatin1(bytes.toBase64()))
             .arg(iconName);
     }
 
@@ -821,7 +834,7 @@ public:
             m_speech = new QTextToSpeech(this);
         }
 
-        applySettings();
+        applySettings();  // Apply settings before each speak
         m_speech->say(text);
     }
 
@@ -894,15 +907,6 @@ public:
     }
 
 protected:
-    QVariant loadResource(int type, const QUrl &url) {
-        if (url.scheme() == "icon") {
-            QIcon icon = QIcon::fromTheme(url.path());
-            if (!icon.isNull()) {
-                return icon.pixmap(icon.availableSizes().isEmpty() ? QSize(16,16) : icon.availableSizes().first());
-            }
-        }
-        return QVariant();
-    }
 
     void load(const DocumentUrl &url) override {
         if (!url.isErr()) return;
@@ -921,7 +925,8 @@ protected:
 
             QRegularExpressionMatch pageMatch = PAGE_ICON_TAG_REGEX.match(html);
             if (pageMatch.hasMatch()) {
-                emit pageIconFound(pageMatch.captured(1));
+                QString iconName = pageMatch.captured(1);
+                emit pageIconFound(iconName);
                 html.remove(PAGE_ICON_TAG_REGEX);
             }
 
@@ -931,6 +936,12 @@ protected:
             while (fileIt.hasNext()) {
                 QRegularExpressionMatch match = fileIt.next();
                 QString filePath = match.captured(1);
+
+                if (filePath.startsWith("~/")) {
+                    filePath = QDir::homePath() + filePath.mid(1);
+                } else if (filePath == "~") {
+                    filePath = QDir::homePath();
+                }
 
                 QFileInfo info(filePath);
                 QFileIconProvider provider;
@@ -944,7 +955,10 @@ protected:
                 QString iconBase64 = QString::fromLatin1(bytes.toBase64());
 
                 QString replacement = QString(
-                                          "<a href='file://%1'><img src='data:image/png;base64,%2'> %3</a>"
+                                          "<a href='file://%1' class='file-link'>"
+                                          "<img src='data:image/png;base64,%2' style='vertical-align: middle; margin-right: 5px;'>"
+                                          "%3"
+                                          "</a>"
                                           ).arg(filePath, iconBase64, info.fileName());
 
                 html.replace(match.captured(0), replacement);
@@ -955,13 +969,95 @@ protected:
                 QRegularExpressionMatch match = bashIt.next();
                 QString code = match.captured(1);
                 QString replacement = QString(
-                                          "<pre>%1</pre>"
-                                          "<a href='bash://%2'>[run]</a>"
+                                          "<div class='bash-widget'>"
+                                          "<pre class='bash-code'>%1</pre>"
+                                          "<a href='bash://%2' class='bash-button'>▶ Run in Terminal</a>"
+                                          "</div>"
                                           ).arg(code.toHtmlEscaped(), code);
                 html.replace(match.captured(0), replacement);
             }
 
-            m_browser->setHtml(html);
+            QString fullHtml =
+                "<style>"
+                "pre, code { "
+                "    background-color: #1e1e1e; "
+                "    color: #d4d4d4; "
+                "    border: 1px solid #3c3c3c; "
+                "    border-radius: 4px; "
+                "    padding: 2px 6px; "
+                "    font-family: 'Consolas', 'Monaco', 'Courier New', monospace; "
+                "    font-size: 13px; "
+                "}"
+                "pre { "
+                "    background-color: #1e1e1e; "
+                "    padding: 12px; "
+                "    overflow-x: auto; "
+                "    margin: 10px 0; "
+                "    border-left: 4px solid #007acc; "
+                "}"
+                "code { "
+                "    background-color: #2d2d2d; "
+                "}"
+                ".bash-widget { "
+                "    background-color: #1e1e1e; "
+                "    color: #d4d4d4; "
+                "    padding: 0; "
+                "    margin: 10px 0; "
+                "    border-radius: 6px; "
+                "    border: 1px solid #3c3c3c; "
+                "    overflow: hidden; "
+                "}"
+                ".bash-code { "
+                "    background-color: #1e1e1e; "
+                "    color: #d4d4d4; "
+                "    border: none; "
+                "    margin: 0; "
+                "    padding: 12px; "
+                "    border-radius: 0; "
+                "    border-left: 4px solid #007acc; "
+                "}"
+                ".bash-button { "
+                "    display: inline-block; "
+                "    background-color: #007acc; "
+                "    color: white; "
+                "    padding: 6px 12px; "
+                "    text-decoration: none; "
+                "    border-radius: 4px; "
+                "    font-size: 12px; "
+                "    margin: 8px 12px 12px 12px; "
+                "    font-weight: 500; "
+                "}"
+                ".bash-button:hover { "
+                "    background-color: #005f9e; "
+                "}"
+                ".file-link { "
+                "    display: inline-block; "
+                "    padding: 6px 10px; "
+                "    text-decoration: none; "
+                "    border: 1px solid #3c3c3c; "
+                "    border-radius: 4px; "
+                "    background-color: #2d2d2d; "
+                "    color: #d4d4d4; "
+                "    margin: 5px 5px 5px 0; "
+                "    font-size: 12px; "
+                "}"
+                ".file-link:hover { "
+                "    background-color: #3c3c3c; "
+                "    border-color: #007acc; "
+                "}"
+                "</style>" + html;
+
+            QUrl baseUrl;
+            if (qrcPath.startsWith(":/")) {
+                baseUrl = QUrl("qrc:/" + qrcPath.mid(1));
+                baseUrl = baseUrl.adjusted(QUrl::RemoveFilename);
+            } else {
+                baseUrl = QUrl::fromLocalFile(qrcPath).adjusted(QUrl::RemoveFilename);
+            }
+
+            m_browser->setHtml(fullHtml);
+            m_browser->document()->setBaseUrl(baseUrl);
+
             emit titleChanged(extractTitle(html));
         } else {
             m_browser->setHtml(NotFoundPage::generate(path));
@@ -970,7 +1066,6 @@ protected:
 
         m_findBar->hide();
     }
-
     QString selectedText() const override { return m_browser->textCursor().selectedText(); }
     QString allText() const override { return m_browser->toPlainText(); }
     void find() override {
@@ -1005,14 +1100,35 @@ private slots:
         if (link.scheme() == "bash") {
             QString code = QUrl::fromPercentEncoding(link.path().toUtf8());
             QString terminal = Settings::instance().terminal();
-            QProcess::startDetached(terminal, QStringList() << "-e" << "bash" << "-c" << code);
-        } else if (link.scheme() == "file") {
-            QDesktopServices::openUrl(link);
+
+            QString fullCmd = QString(
+                                  "bash -c '"
+                                  "echo \"Command to execute: %1\"; "
+                                  "echo; "
+                                  "read -p \"Do you want to execute this command? (y/N): \" confirm; "
+                                  "if [[ \"$confirm\" == \"y\" || \"$confirm\" == \"Y\" ]]; then "
+                                  "    echo; "
+                                  "    echo \"Executing: %1\"; "
+                                  "    echo; "
+                                  "    %1; "
+                                  "    echo; "
+                                  "else "
+                                  "    echo; "
+                                  "    echo \"Execution cancelled.\"; "
+                                  "fi; "
+                                  "echo; "
+                                  "echo \"Press Enter to close\"; "
+                                  "read'"
+                                  ).arg(code);
+
+            QProcess::startDetached(terminal, QStringList() << "-e" << fullCmd);
+
         } else if (link.toString().startsWith(":/")) {
             emit navigationRequested(link.toString());
+        } else if (link.scheme() == "file") {
+            QDesktopServices::openUrl(link);
         }
     }
-
     void showContextMenu(const QPoint &pos) {
         QMenu menu;
         if (m_browser->textCursor().hasSelection()) {
@@ -1035,7 +1151,6 @@ private:
     QTextBrowser *m_browser;
     FindBar *m_findBar;
 };
-
 class ManpageEngine : public ContentEngine {
     Q_OBJECT
 
@@ -1557,7 +1672,7 @@ private slots:
             m_skipVoiceTest = false;
             return;
         }
-
+        // Don't auto-speak - user can use Test button
     }
 
     void populateVoices() {
@@ -1778,7 +1893,7 @@ public:
         titleLabel->setAlignment(Qt::AlignCenter);
 
         auto *infoLabel = new QLabel(
-            "<p><b>Version:</b> 1.2</p>"
+            "<p><b>Version:</b> 1.3</p>"
             "<h3>About</h3>"
            "This documentation takes a time on startup is the main disatvantage except that using this is easy"
             "</ul>",
@@ -1888,7 +2003,8 @@ public:
                 this, &ContentArea::highlightRequested);
         connect(m_manEngine, &ManpageEngine::iconChanged,
                 this, &ContentArea::iconChanged);
-
+        connect(m_errEngine, &ErrorDocEngine::pageIconFound,
+                this, &ContentArea::pageIconFound);
         connect(m_docEngine, &DocEngine::navigationRequested,
                 this, &ContentArea::navigateRequested);
         connect(m_docEngine, &DocEngine::settingsChanged,
@@ -1958,6 +2074,9 @@ signals:
     void settingsChanged();
     void engineChanged(ContentEngine *engine);
     void urlChanged(const QString &url);
+
+
+    void pageIconFound(const QString &iconName);
     void titleChanged(const QString &title);
     void highlightRequested();
     void iconChanged(const QString &iconName);
@@ -1987,7 +2106,7 @@ private:
 
     QString getIconForUrl(const QString &url) {
         if (url == ":/") return "help-browser";
-        if (url.startsWith(":/err/")) return "text-html";
+        if (url.startsWith(":/err/")) return "documentation";
         if (url.startsWith(":/man/")) return "utilities-terminal";
         if (url.startsWith(":/doc/")) {
             QString page = url.mid(6);
@@ -2019,10 +2138,14 @@ public:
 
         m_contentArea = new ContentArea(store, this);
         layout->addWidget(m_contentArea);
+        connect(m_contentArea, &ContentArea::pageIconFound,
+                this, &TabContent::pageIconFound);
     }
 
     ContentArea* contentArea() { return m_contentArea; }
 
+signals:
+    void pageIconFound(const QString &iconName);
 private:
     ContentArea *m_contentArea;
 };
@@ -2124,6 +2247,7 @@ private slots:
         bool hasChildren = (item->childCount() > 0);
 
         if (hasChildren) {
+            // This is a folder/section - just expand/collapse, don't navigate
             item->setExpanded(!item->isExpanded());
             return;
         }
@@ -2234,7 +2358,6 @@ private:
         bookmarksItem->setIcon(0, QIcon::fromTheme("bookmarks"));
         bookmarksItem->setData(0, Qt::UserRole, ":/doc/bookmarks");
     }
-
     void scanQrcDirectoryRecursive(const QString &path, QTreeWidgetItem *parent) {
         QDirIterator it(path, QDirIterator::NoIteratorFlags);
         QMap<QString, QTreeWidgetItem*> dirs;
@@ -2261,8 +2384,15 @@ private:
         for (const QString &dir : subdirs) {
             QFileInfo info(dir);
             QTreeWidgetItem *dirItem = new QTreeWidgetItem(parent);
-            dirItem->setText(0, info.fileName());
-            dirItem->setIcon(0, QIcon::fromTheme("folder"));
+            QString folderName = info.fileName();
+            dirItem->setText(0, folderName);
+
+            QIcon icon = QIcon::fromTheme(folderName);
+            if (icon.isNull()) {
+                icon = QIcon::fromTheme("folder");
+            }
+            dirItem->setIcon(0, icon);
+
             dirItem->setData(0, Qt::UserRole, QString());
             scanQrcDirectoryRecursive(dir, dirItem);
 
@@ -2276,10 +2406,10 @@ private:
             auto *item = new QTreeWidgetItem(parent);
             QString displayName = info.baseName();
             item->setText(0, displayName);
-            item->setIcon(0, QIcon::fromTheme("text-html"));
+            item->setIcon(0, QIcon::fromTheme("documentation"));
 
             QString urlPath = file;
-
+            // Remove the ":/" prefix
             if (urlPath.startsWith(":/")) {
                 urlPath = urlPath.mid(2);
             }
@@ -2290,7 +2420,8 @@ private:
             item->setData(0, Qt::UserRole, ":/err/" + urlPath);
         }
     }
-    void parseManpages(const QString &output, QTreeWidgetItem *parent) {
+
+  void parseManpages(const QString &output, QTreeWidgetItem *parent) {
         QStringList lines = output.split('\n', Qt::SkipEmptyParts);
         QHash<QString, QTreeWidgetItem*> sections;
 
@@ -2530,6 +2661,19 @@ private slots:
             }
         });
 
+        connect(tab, &TabContent::pageIconFound, this, [this, index](const QString &iconName) {
+            // Update the tab's icon
+            QIcon icon = QIcon::fromTheme(iconName);
+            if (!icon.isNull()) {
+                m_tabWidget->setTabIcon(index, icon);
+            }
+
+            if (TabContent *currentTab = this->currentTab()) {
+                QString currentUrl = currentTab->contentArea()->currentUrl()->url();
+                m_navTree->updatePageIcon(currentUrl, iconName);
+            }
+        });
+
         connect(tab->contentArea(), &ContentArea::navigateRequested, this, &MainWindow::navigateCurrentTab);
         connect(tab->contentArea(), &ContentArea::highlightRequested, this, &MainWindow::highlightText);
 
@@ -2646,11 +2790,7 @@ private slots:
         m_backBtn->setEnabled(!m_recentUrls.isEmpty());
 
         if (!m_recentUrls.isEmpty()) {
-            QString tooltip = "Back to:<br>";
-            for (int i = 0; i < m_recentUrls.size() && i < 3; i++) {
-                tooltip += QString("• %1<br>").arg(m_recentTitles.value(i, m_recentUrls[i]));
-            }
-            tooltip += "Long press for more options";
+            QString tooltip =  "Long press for more options";
             m_backBtn->setToolTip(tooltip);
         } else {
             m_backBtn->setToolTip("Back");
@@ -2946,7 +3086,7 @@ private:
 };
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    QApplication::setApplicationName("error_doc");
+    QApplication::setApplicationName("doc");
     QApplication::setOrganizationName("error.os");
 
     MainWindow window;

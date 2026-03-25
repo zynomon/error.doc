@@ -1,0 +1,109 @@
+<page icon="messagebox_critical">
+<h1 id="current-version-is-41">Current Version is 4.1</h1>
+<p>Here are Some issues listed with their fixes</p>
+<ul>
+<li><a href="#vex-closing-itself-and-why"># Vex Closing when trying to open?</a></li>
+<li><a href="#the-user-icon"># User icon not working?</a></li>
+<li><a href="#vexqss-not-working"># "Vex#QSS" is not working?</a></li>
+<li><a href="#session-restore"># Session restore is not working?</a></li>
+<li><a href="#cant-switch-modes-in-vi-mode"># Can't switch modes from Vi mode?</a></li>
+<li><a href="#no-editor-is-showing-up"># Vex isn't showing an editor just an icon?</a></li>
+<li><a href="#linuxunix-only-issue"># QCommandLineParser issue</a></li>
+</ul>
+<hr />
+<h2 id="vex-closing-itself-and-why">Vex Closing itself and why?</h2>
+<p>Vex uses fileReq for requesting files, its a workaround for not using QNetwork library in order to achieve single instance logic, so the logic is</p>
+<pre><code>┌─────────────────┐     ┌─────────────────────────────────────────────────────────────┐
+│ Second instance │────▶│ writes your file arguments to fileReq, then second instance│
+└─────────────────┘     │ quits                                                      │
+                        └─────────────────────────────────────────────────────────────┘
+                                               │
+                                               ▼
+                        ┌─────────────────────────────────────────────────────────────┐
+                        │ First instance reads it and opens that path in new tab     │
+                        └─────────────────────────────────────────────────────────────┘
+                                               ▲
+┌─────────────────┐     ┌─────────────────────┴───────────────────────────────────────┐
+│ Third instance  │────▶│ writes your file arguments to fileReq, then third instance │
+└─────────────────┘     │ quits                                                      │
+                        └─────────────────────────────────────────────────────────────┘
+
+More instances work the same way
+</code></pre>
+<p><em>Note: fileReq is located in your Vex config folder (~/.vex/.temp/)</em></p>
+<p>so when your PC gets shut down immediately or Vex gets killed by some Task manager it can leave that "fileReq" intact that causes next instance to think that it's secondary instance and it needs to writes to fileReq instead of working like first one</p>
+<h3 id="how-to-fix-it">How to fix it?</h3>
+<p>fix is simple just remove the ~/.vex/.temp/fileReq</p>
+<p>vex will open again, its not a memory management issue. it's just the logic is incomplete. we will add some fixes and patches to this in next version.</p>
+<hr />
+<h2 id="the-user-icon">The User icon</h2>
+<p>In version 4.1 the user icon system is incomplete but the system icon works perfectly</p>
+<h3 id="fix">fix?</h3>
+<p>Currently we are working on more robust solution for icon handling. Current user icon applying logic is incomplete.</p>
+<hr />
+<h2 id="vexqss-not-working">Vex#QSS not working?</h2>
+<p>Vex#QSS block seems to not work in current version its because of properly connecting logics but not consistently. I apologize for the inconvenience. Soon we will make it work , wait for more latest releases.</p>
+<hr />
+<h2 id="session-restore">Session restore</h2>
+<p>Current Session restore logic is fragile and its hard to work with it</p>
+<h3 id="fix-1">fix?</h3>
+<p>don't rely on session restore for now , we will also make a path for it as soon as possible</p>
+<hr />
+<h2 id="cant-switch-modes-in-vi-mode">Can't Switch modes in vi mode?</h2>
+<p>you can switch from vi mode by pressing some keys but current vi mode is very minimally implemented.</p>
+<h3 id="fix-2">fix?</h3>
+<p>use vi mode switching from qmenubar</p>
+<hr />
+<h2 id="no-editor-is-showing-up">No editor is showing up</h2>
+<p>If you execute vex and not find any editor/menu bar/status bar and see just an icon , that means no plugins are loaded . here is a demo</p>
+<h3 id="fix-3">fix?</h3>
+<p>The fix is simple, just keep the VexCore/LookAndFeelCore.so or .dll to where your binary for vex exists as for linux it's in /bin/vex it's not recommended to use that . instead you can make a folder in usr share and paste all .so and /bin/vex and then link the "vex" to /bin/ so everything stays same,</p>
+<h3 id="how-would-you-find-those-so-or-dll-pre-compiled">How would you find those .so or .dll pre compiled?</h3>
+<p>using our zstd compressed packages</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Download</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GNU/Linux Zstd Tarball</td>
+<td><a href="https://github.com/zynomon/vex/releases/download/4.1-cytoplasm/vex_4.1_Cytoplasm.tar.zst"><code>vex_4.1_Cytoplasm.tar.zst</code></a> (145 KB)</td>
+</tr>
+</tbody>
+</table>
+<p>check <code>/usr/lib/vex</code> folder or any .so file in the area. by default vex never writes anything in the directory its being installed so it doesnt matters your config and data saved in ~/.vex/</p>
+<hr />
+<h2 id="linuxunix-only-issue">Linux/Unix only issue</h2>
+<p>This issue only occurs when you have installed Vex globally and are trying to execute a Vex binary that is in the same directory as the plugins.</p>
+<p>Windows installation stays compact, while Linux's implementation installs it to the lib directory.</p>
+<pre><code>zynomon@debian:~/Desktop$ /home/zynomon/Desktop/vex 
+QCommandLineParser: already having an option named "f"
+QCommandLineParser: already having an option named "file" &lt;--- Registering the vex initialization twice 
+zynomon@debian:~/Desktop$ sudo rm -rf /usr/lib/vex &lt;-- immediate fix but not reliable; make sure to link the binary to /bin and keep libs and binary in opt or usr/share, that is more reliable
+zynomon@debian:~/Desktop$ vex
+</code></pre>
+<h3 id="why-this-issue">Why this issue?</h3>
+<p>The main reason is <code>VexCore.so</code> is being loaded twice.</p>
+<p>Looking at the source code in <code>PlugVex.H</code>, the <code>PluginLoader</code> class defines multiple plugin search paths:</p>
+<pre><code class="language-cpp">QStringList paths;
+paths &lt;&lt; QCoreApplication::applicationDirPath();
+
+#if defined(Q_OS_UNIX) &amp;&amp; !defined(Q_OS_DARWIN)
+paths &lt;&lt; "/usr/lib/vex";
+#endif
+</code></pre>
+<p>When Vex is installed globally, the plugins exist in <code>/usr/lib/vex</code>. If you also run a Vex binary from a location that contains plugins (like your Desktop or a build directory), the loader finds and loads plugins from <strong>both locations</strong>:</p>
+<ol>
+<li>The current directory (<code>applicationDirPath()</code>)</li>
+<li>The system directory (<code>/usr/lib/vex</code>)</li>
+</ol>
+<p>This causes duplicate initialization, resulting in the <code>QCommandLineParser</code> errors shown above.</p>
+<p>because VexCore registers -f --file argument and if you do it two times it will be nothing but ambiguous</p>
+<p>However, this is not a reliable long-term fix. The proper solution is to keep your plugins and binary together in a single location (like <code>/opt/vex</code> or <code>/usr/share/vex</code>) and link the binary to <code>/bin</code> so everything stays consistent.</p>
+<hr />
+<h2 id="still-having-issues">Still having issues?</h2>
+<p>Report bugs at: <a href="https://github.com/zynomon/vex/issues">https://github.com/zynomon/vex/issues</a><br />
+Make sure to help us by contributions and thanks for using Vex regardless of issues .</p>

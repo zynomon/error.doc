@@ -1,0 +1,536 @@
+<page icon="utilities-terminal">
+<h1>Linux Fundamentals: Commands, Partitions, Bash, apt, sudo, and Groups</h1>
+
+<hr />
+
+<h2>Table of Contents</h2>
+
+<ul>
+  <li><a href="#partitions">1. Disk Partitions and Filesystems</a>
+    <ul>
+      <li><a href="#partition-basics">Understanding Partitions</a></li>
+      <li><a href="#common-filesystems">Common Filesystems</a></li>
+      <li><a href="#partition-commands">Partition Management Commands</a></li>
+      <li><a href="#mounting">Mounting Filesystems</a></li>
+    </ul>
+  </li>
+  <li><a href="#apt">2. APT Package Management</a>
+    <ul>
+      <li><a href="#apt-basics">Basic APT Commands</a></li>
+      <li><a href="#apt-advanced">Advanced Package Operations</a></li>
+      <li><a href="#repositories">Managing Repositories</a></li>
+    </ul>
+  </li>
+  <li><a href="#sudo">3. sudo and Privilege Escalation</a>
+    <ul>
+      <li><a href="#sudo-basics">Using sudo</a></li>
+      <li><a href="#sudoers">The sudoers File</a></li>
+      <li><a href="#sudo-tips">sudo Best Practices</a></li>
+    </ul>
+  </li>
+  <li><a href="#users-groups">4. Users and Groups</a>
+    <ul>
+      <li><a href="#user-management">User Management Commands</a></li>
+      <li><a href="#group-management">Group Management Commands</a></li>
+      <li><a href="#permissions">File Permissions</a></li>
+      <li><a href="#special-permissions">Special Permissions (setuid, setgid, sticky)</a></li>
+    </ul>
+  </li>
+  <li><a href="#bash">5. Bash Shell</a>
+    <ul>
+      <li><a href="#bash-operators">Bash Operators</a></li>
+      <li><a href="#bash-redirection">Input and Output Redirection</a></li>
+      <li><a href="#bash-variables">Variables and Environment</a></li>
+      <li><a href="#bash-control">Job Control</a></li>
+    </ul>
+  </li>
+  <li><a href="#coreutils">6. GNU Coreutils Command Reference</a>
+    <ul>
+      <li><a href="#rm">rm - remove files</a></li>
+      <li><a href="#ls">ls - list directory contents</a></li>
+      <li><a href="#cp">cp - copy files</a></li>
+      <li><a href="#mv">mv - move files</a></li>
+      <li><a href="#cat">cat - concatenate files</a></li>
+      <li><a href="#mkdir">mkdir - make directories</a></li>
+      <li><a href="#touch">touch - change timestamps</a></li>
+      <li><a href="#chmod">chmod - change permissions</a></li>
+      <li><a href="#chown">chown - change ownership</a></li>
+      <li><a href="#grep">grep - search text</a></li>
+      <li><a href="#find">find - search files</a></li>
+    </ul>
+  </li>
+  <li><a href="#regex">7. Regular Expressions in Linux</a></li>
+</ul>
+
+<hr />
+
+<h2 id="partitions">1. Disk Partitions and Filesystems</h2>
+
+<h3 id="partition-basics">Understanding Partitions</h3>
+
+<p>A partition is a logical division of a physical hard disk. Linux organizes storage into partitions, each of which can hold a filesystem. The standard partitioning scheme for Linux includes:</p>
+
+<ul>
+  <li><strong>/ (root):</strong> The main partition where the operating system lives</li>
+  <li><strong>/home:</strong> Separate partition for user data (makes reinstalling easier)</li>
+  <li><strong>/boot:</strong> Contains bootloader and kernel files</li>
+  <li><strong>swap:</strong> Used as virtual memory when RAM fills up</li>
+  <li><strong>/var:</strong> For logs and variable data (good to keep separate)</li>
+  <li><strong>/tmp:</strong> Temporary files (often mounted as tmpfs in RAM)</li>
+</ul>
+
+<h3 id="common-filesystems">Common Filesystems</h3>
+
+<ul>
+  <li><strong>ext4:</strong> The default for most Linux distributions. Mature, reliable, and well-supported</li>
+  <li><strong>XFS:</strong> Excellent for large files and high performance, common on servers</li>
+  <li><strong>btrfs:</strong> Modern filesystem with snapshots, compression, and checksumming</li>
+  <li><strong>ZFS:</strong> Advanced filesystem with volume management, not included in mainline kernel</li>
+  <li><strong>FAT32/NTFS:</strong> Windows compatibility</li>
+  <li><strong>tmpfs:</strong> In-memory filesystem (files disappear on reboot)</li>
+</ul>
+
+<h3 id="partition-commands">Partition Management Commands</h3>
+
+<p><strong>View disk information:</strong></p>
+
+<bash>lsblk                          # list all block devices
+sudo fdisk -l                  # detailed partition info
+df -h                          # disk usage of mounted filesystems
+sudo parted -l                 # partition table information</bash>
+
+<p><strong>Create and manage partitions:</strong></p>
+
+<bash>sudo fdisk /dev/sda            # interactive partition editor
+sudo gdisk /dev/sda             # GPT partition editor
+sudo parted /dev/sda            # advanced partition tool
+sudo mkfs.ext4 /dev/sda1        # format partition as ext4
+sudo mkfs.xfs /dev/sda2         # format as XFS
+sudo mkswap /dev/sda3           # create swap space
+sudo swapon /dev/sda3           # enable swap</bash>
+
+<h3 id="mounting">Mounting Filesystems</h3>
+
+<p>Before using a partition, you need to mount it to a directory:</p>
+
+<bash>sudo mount /dev/sda1 /mnt       # mount partition to /mnt
+sudo umount /mnt                # unmount
+mount                           # view all mounted filesystems
+sudo mount -o remount,rw /      # remount as read-write</bash>
+
+<p><strong>Persistent mounts:</strong> Add entries to <file url="/etc/fstab">/etc/fstab</file> to mount automatically at boot:</p>
+
+<pre><code># device    mountpoint  fstype  options      dump pass
+UUID=1234   /           ext4    defaults     0    1
+UUID=5678   /home       ext4    defaults     0    2
+UUID=abcd   none        swap    sw           0    0</code></pre>
+
+<hr />
+
+<h2 id="apt">2. APT Package Management</h2>
+
+<p>APT (Advanced Package Tool) is the package manager for Debian and its derivatives like Ubuntu. It handles installation, removal, and updates of software.</p>
+
+<h3 id="apt-basics">Basic APT Commands</h3>
+
+<bash>sudo apt update                 # update package list from repositories
+sudo apt upgrade                # upgrade all installed packages
+sudo apt full-upgrade           # upgrade with dependency resolution
+sudo apt install package        # install a package
+sudo apt remove package         # remove package (keep config files)
+sudo apt purge package          # remove package and config files
+sudo apt autoremove             # remove unused dependencies
+apt search keyword              # search for packages
+apt show package                # show package details
+apt list --installed            # list installed packages
+apt list --upgradable           # list packages that can be upgraded</bash>
+
+<h3 id="apt-advanced">Advanced Package Operations</h3>
+
+<bash>sudo apt download package       # download .deb file without installing
+sudo apt source package         # download source code
+sudo apt build-dep package      # install build dependencies
+sudo apt install ./file.deb     # install local .deb file
+sudo apt-mark hold package      # prevent package from being upgraded
+sudo apt-mark unhold package    # remove hold
+apt-cache depends package       # show package dependencies
+apt-cache rdepends package      # show reverse dependencies</bash>
+
+<h3 id="repositories">Managing Repositories</h3>
+
+<p>Software sources are defined in <file url="/etc/apt/sources.list">/etc/apt/sources.list</file> and files in <file url="/etc/apt/sources.list.d/">/etc/apt/sources.list.d/</file>. A typical line looks like:</p>
+
+<pre><code>deb http://deb.debian.org/debian bookworm main contrib non-free</code></pre>
+
+<p>Components:</p>
+<ul>
+  <li><strong>main:</strong> Free software officially supported</li>
+  <li><strong>contrib:</strong> Free software that depends on non-free components</li>
+  <li><strong>non-free:</strong> Proprietary software</li>
+  <li><strong>non-free-firmware:</strong> Proprietary firmware</li>
+</ul>
+
+<bash>sudo add-apt-repository ppa:user/name   # add Personal Package Archive
+sudo add-apt-repository --remove ppa:user/name   # remove PPA
+sudo apt update                          # always update after adding repos</bash>
+
+<hr />
+
+<h2 id="sudo">3. sudo and Privilege Escalation</h2>
+
+<p>sudo (superuser do) allows authorized users to run commands with elevated privileges. It is safer than logging in as root because it logs all commands and uses your own password.</p>
+
+<h3 id="sudo-basics">Using sudo</h3>
+
+<bash>sudo command                     # run command as root
+sudo -i                         # interactive root shell
+sudo -s                         # root shell preserving environment
+sudo -u username command        # run command as another user
+sudo -l                         # list allowed commands for your user
+sudo -k                         # invalidate cached credentials
+sudo -v                         # update timestamp (extend timeout)</bash>
+
+<p>The first time you use sudo in a session, it prompts for your password. The privilege lasts for 15 minutes by default.</p>
+
+<h3 id="sudoers">The sudoers File</h3>
+
+<p>Never edit <file url="/etc/sudoers">/etc/sudoers</file> directly. Use <code>visudo</code>, which checks syntax before saving:</p>
+
+<bash>sudo visudo</bash>
+
+<p><strong>Example sudoers entries:</strong></p>
+
+<pre><code># User specification
+john    ALL=(ALL:ALL) ALL              # john can run any command
+alice   ALL=(ALL) /usr/bin/systemctl   # alice can only run systemctl
+
+# Group specification (using % prefix)
+%sudo   ALL=(ALL:ALL) ALL              # members of sudo group can run any command
+%developers ALL=(ALL) NOPASSWD: ALL    # developers group, no password required
+
+# Command aliases
+Cmnd_Alias NETWORKING = /sbin/ifconfig, /bin/ping, /usr/bin/nmap
+bob     ALL=(ALL) NETWORKING           # bob can only run networking commands</code></pre>
+
+<h3 id="sudo-tips">sudo Best Practices</h3>
+
+<ul>
+  <li>Use <code>sudo</code> for individual commands, not entire shells when possible</li>
+  <li>Never run graphical applications with <code>sudo</code> (use <code>pkexec</code> or <code>gksudo</code> instead)</li>
+  <li>The <code>sudo</code> group (Debian/Ubuntu) or <code>wheel</code> group (RHEL/Fedora) controls who gets sudo access</li>
+  <li>Check logs in <file url="/var/log/auth.log">/var/log/auth.log</file> to see who used sudo and what they did</li>
+</ul>
+
+<hr />
+
+<h2 id="users-groups">4. Users and Groups</h2>
+
+<p>Linux is a multi-user system. Every process runs as a specific user and belongs to one or more groups.</p>
+
+<h3 id="user-management">User Management Commands</h3>
+
+<bash># Create users
+sudo useradd john               # basic user creation
+sudo useradd -m john            # create with home directory
+sudo useradd -m -s /bin/bash john # specify shell
+sudo adduser john               # interactive (Debian/Ubuntu)
+
+# Modify users
+sudo usermod -aG sudo john      # add to sudo group (append)
+sudo usermod -L john            # lock account
+sudo usermod -U john            # unlock account
+sudo usermod -s /bin/zsh john   # change shell
+
+# Delete users
+sudo userdel john               # keep home directory
+sudo userdel -r john            # delete home directory too
+
+# Password management
+passwd                          # change your own password
+sudo passwd john                # change another user's password
+sudo passwd -l john             # lock user
+sudo passwd -e john             # force password change on next login</bash>
+
+<h3 id="group-management">Group Management Commands</h3>
+
+<bash># Create and delete groups
+sudo groupadd developers        # create group
+sudo groupdel developers        # delete group
+
+# Modify groups
+sudo groupmod -n newname oldname # rename group
+sudo usermod -aG developers john # add user to group
+sudo gpasswd -d john developers # remove user from group
+
+# View group information
+groups                          # show current user's groups
+groups john                     # show john's groups
+id john                         # show user and group IDs
+getent group developers         # show group members</bash>
+
+<h3 id="permissions">File Permissions</h3>
+
+<p>Every file has three permission sets: Owner (u), Group (g), Others (o). Each set has three permissions: Read (r=4), Write (w=2), Execute (x=1).</p>
+
+<p><strong>Numeric (octal) method:</strong></p>
+
+<bash>chmod 755 script.sh             # rwxr-xr-x (owner: all, group: rx, others: rx)
+chmod 644 file.txt              # rw-r--r-- (owner: rw, group: r, others: r)
+chmod 700 private.sh            # rwx------ (owner only)
+chmod 600 ~/.ssh/id_rsa         # rw------- (SSH private key)</bash>
+
+<p><strong>Symbolic method:</strong></p>
+
+<bash>chmod u+x script.sh             # add execute for owner
+chmod g+w file.txt              # add write for group
+chmod o-r private.txt           # remove read for others
+chmod a+x program               # add execute for all
+chmod u=rwx,g=rx,o=r file       # set exact permissions
+chmod -R 755 directory/         # recursive permission change</bash>
+
+<h3 id="special-permissions">Special Permissions</h3>
+
+<bash># setuid (runs as file owner)
+chmod u+s /usr/bin/passwd       # 4755
+chmod 4755 program              # numeric setuid
+
+# setgid (new files inherit group)
+chmod g+s /shared/directory     # 2755
+chmod 2755 directory            # numeric setgid
+
+# sticky bit (only owner can delete)
+chmod +t /tmp                   # 1777
+chmod 1777 /tmp                 # numeric sticky</bash>
+
+<p><strong>View permissions:</strong></p>
+
+<bash>ls -l file.txt
+# -rw-r--r-- 1 alice developers 1024 Jan 23 10:00 file.txt</bash>
+
+<hr />
+
+<h2 id="bash">5. Bash Shell</h2>
+
+<p>Bash (GNU Bourne Again Shell) is the default shell on most Linux systems. It processes commands, runs programs, and provides scripting capabilities.</p>
+
+<h3 id="bash-operators">Bash Operators</h3>
+
+<p><strong>Pipe (|):</strong> Takes output of the left command and uses it as input to the right command</p>
+
+<bash>ls -la | grep ".txt"           # list files and filter for .txt
+ps aux | grep firefox           # find firefox processes
+cat file.txt | wc -l            # count lines in file</bash>
+
+<p><strong>Logical AND (&&):</strong> Run second command only if first succeeds</p>
+
+<bash>mkdir newdir && cd newdir      # create and enter only if creation worked
+sudo apt update && sudo apt upgrade   # update then upgrade</bash>
+
+<p><strong>Logical OR (||):</strong> Run second command only if first fails</p>
+
+<bash>apt search alien || apt search human   # try one search, fallback to another
+command_not_found || echo "command failed"</bash>
+
+<p><strong>Background (&):</strong> Run command in background</p>
+
+<bash>firefox &                      # launch firefox and get prompt back
+long_running_task &             # run task in background</bash>
+
+<p><strong>Command substitution ($() or ``):</strong> Use output of command as argument</p>
+
+<bash>echo "Today is $(date)"        # embed date in string
+cd $(dirname $(which python))   # go to python's directory</bash>
+
+<h3 id="bash-redirection">Input and Output Redirection</h3>
+
+<bash>command > file                # redirect stdout to file (overwrite)
+command >> file               # append stdout to file
+command 2> error.log          # redirect stderr to file
+command &> output.log         # redirect both stdout and stderr
+command < input.txt           # use file as input
+command 2>&1                  # redirect stderr to stdout</bash>
+
+<h3 id="bash-variables">Variables and Environment</h3>
+
+<bash># Local variables
+myvar="hello"                  # no spaces around =
+echo $myvar                    # use $ to access
+readonly myvar                 # make variable read-only
+
+# Environment variables
+export PATH=$PATH:/my/bin      # add to PATH
+echo $PATH                     # view PATH
+env                            # list all environment variables
+set                            # list all variables
+
+# Special variables
+echo $?                        # exit status of last command
+echo $$                        # current shell PID
+echo $0                        # script name
+echo $1                        # first argument
+echo $@                        # all arguments</bash>
+
+<h3 id="bash-control">Job Control</h3>
+
+<bash>jobs                          # list background jobs
+fg %1                         # bring job 1 to foreground
+bg %2                         # resume job 2 in background
+Ctrl+Z                        # suspend current foreground job
+Ctrl+C                        # terminate current foreground job</bash>
+
+<hr />
+
+<h2 id="coreutils">6. GNU Coreutils Command Reference</h2>
+
+<p>These are the everyday commands you will use constantly. They come from the GNU coreutils package.</p>
+
+<h3 id="rm">rm (remove)</h3>
+
+<bash>rm file.txt                   # delete file
+rm -r directory/               # recursive delete
+rm -f file.txt                 # force delete (no prompt)
+rm -i file.txt                 # interactive (ask before delete)
+rm -rf /tmp/*                  # dangerous - delete everything in /tmp
+rm -v file.txt                 # verbose (show what's deleted)</bash>
+
+<p><strong>Warning:</strong> Combining <code>-f</code> with <code>-i</code> is contradictory. <code>-f</code> overrides <code>-i</code>, so prompts will not appear.</p>
+
+<h3 id="ls">ls (list)</h3>
+
+<bash>ls                           # list files
+ls -l                         # long format
+ls -a                         # show hidden files (starting with .)
+ls -la                        # long format with hidden
+ls -lh                        # human-readable sizes
+ls -lt                        # sort by modification time
+ls -ltr                       # reverse time order
+ls -R                         # recursive (show subdirectories)
+ls -l /etc                    # list /etc directory</bash>
+
+<h3 id="cp">cp (copy)</h3>
+
+<bash>cp file1 file2              # copy file1 to file2
+cp -r source/ dest/           # recursive copy (directories)
+cp -i file1 file2             # interactive (prompt before overwrite)
+cp -v file1 file2             # verbose
+cp -p file1 file2             # preserve timestamps and permissions
+cp -u file1 file2             # update (copy only if source is newer)
+cp file1 file2 file3 dest/    # copy multiple files to directory</bash>
+
+<h3 id="mv">mv (move)</h3>
+
+<bash>mv oldname newname           # rename file
+mv file.txt /backup/          # move to directory
+mv -i file.txt /backup/       # interactive (prompt before overwrite)
+mv -v file.txt /backup/       # verbose
+mv -n file.txt /backup/       # no-clobber (don't overwrite)
+mv *.txt documents/           # move all txt files</bash>
+
+<h3 id="cat">cat (concatenate)</h3>
+
+<bash>cat file.txt                # display file
+cat file1 file2 > combined    # merge files
+cat -n script.sh              # show with line numbers
+cat -s file.txt               # squeeze repeated empty lines
+cat << EOF > newfile.txt      # here document
+content here
+EOF</bash>
+
+<h3 id="mkdir">mkdir (make directory)</h3>
+
+<bash>mkdir newdir                # create directory
+mkdir -p one/two/three        # create nested directories
+mkdir -v newdir               # verbose
+mkdir -m 755 public           # create with specific permissions</bash>
+
+<h3 id="touch">touch</h3>
+
+<bash>touch newfile.txt           # create empty file
+touch existing.txt            # update timestamp
+touch -c file.txt             # don't create if doesn't exist
+touch -t 202401011200 old.txt # set specific timestamp
+touch file{1..10}.txt         # create multiple files</bash>
+
+<h3 id="chmod">chmod (change mode)</h3>
+
+<bash>chmod 755 script.sh         # rwxr-xr-x
+chmod 644 file.txt            # rw-r--r--
+chmod 600 ~/.ssh/id_rsa       # rw-------
+chmod u+x script.sh           # add execute for owner
+chmod g+w file.txt            # add write for group
+chmod -R 755 directory/       # recursive
+chmod 4755 program            # setuid (runs as owner)
+chmod 1777 /tmp               # sticky bit</bash>
+
+<h3 id="chown">chown (change owner)</h3>
+
+<bash>sudo chown alice file.txt    # change owner
+sudo chown alice:staff file.txt # change owner and group
+sudo chown :staff file.txt     # change group only
+sudo chown -R alice:staff /home/alice  # recursive</bash>
+
+<h3 id="grep">grep (global regular expression print)</h3>
+
+<bash>grep "text" file.txt         # search for text
+grep -i "text" file.txt        # case insensitive
+grep -r "text" directory/      # recursive search
+grep -v "exclude" file.txt     # exclude matching lines
+grep -n "text" file.txt        # show line numbers
+grep -l "text" *.txt           # list filenames with matches
+grep -c "text" file.txt        # count matches
+ps aux | grep firefox          # search processes</bash>
+
+<h3 id="find">find (search for files)</h3>
+
+<bash>find / -name "file.txt"      # find by name
+find . -type f                 # find all files
+find . -type d                 # find all directories
+find . -size +100M             # files larger than 100MB
+find . -mtime -7               # modified in last 7 days
+find . -user john              # owned by john
+find . -exec chmod 755 {} \;   # execute command on results
+find . -name "*.tmp" -delete   # find and delete</bash>
+
+<hr />
+
+<h2 id="regex">7. Regular Expressions in Linux</h2>
+
+<p>Regular expressions (regex) are powerful pattern matching tools used in grep, sed, awk, and many other commands.</p>
+
+<p><strong>Basic regex metacharacters:</strong></p>
+
+<ul>
+  <li><code>.</code> - any single character</li>
+  <li><code>*</code> - zero or more of previous character</li>
+  <li><code>+</code> - one or more of previous character</li>
+  <li><code>?</code> - zero or one of previous character</li>
+  <li><code>^</code> - start of line</li>
+  <li><code>$</code> - end of line</li>
+  <li><code>[abc]</code> - any character in set</li>
+  <li><code>[^abc]</code> - any character not in set</li>
+  <li><code>[a-z]</code> - range of characters</li>
+  <li><code>\|</code> - alternation (or)</li>
+  <li><code>\(\)</code> - grouping</li>
+  <li><code>\{n\}</code> - exactly n times</li>
+  <li><code>\{n,\}</code> - at least n times</li>
+  <li><code>\{n,m\}</code> - between n and m times</li>
+</ul>
+
+<p><strong>Common regex examples:</strong></p>
+
+<bash>grep "^root" /etc/passwd       # lines starting with root
+grep "bash$" /etc/passwd         # lines ending with bash
+grep "[0-9]\{3\}-[0-9]\{3\}" file.txt  # phone number pattern
+grep "error\|fail" log.txt       # lines with error or fail
+grep -E "https?://" file.txt     # http or https URLs (extended regex)
+sed 's/old/new/g' file.txt       # replace all occurrences</bash>
+
+<p><strong>Extended regex (grep -E or egrep):</strong> Removes the need for backslashes</p>
+
+<bash>grep -E "(abc|def)" file.txt    # abc or def
+grep -E "a+" file.txt             # one or more a's
+grep -E "a?" file.txt             # zero or one a</bash>
+
+<hr />
+
+<p>Linux is built on these fundamentals. Partitions structure your storage, apt manages your software, sudo handles security, users and groups control access, and bash ties everything together with its operators and commands. Master these, and you will be comfortable on any Linux system.</p>

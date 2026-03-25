@@ -1,0 +1,857 @@
+<page icon="format-text-highlight"><h1 id="vex-syntaxsubvxsynsub">Vex Syntax<sub>vxsyn</sub></h1>
+<hr />
+<p><strong>V</strong>ex syntax is a part of VexCore Plugin it has been a part of vex since the 1st release.
+Later after 4.0=&lt; onwards When Vex introduced plugin architecture The logic is being served by SyntaxCore Plugin.</p>
+<p>So if you see symptoms of the screenshot not being related to you that usually will mean SyntaxCore.so or SyntaxCore.dll is removed or misplaced.</p>
+<p>
+‎ 
+‎ 
+‎ 
+‎ ‎ 
+</p>
+<hr />
+<h1 id="table-of-contents">Table of Contents</h1>
+<ol>
+<li><a href="#1-syntax-definition-files-vxsyn">Syntax Definition Files (.vxsyn)</a><ul>
+<li><a href="#11-creating-a-syntax-file">1.1 Creating a Syntax File</a></li>
+<li><a href="#12-reg-registering-the-language-name">1.2 REG: Registering the Language Name</a></li>
+<li><a href="#13-icns-icon-set">1.3 ICNS: Icon Set</a></li>
+<li><a href="#14-file-matching-file-extensions">1.4 File: Matching File Extensions</a></li>
+<li><a href="#15-sw-starts-with-file-sniffer">1.5 Sw: Starts With (File Sniffer)</a></li>
+<li><a href="#16-esex--enter-script-exact-match">1.6 +ES'...'ES-: Enter Script (Exact Match)</a></li>
+<li><a href="#17-hshs--to-hehe--periodic-blocks">1.7 +HS'...'HS- to +HE'...'HE-: Periodic Blocks</a></li>
+<li><a href="#18--combining-multiple-patterns">1.8 &amp;&amp;: Combining Multiple Patterns</a></li>
+<li><a href="#19-style-attributes-color-and-font">1.9 Style Attributes: color and font</a></li>
+<li><a href="#110-delem-delimiter-capture">1.10 delem: Delimiter Capture</a></li>
+</ul>
+</li>
+<li><a href="#2-how-it-works">2. How It Works</a><ul>
+<li><a href="#21-what-happens-when-you-open-a-file">2.1 What Happens When You Open a File</a></li>
+<li><a href="#22-how-highlighting-is-applied">2.2 How Highlighting Is Applied</a></li>
+<li><a href="#23-how-multi-line-blocks-work">2.3 How Multi-line Blocks Work</a></li>
+</ul>
+</li>
+<li><a href="#3-complete-examples">3. Complete Examples</a><ul>
+<li><a href="#31-python-syntax">3.1 Python Syntax</a></li>
+<li><a href="#32-c-style-comments">3.2 C-style Comments</a></li>
+<li><a href="#33-html-like-tags">3.3 HTML-like Tags</a></li>
+<li><a href="#34-javascript">3.4 JavaScript</a></li>
+</ul>
+</li>
+<li><a href="#4-quick-reference">4. Quick Reference</a><ul>
+<li><a href="#41-core-directives">4.1 Core Directives</a></li>
+<li><a href="#42-pattern-matching">4.2 Pattern Matching</a></li>
+<li><a href="#43-operators-and-keywords">4.3 Operators and Keywords</a></li>
+<li><a href="#44-style-attributes">4.4 Style Attributes</a></li>
+<li><a href="#45-processing-priority">4.5 Processing Priority</a></li>
+<li><a href="#46-file-system">4.6 File System</a></li>
+<li><a href="#47-ui-elements">4.7 UI Elements</a></li>
+</ul>
+</li>
+<li><a href="#5-advanced-notes">5. Advanced Notes</a><ul>
+<li><a href="#51-parser-behavior">5.1 Parser Behavior</a></li>
+<li><a href="#52-block-state-management">5.2 Block State Management</a></li>
+<li><a href="#53-extension-matching">5.3 Extension Matching</a></li>
+<li><a href="#54-content-detection">5.4 Content Detection</a></li>
+<li><a href="#55-syntax-file-reloading">5.5 Syntax File Reloading</a></li>
+<li><a href="#56-multiple-language-definitions">5.6 Multiple Language Definitions</a></li>
+</ul>
+</li>
+<li><a href="#6-troubleshooting">6. Troubleshooting</a><ul>
+<li><a href="#61-language-not-appearing-in-dropdown">6.1 Language Not Appearing in Dropdown</a></li>
+<li><a href="#62-highlighting-not-working">6.2 Highlighting Not Working</a></li>
+<li><a href="#63-multi-line-blocks-not-closing">6.3 Multi-line Blocks Not Closing</a></li>
+<li><a href="#64-wrong-file-detected">6.4 Wrong File Detected</a></li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="1-syntax-definition-files-vxsyn">1. Syntax Definition Files (.vxsyn)</h2>
+<pre><code>Quick gif Demonstrating simple register
+( This exact thing is already in the Readme.md )
+
++---------------------+      +------------------------+
+| Create .vxsyn file  |----->| Add REG = "Language"   |
+| in ~/.vex/syntax/   |      | at top of file         |
++---------------------+      +------------------------+
+                                      |
+                                      v
++---------------------+      +------------------------+
+| Write syntax rules  |----->| Save file              |
+| (patterns & styles) |      | (auto-reload triggers) |
++---------------------+      +------------------------+
+</code></pre>
+<h3 id="11-creating-a-syntax-file">1.1 Creating a Syntax File</h3>
+<ol>
+<li>Create a file with <code>.vxsyn</code> extension in the <code>~/.vex/syntax/</code> folder</li>
+<li>Add <code>REG = "Language Name"</code> at the top of the file to register your syntax</li>
+<li>Write your syntax rules below</li>
+<li>Save. The editor detects changes automatically using QFileSystemWatcher</li>
+<li>Lines starting with <code>⇏ </code> are treated as comments and ignored</li>
+</ol>
+<hr />
+<h3 id="12-reg-registering-the-language-name">1.2 REG: Registering the Language Name</h3>
+<p><strong>What it does:</strong> Sets the name that appears in the language dropdown menu. Without this, the language will not be registered.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code>REG = "Name"
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code>REG = "Python"
+</code></pre>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Must appear before any other directives for a language</li>
+<li>The name must be unique</li>
+<li>Use double quotes around the name</li>
+<li>Multiple languages can be defined in a single .vxsyn file by using REG multiple times</li>
+</ul>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>When REG is encountered, any previous language definition is saved</li>
+<li>Each REG starts a new SyntaxDef structure</li>
+</ul>
+<hr />
+<h3 id="13-icns-icon-set">1.3 ICNS: Icon Set</h3>
+<p><strong>What it does:</strong> Sets the icon shown next to the language name in the selector dropdown.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code>ICNS = "icon-name"
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code>ICNS = "python"
+</code></pre>
+<p><strong>Available icons:</strong></p>
+<ul>
+<li>XDG icon themes at <code>/usr/share/icons</code> (Unix)</li>
+<li>Qt's built-in theme icons (see QIcon ThemeIcon enum)</li>
+<li>If icon is not found, defaults to "text-x-generic"</li>
+</ul>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Icons are resolved using <code>Settings::resolveIcon()</code></li>
+<li>The selector uses 16x16 icon size</li>
+</ul>
+<hr />
+<h3 id="14-file-matching-file-extensions">1.4 File: Matching File Extensions</h3>
+<p><strong>What it does:</strong> Tells the editor which file extensions belong to this language.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code>File = .ext1 && .ext2 && .ext3
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code>File = .py && .pyw && .pyx
+</code></pre>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>When you open a file, the editor checks its extension</li>
+<li>Extensions are compared after converting to lowercase</li>
+<li>If the extension matches, this language is suggested (after content detection)</li>
+</ul>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Extensions can start with or without a dot (the parser adds it if missing)</li>
+<li>Use <code>&amp;&amp;</code> to separate multiple extensions</li>
+<li><code>&amp;&amp;</code> can only appear AFTER the <code>=</code> for File directives</li>
+</ul>
+<hr />
+<h3 id="15-sw-starts-with-file-sniffer">1.5 Sw: Starts With (File Sniffer)</h3>
+<p><strong>What it does:</strong> Detects the language by looking at the first few lines of the file.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code>Sw = pattern1 && pattern2
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code>Sw = #!/usr/bin/env python && # -*- coding: utf-8 -*-
+</code></pre>
+<pre><code>Sw = #include && /**
+</code></pre>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>The editor reads the first 10 lines of the file</li>
+<li>If any line starts with one of your patterns, this language is selected</li>
+<li>Content detection runs BEFORE extension matching (higher priority)</li>
+</ul>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Use <code>&amp;&amp;</code> to separate multiple patterns</li>
+<li><code>&amp;&amp;</code> can only appear AFTER the <code>=</code> for Sw directives</li>
+<li>Patterns are trimmed before comparison</li>
+</ul>
+<hr />
+<h3 id="16-esex--enter-script-exact-match">1.6 +ES'...'ES-: Enter Script (Exact Match)</h3>
+<p><strong>What it does:</strong> Highlights specific words or strings exactly as they appear.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code>+ES'text'ES- = style
+</code></pre>
+<p><strong>Naming:</strong></p>
+<ul>
+<li><code>+ES'</code> : Enter Script begin (marks the start of an exact match pattern)</li>
+<li><code>'ES-</code> : Enter Script close (marks the end of an exact match pattern)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code>+ES'def'ES- = color:keyword font:B
++ES'return'ES- = color:keyword font:B
+</code></pre>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>Searches for the exact text between <code>+ES'</code> and <code>'ES-</code></li>
+<li>Uses <code>QString::indexOf()</code> to find all occurrences in the line</li>
+<li>Every occurrence gets the specified style applied</li>
+<li>Processed AFTER block matches (lower priority)</li>
+</ul>
+<p><strong>Use for:</strong></p>
+<ul>
+<li>Keywords (<code>if</code>, <code>else</code>, <code>while</code>)</li>
+<li>Operators (<code>+</code>, <code>-</code>, <code>*</code>)</li>
+<li>Built-in functions</li>
+<li>Any exact text match that should be highlighted</li>
+</ul>
+<hr />
+<h3 id="17-hshs--to-hehe--periodic-blocks">1.7 +HS'...'HS- to +HE'...'HE-: Periodic Blocks</h3>
+<p><strong>What it does:</strong> Highlights everything between a start pattern and an end pattern.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code>+HS'start'HS- to +HE'end'HE- = style
+</code></pre>
+<p><strong>Naming:</strong></p>
+<ul>
+<li><code>+HS'</code> : Periodic Start begin (marks the start of a block opener)</li>
+<li><code>'HS-</code> : Periodic Start close (closes the start pattern)</li>
+<li><code>to</code> : Separates start and end patterns (interrupts conflict)</li>
+<li><code>+HE'</code> : Periodic End begin (marks the start of a block closer)</li>
+<li><code>'HE-</code> : Periodic End close (closes the end pattern)</li>
+</ul>
+<p><strong>Example 1: Single line (EOL):</strong></p>
+<pre><code>+HS'#'HS- to +HE''HE- = color:comment
+</code></pre>
+<p>Highlights from <code>#</code> to the end of the line. (Empty <code>+HE''HE-</code> means end of line)</p>
+<p><strong>Example 2: Multi-line:</strong></p>
+<pre><code>+HS'/*'HS- to +HE'*/'HE- = color:comment
+</code></pre>
+<p>Highlights everything between <code>/*</code> and <code>*/</code>, across multiple lines.</p>
+<p><strong>Example 3: String literals:</strong></p>
+<pre><code>+HS'"'HS- to +HE'"'HE- = color:string
+</code></pre>
+<p>Highlights everything between two double quotes.</p>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>Block matches are processed FIRST (higher priority than exact matches)</li>
+<li>Each block is assigned a unique ID (starting from 1, incrementing)</li>
+<li>If the closer is found on the same line, only that range is highlighted</li>
+<li>If the closer is not found, the entire rest of the line is highlighted and the block state is saved</li>
+<li>The block state carries over to the next line via <code>setCurrentBlockState(block.id)</code></li>
+<li>When a line starts in a block state, it continues highlighting until the closer is found</li>
+</ul>
+<p><strong>Special behavior:</strong></p>
+<ul>
+<li>If <code>+HE''HE-</code> is empty, <code>endsAtNewline</code> is set to true</li>
+<li>When <code>endsAtNewline</code> is true, the block always ends at the current line</li>
+<li>Multi-line blocks use <code>previousBlockState()</code> to resume highlighting</li>
+</ul>
+<hr />
+<h3 id="18--combining-multiple-patterns">1.8 &amp;&amp;: Combining Multiple Patterns</h3>
+<p><strong>What it does:</strong> Applies the same style to multiple patterns OR lists multiple values for directives.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code>pattern1 && pattern2 = style
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code>+ES'if'ES- && +ES'else'ES- && +ES'elif'ES- = color:keyword font:B
+</code></pre>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>For <code>File</code> and <code>Sw</code>: <code>&amp;&amp;</code> appears AFTER <code>=</code> to list multiple values<pre><code>File = .py && .pyw && .pyx
+Sw = #!/usr/bin/python && #!/usr/bin/env python
+</code></pre>
+</li>
+<li>For <code>+ES'...'ES-</code> and <code>+HS'...'HS- to +HE'...'HE-</code>: <code>&amp;&amp;</code> appears BEFORE <code>=</code> to combine patterns<pre><code>+ES'if'ES- && +ES'else'ES- = color:keyword
+</code></pre>
+</li>
+</ul>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>The line is split by <code>&amp;&amp;</code></li>
+<li>Each part is processed separately</li>
+<li>For syntax patterns, each part gets the same style format applied</li>
+</ul>
+<hr />
+<h3 id="19-style-attributes-color-and-font">1.9 Style Attributes: color and font</h3>
+<p><strong>What it does:</strong> Controls how matched text looks.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code>= color:value font:value
+</code></pre>
+<h4 id="color-text-color">color: Text Color</h4>
+<table>
+<thead>
+<tr>
+<th>Value Type</th>
+<th>Example</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hex</td>
+<td><code>color:#FF5733</code></td>
+<td>Any hex color code</td>
+</tr>
+<tr>
+<td>Named</td>
+<td><code>color:comment</code></td>
+<td>Predefined palette color</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Predefined palette colors:</strong></p>
+<ul>
+<li><code>comment</code> : Gray (#808080 or 128, 128, 128)</li>
+<li><code>critical</code> : White (#FFFFFF or 255, 255, 255)</li>
+<li><code>quote</code> : Green (#00FF00 or 0, 255, 0)</li>
+<li><code>keyword</code> : Light blue (#87CEEB or 135, 206, 250)</li>
+<li><code>string</code> : Orange (#FFA500 or 255, 165, 0)</li>
+</ul>
+<p><em>Using these fixed colors is recommended for later theme syntax matching.</em></p>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>The <code>ColorPalette::lookup()</code> method checks if the color name matches a predefined color</li>
+<li>If not, it treats the value as a hex color using <code>QColor(name)</code> constructor</li>
+<li>The color is applied via <code>QTextCharFormat::setForeground(QBrush(color))</code></li>
+</ul>
+<h4 id="font-font-style">font: Font Style</h4>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>font:N</code></td>
+<td>Normal</td>
+</tr>
+<tr>
+<td><code>font:B</code></td>
+<td>Bold</td>
+</tr>
+<tr>
+<td><code>font:I</code></td>
+<td>Italic</td>
+</tr>
+<tr>
+<td><code>font:BI</code></td>
+<td>Bold + Italic</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How it works:</strong></p>
+<ul>
+<li><code>font:B</code> sets <code>QFont::Bold</code> weight</li>
+<li><code>font:I</code> calls <code>setFontItalic(true)</code></li>
+<li><code>font:BI</code> applies both bold and italic</li>
+<li><code>font:N</code> resets to normal (not italic, normal weight)</li>
+</ul>
+<p><strong>Example combining both:</strong></p>
+<pre><code>+ES'class'ES- = color:keyword font:BI
+</code></pre>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Style attributes are separated by whitespace</li>
+<li>Attributes are parsed using <code>split(QRegularExpression("\\s+"), Qt::SkipEmptyParts)</code></li>
+<li>Multiple spaces or tabs between attributes are allowed</li>
+</ul>
+<hr />
+<h3 id="110-delem-delimiter-capture">1.10 delem: Delimiter Capture</h3>
+<p><strong>What it does:</strong> Special keyword that recognizes anything within the syntax and matches closing delimiters properly.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code>+HS'delem"'HS- to +HE'delem"'HE- = style
+</code></pre>
+<p><strong>Most useful for:</strong> String literals with escaped quotes and nested structures</p>
+<p><strong>Example: String with escaped quotes:</strong></p>
+<pre><code>+HS'delem"'HS- to +HE'delem"'HE- = color:string
++HS"delem'"HS- to +HE"delem'"HE- = color:string
+</code></pre>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>When the opener or closer contains the word "delem", <code>capturesDelimiter</code> is set to true</li>
+<li>The current implementation sets a flag but does not have special delimiter handling logic active</li>
+<li>This is a placeholder for future enhanced delimiter matching</li>
+</ul>
+<p><strong>Note:</strong> In the current source code, <code>capturesDelimiter</code> is set but not actively used in the highlighting logic. This is a framework for future enhancement.</p>
+<hr />
+<h2 id="2-how-it-works">2. How It Works</h2>
+<h3 id="21-what-happens-when-you-open-a-file">2.1 What Happens When You Open a File</h3>
+<pre><code>+-------------------+     +-----------------------+
+| Tab is created    |----&gt;| SyntaxCorePlugin      |
+|                   |     | connects to tab signal|
++-------------------+     +-----------------------+
+                                   |
+                                   v
++-------------------+     +-----------------------+
+| detectLanguage()  |----&gt;| 1. Check Sw patterns  |
+| runs              |     |    (first 10 lines)   |
++-------------------+     +-----------------------+
+                                   |
+                                   v
++-------------------+     +-----------------------+
+| If Sw matches     |     | 2. If no Sw match,    |
+| select language   |&lt;----| check File extensions |
++-------------------+     +-----------------------+
+                                   |
+                                   v
++-------------------+     +-----------------------+
+| Language found?   |----&gt;| TextPainter::activate |
+|                   |     | load syntax file      |
++-------------------+     +-----------------------+
+                                   |
+                                   v
++-------------------+     +-----------------------+
+| rehighlight()     |----&gt;| Syntax highlighting   |
+| called            |     | applied to document   |
++-------------------+     +-----------------------+
+</code></pre>
+<h3 id="22-how-highlighting-is-applied">2.2 How Highlighting Is Applied</h3>
+<pre><code>+-------------------------------------+
+| TextPainter::highlightBlock(line)   |
++-------------------------------------+
+                |
+                v
++-------------------------------------+
+| Check if highlighting active?       |
+| If no or line empty -&gt; exit         |
++-------------------------------------+
+                |
+                v
++-------------------------------------+
+| previousBlockState() &gt; 0 ?          |
+| Yes -&gt; resumeBlock() -&gt; return      |
+| No -&gt; continue                      |
++-------------------------------------+
+                |
+                v
++-------------------------------------+
+| Process Block patterns (HIGH PRIORITY) |
+| - Find opener with indexOf()        |
+| - If closer on same line: highlight |
+|   from opener to closer             |
+| - If closer not found:              |
+|   * endsAtNewline? highlight EOL    |
+|   * else: highlight EOL, save state |
++-------------------------------------+
+                |
+                v
++-------------------------------------+
+| Process Exact matches (LOW PRIORITY) |
+| - Loop through ExactMatch entries   |
+| - Find all occurrences with indexOf()|
+| - Apply formatting to each match    |
++-------------------------------------+
+</code></pre>
+<h3 id="23-how-multi-line-blocks-work">2.3 How Multi-line Blocks Work</h3>
+<pre><code>LINE 1:
++---------------------------+
+| Opening pattern found     |
+| No closer on this line    |
+| Format opener -&gt; EOL      |
+| setCurrentBlockState(id)  |
++---------------------------+
+            |
+            v
+LINE 2:
++---------------------------+
+| previousBlockState() = id |
+| resumeBlock() called      |
+| Search for closer         |
+| If not found:             |
+|   Format entire line      |
+|   Keep state (id)         |
++---------------------------+
+            |
+            v
+LINE N:
++---------------------------+
+| previousBlockState() = id |
+| resumeBlock() called      |
+| Closing pattern found     |
+| Format start -&gt; closer    |
+| setCurrentBlockState(-1)  |
+| Clear state for next line |
++---------------------------+
+</code></pre>
+<hr />
+<h2 id="3-complete-examples">3. Complete Examples</h2>
+<h3 id="31-python-syntax">3.1 Python Syntax</h3>
+<p><strong>File:</strong> <code>~/.vex/syntax/python.vxsyn</code></p>
+<pre><code>REG = "Python"
+ICNS = "python"
+File = .py && .pyw && .pyx
+
+⇏ Keywords
++ES'def'ES- && +ES'return'ES- && +ES'if'ES- && +ES'else'ES- && +ES'elif'ES- && +ES'while'ES- && +ES'for'ES- && +ES'in'ES- && +ES'class'ES- && +ES'import'ES- && +ES'from'ES- && +ES'as'ES- = color:keyword font:B
+
+⇏ Built-in functions
++ES'print'ES- && +ES'len'ES- && +ES'range'ES- && +ES'str'ES- && +ES'int'ES- && +ES'list'ES- = color:keyword
+
+⇏ Single-line comments
++HS'#'HS- to +HE''HE- = color:comment
+
+⇏ String literals (double quotes)
++HS'delem"'HS- to +HE'delem"'HE- = color:string
+
+⇏ String literals (single quotes)
++HS"delem'"HS- to +HE"delem'"HE- = color:string
+
+⇏ Triple-quoted strings
++HS'"""'HS- to +HE'"""'HE- = color:string
++HS"'''"HS- to +HE"'''"HE- = color:string
+
+⇏ Numbers
++ES'0'ES- && +ES'1'ES- && +ES'2'ES- && +ES'3'ES- && +ES'4'ES- && +ES'5'ES- && +ES'6'ES- && +ES'7'ES- && +ES'8'ES- && +ES'9'ES- = color:quote
+
+⇏ Shebang detection
+Sw = #!/usr/bin/env python && #!/usr/bin/python && # -*- coding: utf-8 -*-
+</code></pre>
+<h3 id="32-c-style-comments">3.2 C-style Comments</h3>
+<p><strong>File:</strong> <code>~/.vex/syntax/c-comments.vxsyn</code></p>
+<pre><code>REG = "C Comments Demo"
+File = .c && .h && .cpp && .hpp && .cc
+
+⇏ Multi-line comments
++HS'/*'HS- to +HE'*/'HE- = color:comment
+
+⇏ Single-line comments
++HS'//'HS- to +HE''HE- = color:comment
+</code></pre>
+<h3 id="33-html-like-tags">3.3 HTML-like Tags</h3>
+<p><strong>File:</strong> <code>~/.vex/syntax/html.vxsyn</code></p>
+<pre><code>REG = "HTML"
+ICNS = "text-html"
+File = .html && .htm
+Sw = &lt;!DOCTYPE html && &lt;html
+
+⇏ Opening and closing tags
++HS'&lt;'HS- to +HE'&gt;'HE- = color:keyword font:B
+
+⇏ Tag attributes
++ES'class='ES- && +ES'id='ES- && +ES'href='ES- && +ES'src='ES- = color:quote
+
+⇏ Strings in attributes (double quotes)
++HS'delem"'HS- to +HE'delem"'HE- = color:string
+
+⇏ Strings in attributes (single quotes)
++HS"delem'"HS- to +HE"delem'"HE- = color:string
+
+⇏ HTML comments
++HS'&lt;!--'HS- to +HE'--&gt;'HE- = color:comment
+</code></pre>
+<h3 id="34-javascript">3.4 JavaScript</h3>
+<p><strong>File:</strong> <code>~/.vex/syntax/javascript.vxsyn</code></p>
+<pre><code>REG = "JavaScript"
+ICNS = "application-javascript"
+File = .js && .jsx && .mjs
+
+⇏ Keywords
++ES'function'ES- && +ES'return'ES- && +ES'if'ES- && +ES'else'ES- && +ES'for'ES- && +ES'while'ES- && +ES'const'ES- && +ES'let'ES- && +ES'var'ES- && +ES'class'ES- && +ES'import'ES- && +ES'export'ES- = color:keyword font:B
+
+⇏ Single-line comments
++HS'//'HS- to +HE''HE- = color:comment
+
+⇏ Multi-line comments
++HS'/*'HS- to +HE'*/'HE- = color:comment
+
+⇏ String literals
++HS'delem"'HS- to +HE'delem"'HE- = color:string
++HS"delem'"HS- to +HE"delem'"HE- = color:string
++HS'`'HS- to +HE'`'HE- = color:string
+
+⇏ Content detection
+Sw = #!/usr/bin/env node && // JavaScript
+</code></pre>
+<hr />
+<h2 id="4-quick-reference">4. Quick Reference</h2>
+<h3 id="41-core-directives">4.1 Core Directives</h3>
+<table>
+<thead>
+<tr>
+<th>Directive</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>REG = "Name"</code></td>
+<td>Register language name</td>
+<td><code>REG = "Python"</code></td>
+</tr>
+<tr>
+<td><code>ICNS = "icon"</code></td>
+<td>Set language icon</td>
+<td><code>ICNS = "python"</code></td>
+</tr>
+<tr>
+<td><code>File = .ext</code></td>
+<td>File extension matching</td>
+<td><code>File = .py &amp;&amp; .pyw</code></td>
+</tr>
+<tr>
+<td><code>Sw = pattern</code></td>
+<td>Content detection (first 10 lines)</td>
+<td><code>Sw = #!/usr/bin/python</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="42-pattern-matching">4.2 Pattern Matching</h3>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Name</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>+ES'text'ES-</code></td>
+<td>Enter Script</td>
+<td>Exact text match</td>
+<td><code>+ES'if'ES- = color:keyword</code></td>
+</tr>
+<tr>
+<td><code>+HS'start'HS- to +HE'end'HE-</code></td>
+<td>Periodic Block</td>
+<td>Block match (start to end)</td>
+<td><code>+HS'/*'HS- to +HE'*/'HE- = color:comment</code></td>
+</tr>
+<tr>
+<td><code>+HS'start'HS- to +HE''HE-</code></td>
+<td>EOL Block</td>
+<td>Block to end of line</td>
+<td><code>+HS'#'HS- to +HE''HE- = color:comment</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="43-operators-and-keywords">4.3 Operators and Keywords</h3>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Name</th>
+<th>Usage</th>
+<th>Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&amp;&amp;</code></td>
+<td>And operator</td>
+<td>Combine patterns or list values</td>
+<td>After <code>=</code> for File/Sw, before <code>=</code> for ES/HS</td>
+</tr>
+<tr>
+<td><code>=</code></td>
+<td>Equals</td>
+<td>Initialize or define</td>
+<td>Separates pattern from style</td>
+</tr>
+<tr>
+<td><code>to</code></td>
+<td>Separator</td>
+<td>Between HS and HE</td>
+<td>Interrupts conflict in block patterns</td>
+</tr>
+<tr>
+<td><code>delem</code></td>
+<td>Delimiter</td>
+<td>Delimiter capture (planned feature)</td>
+<td><code>+HS'delem"'HS- to +HE'delem"'HE-</code></td>
+</tr>
+<tr>
+<td><code>⇏ </code></td>
+<td>Comment</td>
+<td>Line comment in .vxsyn files</td>
+<td>Lines starting with <code>⇏ </code> are ignored</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="44-style-attributes">4.4 Style Attributes</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Values</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>color:</code></td>
+<td>Hex code or named</td>
+<td>Text color</td>
+</tr>
+<tr>
+<td></td>
+<td><code>#FF5733</code></td>
+<td>Custom hex color</td>
+</tr>
+<tr>
+<td></td>
+<td><code>comment</code></td>
+<td>Gray (128, 128, 128)</td>
+</tr>
+<tr>
+<td></td>
+<td><code>critical</code></td>
+<td>White (255, 255, 255)</td>
+</tr>
+<tr>
+<td></td>
+<td><code>quote</code></td>
+<td>Green (0, 255, 0)</td>
+</tr>
+<tr>
+<td></td>
+<td><code>keyword</code></td>
+<td>Light blue (135, 206, 250)</td>
+</tr>
+<tr>
+<td></td>
+<td><code>string</code></td>
+<td>Orange (255, 165, 0)</td>
+</tr>
+<tr>
+<td><code>font:</code></td>
+<td>Style code</td>
+<td>Font weight/style</td>
+</tr>
+<tr>
+<td></td>
+<td><code>N</code></td>
+<td>Normal</td>
+</tr>
+<tr>
+<td></td>
+<td><code>B</code></td>
+<td>Bold</td>
+</tr>
+<tr>
+<td></td>
+<td><code>I</code></td>
+<td>Italic</td>
+</tr>
+<tr>
+<td></td>
+<td><code>BI</code></td>
+<td>Bold + Italic</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="45-processing-priority">4.5 Processing Priority</h3>
+<ol>
+<li><strong>Detection order:</strong> Sw patterns (content) → File extensions</li>
+<li><strong>Highlighting order:</strong> Block patterns (+HS...+HE) → Exact matches (+ES)</li>
+<li><strong>Multi-line handling:</strong> Previous block state → Current line patterns</li>
+</ol>
+<hr />
+<h3 id="46-file-system">4.6 File System</h3>
+<ul>
+<li><strong>Syntax directory:</strong> <code>~/.vex/syntax/</code></li>
+<li><strong>File extension:</strong> <code>.vxsyn</code></li>
+<li><strong>Auto-reload:</strong> Yes (via QFileSystemWatcher)</li>
+<li><strong>Multiple languages:</strong> Supported in single file (use multiple REG directives)</li>
+</ul>
+<hr />
+<h3 id="47-ui-elements">4.7 UI Elements</h3>
+<ul>
+<li><strong>Selector location:</strong> Status bar (permanent widget, index 0)</li>
+<li><strong>Auto mode:</strong> Runs detection automatically</li>
+<li><strong>Plain Text mode:</strong> Disables highlighting</li>
+<li><strong>Manual selection:</strong> Override auto-detection</li>
+<li><strong>Icon size:</strong> 16x16 pixels</li>
+</ul>
+<hr />
+<h2 id="5-advanced-notes">5. Advanced Notes</h2>
+<h3 id="51-parser-behavior">5.1 Parser Behavior</h3>
+<ul>
+<li>Empty lines and lines starting with <code>⇏ </code> are skipped</li>
+<li>Whitespace is trimmed from all patterns and values</li>
+<li>Quote extraction uses <code>indexOf()</code> to find first and second <code>"</code> characters</li>
+<li>Pattern extraction uses <code>indexOf()</code> with marker strings (+ES', 'ES-, etc.)</li>
+</ul>
+<hr />
+<h3 id="52-block-state-management">5.2 Block State Management</h3>
+<ul>
+<li>Block states are 1-indexed (state 1 = block 0, state 2 = block 1, etc.)</li>
+<li>State -1 means no active block</li>
+<li>States persist across lines until closer is found</li>
+<li>If multiple blocks could match, the first one in the list wins</li>
+</ul>
+<hr />
+<h3 id="53-extension-matching">5.3 Extension Matching</h3>
+<ul>
+<li>Extensions are normalized to lowercase with leading dot</li>
+<li>If user writes <code>.PY</code>, it becomes <code>.py</code></li>
+<li>If user writes <code>py</code>, it becomes <code>.py</code></li>
+<li>Matching is case-insensitive</li>
+</ul>
+<hr />
+<h3 id="54-content-detection">5.4 Content Detection</h3>
+<ul>
+<li>Only first 10 lines are checked</li>
+<li>Empty lines are skipped</li>
+<li>Lines are trimmed before checking</li>
+<li>First pattern match wins (stops checking other languages)</li>
+</ul>
+<hr />
+<h3 id="55-syntax-file-reloading">5.5 Syntax File Reloading</h3>
+<ul>
+<li>Directory changes trigger full reload</li>
+<li>Individual file changes trigger single file reload</li>
+<li>Watched files that are deleted are automatically re-added when recreated</li>
+<li>Current selection is preserved across reloads when possible</li>
+</ul>
+<hr />
+<h3 id="56-multiple-language-definitions">5.6 Multiple Language Definitions</h3>
+<p>You can define multiple languages in one .vxsyn file:</p>
+<pre><code>REG = "C"
+File = .c && .h
++ES'int'ES- = color:keyword
+
+REG = "C++"
+File = .cpp && .hpp
++ES'class'ES- = color:keyword
+</code></pre>
+<p>Each REG starts a new language definition. The previous definition is saved when a new REG is encountered.</p>
+<hr />
+<h2 id="6-troubleshooting">6. Troubleshooting</h2>
+<h3 id="61-language-not-appearing-in-dropdown">6.1 Language Not Appearing in Dropdown</h3>
+<ul>
+<li>Check that REG is defined</li>
+<li>Ensure .vxsyn file is in <code>~/.vex/syntax/</code></li>
+<li>Check status bar for "Syntax dir changed" message</li>
+<li>Verify file has <code>.vxsyn</code> extension</li>
+</ul>
+<hr />
+<h3 id="62-highlighting-not-working">6.2 Highlighting Not Working</h3>
+<ul>
+<li>Verify language is selected (not "Plain Text")</li>
+<li>Check that patterns are correctly formatted</li>
+<li>Ensure <code>=</code> separates pattern from style</li>
+<li>Check that style attributes are valid (color: and font:)</li>
+</ul>
+<hr />
+<h3 id="63-multi-line-blocks-not-closing">6.3 Multi-line Blocks Not Closing</h3>
+<ul>
+<li>Verify closer pattern exactly matches what's in the file</li>
+<li>Check that block.id is being set correctly</li>
+<li>Ensure closer pattern is not empty (unless EOL intended)</li>
+</ul>
+<hr />
+<h3 id="64-wrong-file-detected">6.4 Wrong File Detected</h3>
+<ul>
+<li>Content detection (Sw) takes priority over extensions</li>
+<li>Check if Sw patterns match file content unintentionally</li>
+<li>Use more specific Sw patterns</li>
+<li>Consider removing Sw if extension matching is sufficient</li>
+</ul>
+<hr />

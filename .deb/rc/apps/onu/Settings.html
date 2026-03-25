@@ -1,0 +1,401 @@
+<page icon="settings"><h1>Settings Guide</h1>
+
+<p>Onu's settings are organized into a clean tabbed interface. This guide walks you through every option, what it does, and how to configure the browser to work the way you want. You can access settings by pressing Ctrl+, or through the menu button in the navigation toolbar.</p>
+
+<hr />
+
+<h2>Table of Contents</h2>
+
+<ul>
+  <li><a href="#general">1. General Settings</a>
+    <ul>
+      <li><a href="#startup">Startup</a></li>
+      <li><a href="#behavior">Browser Behavior</a></li>
+      <li><a href="#blocking">Content Blocking</a></li>
+      <li><a href="#actions">Actions</a></li>
+    </ul>
+  </li>
+  <li><a href="#toolbars">2. Toolbars Settings</a>
+    <ul>
+      <li><a href="#toolbar-general">General Toolbar Settings</a></li>
+      <li><a href="#navigation-toolbar">Navigation Toolbar</a></li>
+      <li><a href="#search-toolbar">Search Toolbar</a></li>
+      <li><a href="#favorites-toolbar">Favorites Toolbar</a></li>
+      <li><a href="#recent-toolbar">Recent Toolbar</a></li>
+      <li><a href="#tab-bar">Tab Bar</a></li>
+    </ul>
+  </li>
+  <li><a href="#appearance">3. Appearance Settings</a>
+    <ul>
+      <li><a href="#fonts">Fonts</a></li>
+      <li><a href="#icons-style">Icons and Style</a></li>
+      <li><a href="#theme-editor">Theme Editor</a></li>
+    </ul>
+  </li>
+  <li><a href="#privacy">4. Privacy and Downloads</a>
+    <ul>
+      <li><a href="#webpage">Webpage Settings</a></li>
+      <li><a href="#advanced">Advanced</a></li>
+      <li><a href="#encryption">Encryption</a></li>
+      <li><a href="#downloads">Downloads</a></li>
+      <li><a href="#site-permissions">Site Permissions</a></li>
+    </ul>
+  </li>
+  <li><a href="#scripts">5. Scripts and Extensions</a>
+    <ul>
+      <li><a href="#extensions">Browser Extensions</a></li>
+      <li><a href="#user-script">User Script (JavaScript)</a></li>
+    </ul>
+  </li>
+  <li><a href="#managers">6. Additional Managers</a>
+    <ul>
+      <li><a href="#keybinds">Keybinds Editor</a></li>
+      <li><a href="#favorites-manager">Favorites Manager</a></li>
+      <li><a href="#history-manager">History Manager</a></li>
+      <li><a href="#extension-manager">Extension Manager</a></li>
+      <li><a href="#sites-manager">Site Permissions Manager</a></li>
+    </ul>
+  </li>
+  <li><a href="#search-bar">7. Search Bar Integration</a></li>
+</ul>
+
+<hr />
+
+<h2 id="general">1. General Settings</h2>
+
+<p>This tab controls how the browser behaves at startup and during normal use.</p>
+
+<h3 id="startup">Startup</h3>
+
+<p><strong>Home URL:</strong> The page that opens when you click the home button or open a new tab. Default is <code>onu://home</code>. You can set any valid URL here.</p>
+
+<p><strong>Restore webpage sessions on startup:</strong> When enabled, Onu remembers all open tabs from your last session and restores them the next time you start the browser. This is useful if you want to pick up where you left off.</p>
+
+<h3 id="behavior">Browser Behavior</h3>
+
+<p><strong>Ask for confirmation when closing the browser:</strong> Shows a confirmation dialog when you try to close Onu. If you disable this, the browser closes immediately without asking. The checkbox in the dialog lets you remember your choice for next time.</p>
+
+<p><strong>Enable Developer Mode (Inspect Element):</strong> Allows access to the developer tools (F12) and the "Inspect Element" option in the context menu. Useful for web development or debugging.</p>
+
+<h3 id="blocking">Content Blocking</h3>
+
+<p><strong>Enable AdBlock:</strong> Blocks advertisements and tracking domains based on the <file url="~/.config/Onu/Conf/blocked_hosts.txt">blocked_hosts.txt</file> file. The file uses a simplified format similar to EasyList. Click <strong>Edit blocked_hosts.txt</strong> to open the file in your system's default text editor.</p>
+
+<p>Blocked hosts are checked against page requests. If a request matches a blocked domain, it is blocked before loading.</p>
+
+<h3 id="actions">Actions</h3>
+
+<p><strong>Edit Keybinds:</strong> Opens the keybindings editor where you can customize keyboard shortcuts for all browser actions. See the <a href="#keybinds">Keybinds Editor</a> section for details.</p>
+
+<p><strong>Open Config Folder:</strong> Opens the configuration directory in your file manager. This is where all settings, themes, extensions, and custom files are stored.</p>
+
+<p><strong>Clear Icon Cache:</strong> Deletes all cached icons (favorites, history, themes) and regenerates them when needed. This can fix display issues with icons not showing correctly.</p>
+
+<p><strong>Remove All Data (Reset):</strong> Completely wipes all browser data including history, favorites, settings, themes, and cache. The browser will restart after this operation. This action cannot be undone.</p>
+
+<hr />
+
+<h2 id="toolbars">2. Toolbars Settings</h2>
+
+<p>This tab controls all toolbars: their visibility, locking behavior, and button settings.</p>
+
+<h3 id="toolbar-general">General Toolbar Settings</h3>
+
+<p>The main table shows all five toolbars with three toggles each:</p>
+
+<ul>
+  <li><strong>Visible:</strong> Show or hide the toolbar entirely</li>
+  <li><strong>Lock Dragging:</strong> Prevents the toolbar from being moved to a different location</li>
+  <li><strong>Lock Floating:</strong> Prevents the toolbar from being undocked into a floating window</li>
+</ul>
+
+<p>The <strong>Apply Current Settings to All Toolbars</strong> button copies the visibility and lock settings from the Navigation toolbar to all other toolbars.</p>
+
+<h3 id="navigation-toolbar">Navigation Toolbar</h3>
+
+<p>This toolbar contains back, forward, reload, stop, zoom, volume, and menu buttons.</p>
+
+<p><strong>Button Visibility:</strong> Choose which buttons appear:</p>
+<ul>
+  <li>Show Volume Slider</li>
+  <li>Show Reload Button</li>
+  <li>Show Forward Button</li>
+  <li>Show Menu Button</li>
+</ul>
+
+<p><strong>Icon Size:</strong> Set the size of navigation icons from 16 to 48 pixels.</p>
+
+<h3 id="search-toolbar">Search Toolbar</h3>
+
+<p>This toolbar contains the address bar and search engine selector.</p>
+
+<p><strong>Show Search Engine Picker:</strong> When enabled, a dropdown appears next to the address bar showing available search engines. When disabled, the address bar works with the default search engine only.</p>
+
+<p><strong>Search Engines:</strong> Manage your search engines:</p>
+<ul>
+  <li><strong>Add:</strong> Create a new search engine with a name, URL template (use %1 for the search query), and optional icon name</li>
+  <li><strong>Edit:</strong> Modify an existing search engine</li>
+  <li><strong>Remove:</strong> Delete a search engine</li>
+  <li><strong>Set as Default:</strong> Make the selected search engine the default</li>
+</ul>
+
+<p><strong>Suggestion Sources:</strong> Control where address bar suggestions come from:</p>
+<ul>
+  <li><strong>Suggest from History:</strong> Show URLs and titles from your browsing history</li>
+  <li><strong>Suggest from Favorites:</strong> Show your saved favorites</li>
+  <li><strong>Suggest from Remote API:</strong> Fetch suggestions from an external API</li>
+</ul>
+
+<p>When Remote API suggestions are enabled, you can configure:</p>
+<ul>
+  <li><strong>API URL:</strong> The endpoint that returns suggestions. Use %1 as a placeholder for the search query</li>
+  <li><strong>Parser Script:</strong> JavaScript code that processes the API response and returns an array of suggestion strings</li>
+</ul>
+
+<h3 id="favorites-toolbar">Favorites Toolbar</h3>
+
+<p><strong>Items Limit:</strong> Choose how many favorites appear on the toolbar (3, 5, 10, 15, 20, or 30).</p>
+
+<p><strong>Open Favorites Manager:</strong> Opens the full favorites management dialog where you can edit, reorder, or delete favorites.</p>
+
+<h3 id="recent-toolbar">Recent Toolbar</h3>
+
+<p><strong>Items Limit:</strong> Choose how many recent items appear on the toolbar.</p>
+
+<p><strong>Clear Recent Items:</strong> Deletes all browsing history immediately.</p>
+
+<p><strong>Open History Manager:</strong> Opens the full history viewer with search, sorting, and individual deletion options.</p>
+
+<h3 id="tab-bar">Tab Bar</h3>
+
+<p>Tab bar settings are managed in the General tab of toolbars. When the tab bar is docked to the left or right side of the window, tabs display vertically with icons and text.</p>
+
+<hr />
+
+<h2 id="appearance">3. Appearance Settings</h2>
+
+<p>This tab controls how Onu looks and feels.</p>
+
+<h3 id="fonts">Fonts</h3>
+
+<p><strong>Font Family:</strong> Choose the font used throughout the browser interface. This does not affect webpage fonts.</p>
+
+<p><strong>Font Size:</strong> Set the base font size in points (8-24 pt).</p>
+
+<h3 id="icons-style">Icons and Style</h3>
+
+<p><strong>Icon Theme:</strong> Select an icon theme from your system. Options include "System Default" and any installed icon themes in <file url="/usr/share/icons">/usr/share/icons</file>, <file url="~/.local/share/icons">~/.local/share/icons</file>, or <file url="~/.icons">~/.icons</file>.</p>
+
+<p><strong>Qt Style:</strong> Choose the underlying widget style. Options include Fusion, Windows, and other styles provided by your Qt installation.</p>
+
+<h3 id="theme-editor">Theme Editor</h3>
+
+<p>Onu supports custom QSS themes. The theme editor has two views:</p>
+
+<p><strong>Theme List View:</strong> Shows all available themes. Built-in themes (Onu-Dark, Onu-Light, System) cannot be deleted. Custom themes appear here.</p>
+
+<ul>
+  <li><strong>Create New Theme:</strong> Enter a name to create a new blank theme</li>
+  <li><strong>Delete Theme:</strong> Remove a custom theme (built-in themes cannot be deleted)</li>
+</ul>
+
+<p><strong>QSS Editor View:</strong> When you select a theme from the list, you switch to the editor view. Here you can edit the theme's QSS code directly. The preview updates as you type. Click <strong>Save Theme</strong> to save your changes, or <strong>Back to List</strong> to return to the theme selector.</p>
+
+<p>QSS (Qt Style Sheets) uses CSS-like syntax to control every aspect of the interface. For reference, see the Qt documentation or look at the built-in Onu-Dark.qss and Onu-Light.qss files in the themes directory.</p>
+
+<hr />
+
+<h2 id="privacy">4. Privacy and Downloads</h2>
+
+<h3 id="webpage">Webpage Settings</h3>
+
+<p><strong>Enable JavaScript Execution:</strong> Turns JavaScript on or off for all pages. Disabling can break many websites but improves security and privacy.</p>
+
+<p><strong>Load Images:</strong> Controls whether images load automatically. Disabling can speed up page loads on slow connections.</p>
+
+<p><strong>Delete Cookies in Every Session:</strong> When enabled, all cookies are deleted when you close the browser. No persistent cookies are stored.</p>
+
+<p><strong>Send Do Not Track Headers to All Websites:</strong> Adds DNT: 1 and Sec-GPC: 1 headers to all requests. This tells websites you prefer not to be tracked.</p>
+
+<h3 id="advanced">Advanced</h3>
+
+<p><strong>Chromium Flags:</strong> Add custom command-line flags passed to the underlying Chromium engine. Separate multiple flags with spaces. Example: <code>--disable-gpu --ignore-certificate-errors</code>. Use with caution.</p>
+
+<h3 id="encryption">Encryption</h3>
+
+<p>Onu can encrypt sensitive data (history, favorites, sessions, extension preferences, site permissions) with a custom password.</p>
+
+<p><strong>Encryption Method:</strong></p>
+<ul>
+  <li><strong>Default (System-based):</strong> Uses a key derived from your system information. Data is encrypted but does not require a password to unlock</li>
+  <li><strong>Custom Password:</strong> Uses a password you set. You will be prompted for this password each time you start Onu</li>
+</ul>
+
+<p><strong>Set/Change Encryption Password:</strong> Opens a dialog to set or change your custom password. Requirements:</p>
+<ul>
+  <li>Password cannot be empty</li>
+  <li>Both entries must match</li>
+  <li>Minimum length of 4 characters</li>
+</ul>
+
+<p><strong>Important Security Notes:</strong></p>
+<ul>
+  <li>After 10 failed login attempts, Onu will refuse to start</li>
+  <li>To reset after 10 failures, delete <file url="~/.config/Onu/Data/encrypted.conf">encrypted.conf</file></li>
+  <li>Deleting this file permanently erases all encrypted data (history, favorites, sessions, extension preferences, site permissions)</li>
+  <li>If you switch from Custom to Default encryption, you must verify your password first to decrypt your data</li>
+</ul>
+
+<h3 id="downloads">Downloads</h3>
+
+<p><strong>Download Path:</strong> The folder where downloaded files are saved. Click Browse to select a different location.</p>
+
+<p><strong>Ask for Approval When Download Requested:</strong> Shows a confirmation dialog before each download begins.</p>
+
+<p><strong>Allow Duplicate Downloads:</strong> Allows downloading the same file multiple times. When disabled, Onu checks if the file already exists and asks before overwriting.</p>
+
+<p><strong>Smart Path (organize downloads by file type):</strong> Automatically creates subfolders in your download directory for different file types (images, documents, archives, etc.).</p>
+
+<p><strong>Open Folder When Download Completes:</strong> Opens the download folder in your file manager after each download finishes.</p>
+
+<p><strong>Open Downloads Manager:</strong> Opens the downloads manager window (also accessible with Ctrl+J).</p>
+
+<h3 id="site-permissions">Site Permissions</h3>
+
+<p><strong>Manage Site Permissions:</strong> Opens the Site Permissions Manager where you can view and edit permissions for all websites.</p>
+
+<p>This button takes you to a separate dialog with two tabs:</p>
+
+<ul>
+  <li><strong>Global Defaults:</strong> Set default permission behavior for all sites (Allow, Deny, Ask)</li>
+  <li><strong>Sites:</strong> View and edit permissions for individual websites that have custom overrides</li>
+</ul>
+
+<p>Permissions include: geolocation, camera, microphone, notifications, popups, clipboard, local fonts, screen sharing, and file access.</p>
+
+<hr />
+
+<h2 id="scripts">5. Scripts and Extensions</h2>
+
+<h3 id="extensions">Browser Extensions</h3>
+
+<p>Onu supports dynamic extensions loaded from <file url="~/.config/Onu/Conf/extensions">~/.config/Onu/Conf/extensions</file>. Extensions are .so (Linux) or .dll (Windows) files that can modify browser behavior, add toolbars, or interact with web content.</p>
+
+<p><strong>Open Extension Manager:</strong> Opens the full extension management dialog where you can view installed extensions, enable/disable them, and see metadata (name, version, maintainer, description).</p>
+
+<p><strong>Open Extensions Folder:</strong> Opens the extensions directory in your file manager, where you can add or remove extension files manually.</p>
+
+<h3 id="user-script">User Script (JavaScript)</h3>
+
+<p>You can inject custom JavaScript code into every page you visit. This is useful for creating browser-wide scripts that modify page behavior or add functionality.</p>
+
+<p>The editor has a monospace font and includes basic controls:</p>
+<ul>
+  <li><strong>New Script:</strong> Clear the editor to start fresh</li>
+  <li><strong>Clear Script:</strong> Remove all script content</li>
+</ul>
+
+<p>Your script runs on every page load after the DOM is ready. Use this for userscripts, page modifications, or custom automation.</p>
+
+<hr />
+
+<h2 id="managers">6. Additional Managers</h2>
+
+<h3 id="keybinds">Keybinds Editor</h3>
+
+<p>Access this from Settings > General > Edit Keybinds.</p>
+
+<p>The keybinds editor shows a list of all actions and their current keyboard shortcuts. Features:</p>
+<ul>
+  <li><strong>Search:</strong> Filter actions by name</li>
+  <li><strong>Edit a keybind:</strong> Click the keybind button, then press the desired key combination. The button shows "..." while waiting for input</li>
+  <li><strong>Reset to default:</strong> Click the circular arrow button next to a changed keybind to revert it to the default</li>
+  <li><strong>Conflict detection:</strong> If you set two actions to the same keybind, a warning appears with options to cancel or restore all defaults</li>
+</ul>
+
+<p>Click <strong>Save</strong> to apply changes or <strong>Cancel</strong> to discard.</p>
+
+<h3 id="favorites-manager">Favorites Manager</h3>
+
+<p>Access this from Settings > Toolbars > Favorites Toolbar > Open Favorites Manager.</p>
+
+<p>The favorites manager lets you organize your saved websites:</p>
+<ul>
+  <li><strong>Search:</strong> Filter favorites by title or URL</li>
+  <li><strong>Add New:</strong> Create a new favorite with title, URL, and optional custom icon</li>
+  <li><strong>Edit:</strong> Modify an existing favorite</li>
+  <li><strong>Remove:</strong> Delete selected favorites</li>
+  <li><strong>Clear All:</strong> Delete all favorites (with confirmation)</li>
+  <li><strong>Drag and Drop:</strong> Reorder favorites by dragging items in the list</li>
+  <li><strong>Right-click menu:</strong> Open in new tab, copy URL, edit, delete</li>
+</ul>
+
+<h3 id="history-manager">History Manager</h3>
+
+<p>Access this from Settings > Toolbars > Recent Toolbar > Open History Manager.</p>
+
+<p>The history manager shows your browsing history grouped by date:</p>
+<ul>
+  <li><strong>Search:</strong> Filter by title or URL</li>
+  <li><strong>Sort:</strong> Sort by recent first, oldest first, or alphabetically</li>
+  <li><strong>Remove Selected:</strong> Delete individual history entries</li>
+  <li><strong>Clear All:</strong> Delete all history (with confirmation)</li>
+  <li><strong>Right-click menu:</strong> Open in new tab, copy URL, add to favorites, remove from history</li>
+</ul>
+
+<p>Double-click an entry to open it in a new tab.</p>
+
+<h3 id="extension-manager">Extension Manager</h3>
+
+<p>Access this from Settings > Scripts > Open Extension Manager.</p>
+
+<p>The extension manager displays all discovered extensions with:</p>
+<ul>
+  <li><strong>Search and filter:</strong> Filter by name, maintainer, description, or state (All, Enabled, Disabled, Unspecified)</li>
+  <li><strong>Extension details:</strong> Click an extension to see its name, maintainer, version, file path, and description</li>
+  <li><strong>State controls:</strong> Choose Enable, Disable, or Unspecified for each extension</li>
+  <li><strong>Add Extension:</strong> Select .so/.dll files to install new extensions</li>
+  <li><strong>Remove:</strong> Delete the extension file from disk</li>
+  <li><strong>Open Folder:</strong> Open the extensions directory in your file manager</li>
+  <li><strong>Refresh:</strong> Rescan the extensions directory</li>
+  <li><strong>Get extensions:</strong> Opens the Onu extensions repository on GitHub</li>
+</ul>
+
+<p>When you first install extensions, you will see a dialog asking you to specify whether to enable, disable, or keep unspecified for each one.</p>
+
+<h3 id="sites-manager">Site Permissions Manager</h3>
+
+<p>Access this from Settings > Privacy > Manage Site Permissions.</p>
+
+<p>The Site Permissions Manager has two tabs:</p>
+
+<p><strong>Global Defaults:</strong> Set default permission behavior for all websites. Options for each permission type: Allow, Deny, or Ask (prompt each time).</p>
+
+<p><strong>Sites:</strong> View and edit permissions for individual websites that have custom overrides:</p>
+<ul>
+  <li><strong>Search:</strong> Filter the list of sites</li>
+  <li><strong>Select a site:</strong> View all its permission overrides</li>
+  <li><strong>Edit permissions:</strong> Change any permission for that site</li>
+  <li><strong>Reset all for this site:</strong> Remove all overrides and revert to global defaults</li>
+</ul>
+
+<p>The <strong>Clear All Site Permissions</strong> button removes all site-specific overrides.</p>
+
+<hr />
+
+<h2 id="search-bar">7. Search Bar Integration</h2>
+
+<p>The search toolbar integrates all these settings:</p>
+
+<ul>
+  <li><strong>Address bar:</strong> Shows the current page URL and accepts new URLs or search queries</li>
+  <li><strong>Search engine picker:</strong> Dropdown to select which search engine to use for queries (if enabled)</li>
+  <li><strong>Search icon button:</strong> Appears when the search toolbar is docked vertically, providing a compact search interface with engine selector and input field</li>
+  <li><strong>Suggestions:</strong> History, favorites, and remote suggestions appear as you type</li>
+</ul>
+
+<p>When the search toolbar is docked to the left or right side of the window, the address bar and engine picker are replaced by a search icon button. Clicking this button opens a popup with the search engine selector and address input.</p>
+
+<hr />
+
+<p>That covers all settings in Onu. Most changes take effect immediately. Some settings (like icon themes or Qt styles) may require restarting the browser for full effect. The configuration files are stored in plain text in <file url="~/.config/Onu/Conf/onu.conf">~/.config/Onu/Conf/onu.conf</file> (public settings) and <file url="~/.config/Onu/Data/encrypted.conf">~/.config/Onu/Data/encrypted.conf</file> (encrypted data).</p>

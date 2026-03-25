@@ -1,0 +1,388 @@
+<page icon="applications-system">
+<h1>Setting Up a Server</h1>
+<p>So you want to set up a server. Whether it is for hosting websites, storing files, running game servers, or just learning how things work, this guide walks you through the basics and covers different types of servers you can run.</p>
+
+<hr>
+
+<h2>Table of Contents</h2>
+
+<ul>
+  <li><a href="#before-you-start">1. Before You Start</a></li>
+  <li><a href="#base-installation">2. Base Server Installation</a></li>
+  <li><a href="#security-basics">3. Security Basics</a></li>
+  <li><a href="#server-types">4. Server Types</a>
+    <ul>
+      <li><a href="#web-server">Web Server (Apache / Nginx)</a></li>
+      <li><a href="#database-server">Database Server (MySQL / MariaDB / PostgreSQL)</a></li>
+      <li><a href="#file-server">File Server (Samba / NFS)</a></li>
+      <li><a href="#game-server">Game Server (Minecraft / SteamCMD)</a></li>
+      <li><a href="#media-server">Media Server (Jellyfin / Plex)</a></li>
+      <li><a href="#docker-host">Docker Host</a></li>
+      <li><a href="#mail-server">Mail Server (Basic)</a></li>
+    </ul>
+  </li>
+  <li><a href="#choosing">5. How to Choose What You Need</a></li>
+  <li><a href="#maintenance">6. Ongoing Maintenance</a></li>
+  <li><a href="#troubleshooting-server">7. Troubleshooting Common Issues</a></li>
+</ul>
+
+<hr />
+
+<h2 id="before-you-start">1. Before You Start</h2>
+
+<p>Before setting up a server, make sure you have:</p>
+
+<ul>
+  <li>A working system with root access or sudo privileges</li>
+  <li>A stable internet connection</li>
+  <li>A static IP address or domain name if the server needs to be accessible from outside your network</li>
+  <li>Firewall rules configured on your router if you are hosting services to the internet</li>
+  <li>At least 1GB RAM for basic servers, more for game servers or databases</li>
+</ul>
+
+<p>You can set up a server on a spare computer, a virtual machine, or a cloud instance. The commands in this guide work the same way on any modern Linux system.</p>
+
+<hr />
+
+<h2 id="base-installation">2. Base Server Installation</h2>
+
+<p>Start with a minimal installation of your operating system. The netinstall ISO with "SSH server" selected during installation gives you a clean base.</p>
+
+<p>Once installed, log in and update everything:</p>
+
+<bash>sudo apt update
+sudo apt upgrade -y</bash>
+
+<p>Install essential tools:</p>
+
+<bash>sudo apt install -y curl wget git htop neofetch ufw fail2ban</bash>
+
+<p>Set your hostname (replace <code>yourserver</code> with what you want):</p>
+
+<bash>sudo hostnamectl set-hostname yourserver</bash>
+
+<p>Make sure the system clock is correct:</p>
+
+<bash>sudo timedatectl set-timezone Your/Timezone
+sudo timedatectl set-ntp yes</bash>
+
+<p>Check it with <code>timedatectl</code>.</p>
+
+<hr />
+
+<h2 id="security-basics">3. Security Basics</h2>
+
+<p>A few simple steps make your server much safer.</p>
+
+<p><strong>Set up firewall with UFW:</strong></p>
+
+<bash>sudo ufw allow ssh
+sudo ufw enable</bash>
+
+<p>If you are running web services later, add <code>sudo ufw allow 80</code> and <code>sudo ufw allow 443</code>.</p>
+
+<p><strong>Disable root login over SSH:</strong> Edit <file url="/etc/ssh/sshd_config"></p>
+
+<bash>sudo nano /etc/ssh/sshd_config</bash>
+
+<p>Find and set:</p>
+
+<pre><code>PermitRootLogin no
+PasswordAuthentication no</code></pre>
+
+<p>But only disable password authentication if you have SSH keys set up. Otherwise, leave it as yes and use strong passwords.</p>
+
+<p>Reload SSH:</p>
+
+<bash>sudo systemctl reload sshd</bash>
+
+<p><strong>Install fail2ban to block brute force attacks:</strong></p>
+
+<bash>sudo apt install fail2ban -y
+sudo systemctl enable fail2ban
+sudo systemctl start fail2ban</bash>
+
+<p><strong>Set up automatic security updates:</strong></p>
+
+<bash>sudo apt install unattended-upgrades -y
+sudo dpkg-reconfigure --priority=low unattended-upgrades</bash>
+
+<p>Select Yes when prompted.</p>
+
+<hr />
+
+<h2 id="server-types">4. Server Types</h2>
+
+<p>Here are the most common server setups and how to get them running.</p>
+
+<h3 id="web-server">Web Server (Apache / Nginx)</h3>
+
+<p>A web server serves websites and web applications. Nginx is lighter and faster for static content and reverse proxying. Apache is more flexible with .htaccess files and module configuration.</p>
+
+<p><strong>Install Nginx:</strong></p>
+
+<bash>sudo apt install nginx -y
+sudo systemctl enable nginx
+sudo systemctl start nginx</bash>
+
+<p>Your web root is at <file url="/var/www/html">. Test by visiting your server's IP address in a browser. You should see the default Nginx page.</p>
+
+<p><strong>Install Apache:</strong></p>
+
+<bash>sudo apt install apache2 -y
+sudo systemctl enable apache2
+sudo systemctl start apache2</bash>
+
+<p>Apache's web root is at <file url="/var/www/html">.</p>
+
+<p><strong>Add PHP support (for dynamic sites like WordPress):</strong></p>
+
+<bash>sudo apt install php-fpm php-mysql -y</bash>
+
+<p>Then configure your web server to use PHP-FPM. The exact configuration varies, but most guides cover this step.</p>
+
+<h3 id="database-server">Database Server (MySQL / MariaDB / PostgreSQL)</h3>
+
+<p>Databases store data for web applications, game servers, and other services.</p>
+
+<p><strong>Install MariaDB (the open-source MySQL replacement):</strong></p>
+
+<bash>sudo apt install mariadb-server -y
+sudo systemctl enable mariadb
+sudo systemctl start mariadb
+sudo mysql_secure_installation</bash>
+
+<p>The secure installation script asks you to set a root password, remove anonymous users, and disable remote root login. Answer yes to all.</p>
+
+<p><strong>Install PostgreSQL:</strong></p>
+
+<bash>sudo apt install postgresql postgresql-contrib -y
+sudo systemctl enable postgresql
+sudo systemctl start postgresql</bash>
+
+<p>PostgreSQL uses a different authentication model. Switch to the postgres user to manage it:</p>
+
+<bash>sudo -u postgres psql</bash>
+
+<h3 id="file-server">File Server (Samba / NFS)</h3>
+
+<p>File servers let other computers on your network access shared folders.</p>
+
+<p><strong>Samba (Windows and Linux sharing):</strong></p>
+
+<bash>sudo apt install samba -y</bash>
+
+<p>Edit the configuration at <file url="/etc/samba/smb.conf">:</p>
+
+<bash>sudo nano /etc/samba/smb.conf</bash>
+
+<p>Add a share at the bottom:</p>
+
+<pre><code>[myshare]
+   path = /srv/samba/myshare
+   browseable = yes
+   read only = no
+   guest ok = no
+   create mask = 0755</code></pre>
+
+<p>Create the directory and set permissions:</p>
+
+<bash>sudo mkdir -p /srv/samba/myshare
+sudo chmod 755 /srv/samba/myshare
+sudo smbpasswd -a yourusername</bash>
+
+<p>Restart Samba:</p>
+
+<bash>sudo systemctl restart smbd</bash>
+
+<p><strong>NFS (Linux to Linux sharing):</strong></p>
+
+<bash>sudo apt install nfs-kernel-server -y</bash>
+
+<p>Edit exports file at <file url="/etc/exports">:</p>
+
+<bash>sudo nano /etc/exports</bash>
+
+<p>Add:</p>
+
+<pre><code>/srv/nfs 192.168.1.0/24(rw,sync,no_subtree_check)</code></pre>
+
+<p>Create the directory and restart:</p>
+
+<bash>sudo mkdir -p /srv/nfs
+sudo systemctl restart nfs-server</bash>
+
+<h3 id="game-server">Game Server (Minecraft / SteamCMD)</h3>
+
+<p>Hosting your own game server gives you full control over settings, mods, and who can join.</p>
+
+<p><strong>Minecraft Java Edition Server:</strong></p>
+
+<bash>sudo apt install openjdk-17-jre-headless -y
+mkdir ~/minecraft
+cd ~/minecraft
+wget https://piston-data.mojang.com/v1/objects/.../server.jar
+java -Xmx1024M -Xms1024M -jar server.jar nogui</bash>
+
+<p>The first run creates <file url="~/minecraft/eula.txt">. Edit it to accept the agreement:</p>
+
+<bash>nano ~/minecraft/eula.txt</bash>
+
+<p>Change <code>eula=false</code> to <code>eula=true</code>. Run the server again.</p>
+
+<p><strong>SteamCMD (for games like Counter-Strike, Rust, ARK):</strong></p>
+
+<bash>sudo apt install steamcmd -y
+mkdir ~/gameserver
+cd ~/gameserver
+steamcmd +login anonymous +force_install_dir ~/gameserver +app_update 740 +quit</bash>
+
+<p>Replace 740 with the app ID of the game you want to host. You can find app IDs on the Valve Developer Community wiki.</p>
+
+<h3 id="media-server">Media Server (Jellyfin / Plex)</h3>
+
+<p>Media servers organize your movies, TV shows, and music and let you stream them to other devices.</p>
+
+<p><strong>Jellyfin (open-source):</strong></p>
+
+<bash>sudo apt install curl -y
+curl https://repo.jellyfin.org/install-debuntu.sh | sudo bash
+sudo systemctl enable jellyfin
+sudo systemctl start jellyfin</bash>
+
+<p>Access the web interface at <code>http://yourserverip:8096</code> and follow the setup wizard.</p>
+
+<p><strong>Plex:</strong></p>
+
+<bash>wget https://downloads.plex.tv/plex-media-server-new/.../plexmediaserver_*.deb
+sudo dpkg -i plexmediaserver_*.deb
+sudo systemctl enable plexmediaserver
+sudo systemctl start plexmediaserver</bash>
+
+<p>Access Plex at <code>http://yourserverip:32400/web</code>.</p>
+
+<h3 id="docker-host">Docker Host</h3>
+
+<p>Docker lets you run applications in isolated containers. It is great for running multiple services without conflicts.</p>
+
+<bash>sudo apt install docker.io docker-compose -y
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo usermod -aG docker $USER</bash>
+
+<p>Log out and back in for the group changes to take effect. Test with:</p>
+
+<bash>docker run hello-world</bash>
+
+<h3 id="mail-server">Mail Server (Basic)</h3>
+
+<p>Running a mail server is complex and needs careful setup to avoid being marked as spam. This is a basic setup for learning or internal use.</p>
+
+<bash>sudo apt install postfix dovecot-core dovecot-imapd -y</bash>
+
+<p>During installation, select "Internet Site" and set your domain. Postfix configuration files are at <file url="/etc/postfix">. Dovecot config is at <file url="/etc/dovecot">.</p>
+
+<p>This is a minimal setup. For a production mail server, you also need SPF, DKIM, and DMARC records configured in your DNS.</p>
+
+<hr />
+
+<h2 id="choosing">5. How to Choose What You Need</h2>
+
+<p>Not sure which server type to set up? Here is a quick guide:</p>
+
+<p><strong>Start with a web server if:</strong> You want to host a personal website, blog, or web application. Nginx is easier for beginners and handles static files well.</p>
+
+<p><strong>Add a database if:</strong> Your website needs to store user data, posts, or content. MariaDB is the simplest choice.</p>
+
+<p><strong>Set up a file server if:</strong> You have multiple computers at home and want to share files between them. Samba works with Windows machines too.</p>
+
+<p><strong>Try a game server if:</strong> You play multiplayer games with friends and want full control over the server settings.</p>
+
+<p><strong>Install a media server if:</strong> You have a collection of movies or music and want to stream them to your TV, phone, or other devices.</p>
+
+<p><strong>Use Docker if:</strong> You plan to run multiple services and want an easy way to manage them without worrying about dependencies.</p>
+
+<p><strong>Skip mail server unless:</strong> You are doing it for learning or have specific internal needs. Email hosting is complex and most people are better off using a dedicated email service.</p>
+
+<hr />
+
+<h2 id="maintenance">6. Ongoing Maintenance</h2>
+
+<p>A server needs regular care to stay secure and run smoothly.</p>
+
+<p><strong>Check logs regularly:</strong> Logs live in <file url="/var/log">. The main ones to watch are <file url="/var/log/syslog"> and <file url="/var/log/auth.log">.</p>
+
+<bash>sudo tail -f /var/log/syslog</bash>
+
+<p><strong>Monitor disk space:</strong></p>
+
+<bash>df -h</bash>
+
+<p>If disk space gets low, use <code>ncdu</code> to find large files:</p>
+
+<bash>sudo apt install ncdu -y
+sudo ncdu /</bash>
+
+<p><strong>Update regularly:</strong> Set a reminder to run updates weekly:</p>
+
+<bash>sudo apt update && sudo apt upgrade -y</bash>
+
+<p><strong>Reboot when needed:</strong> Kernel updates require a reboot. Check if a reboot is pending:</p>
+
+<bash>ls /var/run/reboot-required</bash>
+
+<p>If that file exists, reboot when convenient:</p>
+
+<bash>sudo reboot</bash>
+
+<p><strong>Back up important data:</strong> At minimum, back up <file url="/etc"> (configurations) and any data directories you care about. A simple script with rsync to another machine or external drive works well.</p>
+
+<hr />
+
+<h2 id="troubleshooting-server">7. Troubleshooting Common Issues</h2>
+
+<p><strong>Cannot connect to the server over SSH:</strong> Check if the service is running:</p>
+
+<bash>sudo systemctl status ssh</bash>
+
+<p>Check firewall rules:</p>
+
+<bash>sudo ufw status</bash>
+
+<p>Make sure port 22 is allowed.</p>
+
+<p><strong>Web server not showing pages:</strong> Check if the service is running:</p>
+
+<bash>sudo systemctl status nginx
+# or
+sudo systemctl status apache2</bash>
+
+<p>Check firewall:</p>
+
+<bash>sudo ufw status</bash>
+
+<p>Ports 80 and 443 should be allowed. Check <file url="/var/log/nginx/error.log"> or <file url="/var/log/apache2/error.log"> for specific errors.</p>
+
+<p><strong>Game server not showing up:</strong> Make sure the port is open in the firewall and forwarded on your router. Most game servers need UDP ports forwarded. Check the server logs in the installation directory.</p>
+
+<p><strong>Service fails to start:</strong> Look at the logs:</p>
+
+<bash>sudo journalctl -u servicename -f</bash>
+
+<p>Replace <code>servicename</code> with the actual service name like <code>nginx</code>, <code>mysql</code>, or <code>jellyfin</code>.</p>
+
+<p><strong>Server feels slow:</strong> Check system load:</p>
+
+<bash>htop
+free -h
+df -h</bash>
+
+<p>High CPU, low memory, or full disk can all cause slowdowns.</p>
+
+<p><strong>Cannot write to shared folder on file server:</strong> Check permissions on the shared directory:</p>
+
+<bash>ls -la /path/to/share</bash>
+
+<p>Make sure the user has write permissions. For Samba, also check the smb.conf share settings.</p>
+
+<hr />

@@ -1,0 +1,491 @@
+<page icon="downloader"> <h1>Onu Downloader: A Complete Guide</h1>
+<hr />
+
+<h2>Table of Contents</h2>
+
+<ul>
+  <li><a href="#overview">1. Overview</a>
+    <ul>
+      <li><a href="#key-features">Key Features</a></li>
+      <li><a href="#architecture">Architecture Overview</a></li>
+    </ul>
+  </li>
+  <li><a href="#download-states">2. Download States</a></li>
+  <li><a href="#segmented-downloads">3. Segmented Downloads</a>
+    <ul>
+      <li><a href="#how-segmented-works">How Segmented Downloads Work</a></li>
+      <li><a href="#segment-configuration">Segment Configuration</a></li>
+      <li><a href="#when-segmented-is-used">When Segmented Downloads Are Used</a></li>
+    </ul>
+  </li>
+  <li><a href="#smart-path">4. Smart Path Organization</a>
+    <ul>
+      <li><a href="#file-type-folders">File Type Folders</a></li>
+      <li><a href="#duplicate-handling">Duplicate File Handling</a></li>
+    </ul>
+  </li>
+  <li><a href="#downloads-manager">5. Downloads Manager Window</a>
+    <ul>
+      <li><a href="#download-list">Download List Interface</a></li>
+      <li><a href="#context-menu">Context Menu Options</a></li>
+      <li><a href="#grouping-by-date">Grouping by Date</a></li>
+    </ul>
+  </li>
+  <li><a href="#persistence">6. Persistence and Session Recovery</a>
+    <ul>
+      <li><a href="#download-index">Download Index File</a></li>
+      <li><a href="#state-persistence">State Persistence</a></li>
+    </ul>
+  </li>
+  <li><a href="#api-reference">7. API Reference</a>
+    <ul>
+      <li><a href="#qtdl-class">Qtdl Class</a></li>
+      <li><a href="#dl-man-class">DL_Man Class</a></li>
+    </ul>
+  </li>
+  <li><a href="#troubleshooting-downloads">8. Troubleshooting</a></li>
+</ul>
+
+<hr />
+
+<h2 id="overview">1. Overview</h2>
+
+<p>The Onu downloader consists of two main components:</p>
+
+<ul>
+  <li><strong>Qtdl:</strong> The core download engine that handles HTTP requests, segmented downloads, and network operations</li>
+  <li><strong>DL_Man:</strong> The user interface that displays downloads, manages the download list, and handles user interactions</li>
+</ul>
+
+<h3 id="key-features">Key Features</h3>
+
+<ul>
+  <li><strong>Multi-threaded segmented downloads:</strong> Splits large files into chunks for faster downloads (1-32 segments)</li>
+  <li><strong>Pause and resume:</strong> Pause downloads at any time and resume later, even after restarting the browser</li>
+  <li><strong>Smart path organization:</strong> Automatically organizes downloads into folders based on file type (Images, Documents, Videos, Music, Archives, Others)</li>
+  <li><strong>Automatic duplicate handling:</strong> Adds numbers to filenames when duplicates exist</li>
+  <li><strong>Session persistence:</strong> Saves download states to disk so downloads survive browser restarts</li>
+  <li><strong>HTTP range request support:</strong> Automatically detects if servers support range requests for segmented downloads</li>
+  <li><strong>File watcher integration:</strong> Monitors downloaded files and updates UI if files are moved or deleted externally</li>
+</ul>
+
+<h3 id="architecture">Architecture Overview</h3>
+
+<p>The downloader runs in its own thread to avoid blocking the UI. Here is the basic flow:</p>
+
+<pre><code>+----------------+     +----------------+     +----------------+
+|   Browser      |     |   DL_Man       |     |    Qtdl        |
+|   (Web Page)   |---->|   (UI)         |---->|   (Engine)     |
++----------------+     +----------------+     +----------------+
+                              |                       |
+                              |                       |
+                              v                       v
+                       +----------------+     +----------------+
+                       |  Download      |     |  HTTP Network  |
+                       |  Index File    |     |  Requests      |
+                       +----------------+     +----------------+</code></pre>
+
+<p>When a download starts:</p>
+<ol>
+  <li>The browser calls <code>DL_Man::addDownload()</code></li>
+  <li>DL_Man creates a Qtdl instance and moves it to a worker thread</li>
+  <li>Qtdl sends a HEAD request to check server capabilities (range support, content length)</li>
+  <li>If range requests are supported and the file is large enough, segmented download begins</li>
+  <li>Otherwise, a single-threaded download starts</li>
+  <li>Progress updates are sent back to DL_Man via signals</li>
+  <li>When finished, the file is merged (if segmented) and moved to the final location</li>
+</ol>
+
+<hr />
+
+<h2 id="download-states">2. Download States</h2>
+
+<p>Each download can be in one of five states:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>State</th>
+      <th>Description</th>
+      <th>User Action Available</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Queued</code></td>
+      <td>Waiting to start (not currently used in implementation)</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td><code>Downloading</code></td>
+      <td>Actively downloading data</td>
+      <td>Pause, Cancel</td>
+    </tr>
+    <tr>
+      <td><code>Paused</code></td>
+      <td>Download suspended, segment files cached on disk</td>
+      <td>Resume, Cancel</td>
+    </tr>
+    <tr>
+      <td><code>Finished</code></td>
+      <td>Download completed successfully</td>
+      <td>Open, Show in Folder, Remove</td>
+    </tr>
+    <tr>
+      <td><code>Cancelled_Failed</code></td>
+      <td>Download was cancelled by user or failed due to network error</td>
+      <td>Retry, Remove</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>State transitions are handled automatically by the downloader and reflected in the UI with appropriate buttons and status messages.</p>
+
+<hr />
+
+<h2 id="segmented-downloads">3. Segmented Downloads</h2>
+
+<h3 id="how-segmented-works">How Segmented Downloads Work</h3>
+
+<p>When a server supports HTTP range requests (Accept-Ranges: bytes header), Qtdl can split the file into multiple segments and download them in parallel. Here is how it works:</p>
+
+<ol>
+  <li>The server is queried for total file size via a HEAD request</li>
+  <li>The file is divided into N segments (configurable, default 8)</li>
+  <li>Each segment is downloaded independently to a temporary .part file</li>
+  <li>Each segment request includes a Range header: <code>Range: bytes=start-end</code></li>
+  <li>Segments are downloaded in parallel using separate QNetworkAccessManager instances</li>
+  <li>When all segments complete, they are merged into the final file in order</li>
+  <li>Segment files are deleted after successful merge</li>
+</ol>
+
+<p><strong>Segment storage:</strong> Segments are stored in <file url="~/Downloads/.dlcache">~/Downloads/.dlcache</file> with filenames like <code>filename.part0</code>, <code>filename.part1</code>, etc.</p>
+
+<h3 id="segment-configuration">Segment Configuration</h3>
+
+<p>The number of segments can be configured in the Downloads Manager window. Options range from 1 to 32 segments. This setting applies to new downloads only.</p>
+
+<p><strong>Considerations when choosing segment count:</strong></p>
+<ul>
+  <li>More segments = faster downloads on high-bandwidth connections with servers that support range requests</li>
+  <li>Too many segments can overwhelm some servers or cause connection limits to be exceeded</li>
+  <li>For small files (<10MB), 1-2 segments is usually sufficient</li>
+  <li>For large files (100MB+), 8-16 segments can significantly improve speed</li>
+</ul>
+
+<h3 id="when-segmented-is-used">When Segmented Downloads Are Used</h3>
+
+<p>Segmented downloads are automatically enabled when ALL of these conditions are met:</p>
+
+<ul>
+  <li>The server responds with <code>Accept-Ranges: bytes</code> header</li>
+  <li>The Content-Length header is present (file size is known)</li>
+  <li>File size is greater than 0</li>
+  <li>Number of segments is greater than 1</li>
+  <li>Transfer-Encoding is not "chunked"</li>
+</ul>
+
+<p>If any condition fails, the downloader falls back to single-threaded mode.</p>
+
+<hr />
+
+<h2 id="smart-path">4. Smart Path Organization</h2>
+
+<p>When Smart Path is enabled in Settings, downloaded files are automatically organized into subfolders based on file extension.</p>
+
+<h3 id="file-type-folders">File Type Folders</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>File Type</th>
+      <th>Extensions</th>
+      <th>Destination Folder</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Documents</td>
+      <td>.pdf, .doc, .docx, .txt, .odt</td>
+      <td>Documents/</td>
+    </tr>
+    <tr>
+      <td>Images</td>
+      <td>.jpg, .jpeg, .png, .gif, .bmp, .svg</td>
+      <td>Images/</td>
+    </tr>
+    <tr>
+      <td>Videos</td>
+      <td>.mp4, .avi, .mkv, .mov, .wmv, .flv</td>
+      <td>Videos/</td>
+    </tr>
+    <tr>
+      <td>Music</td>
+      <td>.mp3, .wav, .flac, .ogg, .m4a</td>
+      <td>Music/</td>
+    </tr>
+    <tr>
+      <td>Archives</td>
+      <td>.zip, .rar, .7z, .tar, .gz</td>
+      <td>Archives/</td>
+    </tr>
+    <tr>
+      <td>Others</td>
+      <td>Any other extension</td>
+      <td>Others/</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Folders are created automatically if they don't exist.</p>
+
+<h3 id="duplicate-handling">Duplicate File Handling</h3>
+
+<p>When a file with the same name already exists in the destination folder, the downloader automatically appends a number:</p>
+
+<ul>
+  <li>First duplicate: <code>filename (1).ext</code></li>
+  <li>Second duplicate: <code>filename (2).ext</code></li>
+  <li>And so on, up to 999 duplicates</li>
+</ul>
+
+<p>This happens before the download starts, so you never get a prompt asking what to do with existing files.</p>
+
+<hr />
+
+<h2 id="downloads-manager">5. Downloads Manager Window</h2>
+
+<p>The Downloads Manager (accessible via Ctrl+J or from the menu) provides a comprehensive view of all downloads.</p>
+
+<h3 id="download-list">Download List Interface</h3>
+
+<p>Each download item displays:</p>
+
+<ul>
+  <li><strong>File icon:</strong> Based on file type from system icon theme</li>
+  <li><strong>Filename:</strong> The name of the downloaded file (strikethrough if file is missing)</li>
+  <li><strong>Age:</strong> Time since download completed (Today, Yesterday, etc.)</li>
+  <li><strong>Status:</strong> Download progress or final status</li>
+  <li><strong>Progress bar:</strong> Visual representation of download progress</li>
+  <li><strong>Action button:</strong> Context-dependent (Pause, Resume, Retry, Remove)</li>
+  <li><strong>Open button:</strong> Opens the downloaded file (visible for completed downloads)</li>
+</ul>
+
+<h3 id="context-menu">Context Menu Options</h3>
+
+<p>Right-click any download item to access:</p>
+
+<ul>
+  <li><strong>Open:</strong> Open the downloaded file (completed downloads only)</li>
+  <li><strong>Show in Folder:</strong> Open the containing folder in file manager</li>
+  <li><strong>Pause/Resume/Retry:</strong> Control active downloads</li>
+  <li><strong>Cancel:</strong> Cancel an active or paused download</li>
+  <li><strong>Remove:</strong> Delete the download entry and optionally delete the file</li>
+</ul>
+
+<h3 id="grouping-by-date">Grouping by Date</h3>
+
+<p>Downloads are automatically grouped into sections:</p>
+
+<ul>
+  <li><strong>Today:</strong> Downloads from current calendar day</li>
+  <li><strong>Yesterday:</strong> Downloads from previous day</li>
+  <li><strong>This Week:</strong> Downloads from the last 7 days (excluding Today/Yesterday)</li>
+  <li><strong>Older:</strong> Downloads older than 7 days</li>
+</ul>
+
+<p>These groups update automatically when downloads are added or completed.</p>
+
+<p><strong>Clear Completed button:</strong> Deletes all finished downloads from the list AND deletes the actual files from disk.</p>
+
+<p><strong>Open Download Folder button:</strong> Opens the main download directory in your file manager.</p>
+
+<p><strong>Segments spin box:</strong> Configures the number of segments for new downloads (1-32).</p>
+
+<hr />
+
+<h2 id="persistence">6. Persistence and Session Recovery</h2>
+
+<h3 id="download-index">Download Index File</h3>
+
+<p>Download states are saved to <file url="~/Downloads/.dlcache/.onudl">~/Downloads/.dlcache/.onudl</file>. This file uses a simple INI-like format:</p>
+
+<pre><code>[global]
+segments=8
+
+[finished]
+1=https://example.com/file.pdf|Documents/example.pdf
+2=https://example.com/image.png|Images/image.png
+
+[cancelled_failed]
+1=https://example.com/failed.zip
+
+[paused]
+1=https://example.com/largefile.iso|.dlcache/largefile.part0,.dlcache/largefile.part1</code></pre>
+
+<p>When Onu restarts, it reads this file and restores downloads that were in progress, paused, or completed. Completed downloads that no longer exist on disk are moved to the Cancelled/Failed section.</p>
+
+<h3 id="state-persistence">State Persistence</h3>
+
+<p>The following states are preserved across browser sessions:</p>
+
+<ul>
+  <li>Segment count preference</li>
+  <li>Finished downloads (file path stored, verified on next launch)</li>
+  <li>Paused downloads (segment files preserved)</li>
+  <li>Cancelled/failed downloads (for reference and retry)</li>
+</ul>
+
+<p>Active downloads (Downloading state) are automatically cancelled when the browser closes. This is intentional to prevent corruption and simplify state management.</p>
+
+<hr />
+
+<h2 id="api-reference">7. API Reference</h2>
+
+<h3 id="qtdl-class">Qtdl Class</h3>
+
+<p>The Qtdl class is the core download engine. It runs in its own thread and handles all network operations.</p>
+
+<p><strong>Public Methods:</strong></p>
+
+<pre><code>// Constructor: numSegments = number of parallel segments (1-32)
+explicit Qtdl(int numSegments = 8);
+
+// Start a download
+void startDownload(const QUrl &url, const QString &finalPath, const QString &cacheDir);
+
+// Control an active download
+void pauseDownload();
+void resumeDownload();
+void cancelDownload();
+
+// Query state
+bool isDownloading() const;
+bool isCancelled() const;
+bool isPaused() const;
+bool isUnknownLength() const;  // true if server didn't send Content-Length
+
+// Get segment file paths (for persistence)
+QStringList getSegmentPaths() const;</code></pre>
+
+<p><strong>Signals:</strong></p>
+
+<pre><code>void progress(qint64 bytesReceived, qint64 bytesTotal, double speedKBps);
+void downloadFinished(const QString &finalPath, bool success, const QString &error);
+void downloadPaused(const QString &finalPath);
+void downloadResumed(const QString &finalPath);</code></pre>
+
+<p><strong>Internal Workflow:</strong></p>
+
+<ol>
+  <li><code>doDownload()</code> initializes state and calls <code>checkServerCapabilities()</code></li>
+  <li><code>checkServerCapabilities()</code> sends HEAD request to detect range support</li>
+  <li>If range supported, <code>startSegmentedDownload()</code> creates segments</li>
+  <li>Otherwise, <code>startSingleDownload()</code> uses standard download</li>
+  <li>Each segment runs in its own network manager and writes to a .part file</li>
+  <li>When all segments complete, <code>mergeSegments()</code> combines them</li>
+  <li>Segment files are deleted on successful merge</li>
+</ol>
+
+<h3 id="dl-man-class">DL_Man Class</h3>
+
+<p>DL_Man inherits from QDialog and provides the downloads manager UI.</p>
+
+<p><strong>Public Methods:</strong></p>
+
+<pre><code>// Add a new download to the manager
+void addDownload(const QUrl &url, const QString &fileName);
+
+// Save all download states (called on exit)
+void saveAllStatesOnExit();</code></pre>
+
+<p><strong>Signals:</strong></p>
+
+<pre><code>void downloadAdded();  // Emitted when a new download is added</code></pre>
+
+<p><strong>Internal Components:</strong></p>
+
+<ul>
+  <li><code>DownloadItem</code> struct: Holds all data for a single download (downloader pointer, UI widgets, state, file info)</li>
+  <li><code>m_downloads</code>: Vector of all download items</li>
+  <li><code>m_fileWatcher</code>: Monitors downloaded files for external changes</li>
+  <li><code>saveIndex() / loadIndex()</code>: Persistence to .onudl file</li>
+</ul>
+
+<p><strong>UI Components:</strong></p>
+
+<ul>
+  <li><code>QListWidget</code>: Main download list with custom widgets per item</li>
+  <li><code>QStackedWidget</code>: Switches between download list and empty state view</li>
+  <li><code>QSpinBox</code>: Segment count selector</li>
+  <li><code>QPushButton</code>: Clear Completed, Open Download Folder, Close</li>
+</ul>
+
+<hr />
+
+<h2 id="troubleshooting-downloads">8. Troubleshooting</h2>
+
+<p><strong>Download never starts:</strong></p>
+<ul>
+  <li>Check internet connection</li>
+  <li>Verify the URL is accessible</li>
+  <li>Check if the server requires authentication (not supported yet)</li>
+  <li>Look at terminal output for network errors</li>
+</ul>
+
+<p><strong>Segmented download fails to merge:</strong></p>
+<ul>
+  <li>Check disk space in download directory</li>
+  <li>Verify write permissions to the download folder</li>
+  <li>Segment files are preserved in .dlcache; you can retry the download</li>
+  <li>If segments are corrupted, delete the .dlcache folder and retry</li>
+</ul>
+
+<p><strong>Resume not working after browser restart:</strong></p>
+<ul>
+  <li>Check that the .onudl index file exists in <file url="~/Downloads/.dlcache">~/Downloads/.dlcache</file></li>
+  <li>Verify segment files still exist in .dlcache</li>
+  <li>The server must still support range requests for resume to work</li>
+  <li>Some servers expire range request capability after a period of time</li>
+</ul>
+
+<p><strong>Smart path creating wrong folders:</strong></p>
+<ul>
+  <li>Check file extension detection (case-insensitive)</li>
+  <li>Files with no extension go to "Others" folder</li>
+  <li>Unknown extensions also go to "Others"</li>
+  <li>The folder structure is relative to your configured download path</li>
+</ul>
+
+<p><strong>Progress bar stuck at 0%:</strong></p>
+<ul>
+  <li>Server may not be sending Content-Length header (unknown size)</li>
+  <li>Progress bar becomes indeterminate in this case (animated)</li>
+  <li>Speed and downloaded size still update correctly</li>
+</ul>
+
+<p><strong>Downloads disappear from manager after restart:</strong></p>
+<ul>
+  <li>Check that the .onudl file was written successfully</li>
+  <li>Verify the download directory hasn't been deleted or moved</li>
+  <li>Completed downloads that no longer exist on disk are not restored</li>
+</ul>
+
+<p><strong>File not found error on completed download:</strong></p>
+<ul>
+  <li>The file may have been moved or deleted outside Onu</li>
+  <li>The UI shows strikethrough text and "File not found" status</li>
+  <li>Use "Show in Folder" to locate the file or remove the entry</li>
+</ul>
+
+<p><strong>High memory usage during segmented downloads:</strong></p>
+<ul>
+  <li>Each segment uses a separate QNetworkAccessManager instance</li>
+  <li>With 32 segments, this can use significant memory</li>
+  <li>Reduce segment count if you experience memory issues</li>
+  <li>Files are written to disk as data arrives, not kept entirely in memory</li>
+</ul>
+
+<hr />
+
+<p>The Onu downloader is designed to be robust, efficient, and user-friendly. With segmented downloads for speed, and the indexed storage ensures you never lose track of what you have downloaded.</p>

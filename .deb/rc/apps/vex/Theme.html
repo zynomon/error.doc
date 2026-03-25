@@ -1,0 +1,1607 @@
+<page icon="colorgrab">
+<h1>Vex Theming Guide</h1>
+<hr>
+
+<p><strong>V</strong>ex theming is powered by the LookAndFeelCore Plugin, introduced in Vex 4.0 alongside the plugin architecture. This system allows complete visual customization using Qt Style Sheets (QSS) with custom Vex-specific extensions.</p>
+
+<p>If theming features are unavailable, check that LookAndFeelCore.so or LookAndFeelCore.dll is present in your plugins directory.</p>
+
+<hr>
+
+<h1>Table of Contents</h1>
+
+<ol>
+<li><a href="#1-understanding-qt-style-sheets-qss">Understanding Qt Style Sheets (QSS)</a>
+<ul>
+<li><a href="#11-what-is-qss">1.1 What is QSS?</a></li>
+<li><a href="#12-qss-vs-css-key-differences">1.2 QSS vs CSS: Key Differences</a></li>
+<li><a href="#13-qss-limitations">1.3 QSS Limitations</a></li>
+<li><a href="#14-qss-capabilities">1.4 QSS Capabilities</a></li>
+</ul>
+</li>
+<li><a href="#2-vex-theme-system">2. Vex Theme System</a>
+<ul>
+<li><a href="#21-theme-file-location">2.1 Theme File Location</a></li>
+<li><a href="#22-vexqss-block-custom-properties">2.2 VEX#QSS Block: Custom Properties</a></li>
+<li><a href="#23-syntax-highlighting-colors">2.3 Syntax Highlighting Colors</a></li>
+<li><a href="#24-editor-specific-properties">2.4 Editor-Specific Properties</a></li>
+<li><a href="#25-theme-hot-reloading">2.5 Theme Hot Reloading</a></li>
+</ul>
+</li>
+<li><a href="#3-creating-your-first-theme">3. Creating Your First Theme</a>
+<ul>
+<li><a href="#31-using-the-built-in-theme-creator">3.1 Using the Built-in Theme Creator</a></li>
+<li><a href="#32-manual-theme-creation">3.2 Manual Theme Creation</a></li>
+<li><a href="#33-theme-file-structure">3.3 Theme File Structure</a></li>
+</ul>
+</li>
+<li><a href="#4-qss-styling-guide">4. QSS Styling Guide</a>
+<ul>
+<li><a href="#41-basic-selectors">4.1 Basic Selectors</a></li>
+<li><a href="#42-pseudo-states">4.2 Pseudo-States</a></li>
+<li><a href="#43-sub-controls">4.3 Sub-Controls</a></li>
+<li><a href="#44-common-properties">4.4 Common Properties</a></li>
+<li><a href="#45-gradients">4.5 Gradients</a></li>
+<li><a href="#46-colors-and-transparency">4.6 Colors and Transparency</a></li>
+</ul>
+</li>
+<li><a href="#5-styling-vex-components">5. Styling Vex Components</a>
+<ul>
+<li><a href="#51-main-window">5.1 Main Window</a></li>
+<li><a href="#52-text-editor-qplaintextedit">5.2 Text Editor (QPlainTextEdit)</a></li>
+<li><a href="#53-menu-bar-and-menus">5.3 Menu Bar and Menus</a></li>
+<li><a href="#54-status-bar">5.4 Status Bar</a></li>
+<li><a href="#55-tab-widget">5.5 Tab Widget</a></li>
+<li><a href="#56-combo-boxes-language-selector">5.6 Combo Boxes (Language Selector)</a></li>
+</ul>
+</li>
+<li><a href="#6-advanced-theming">6. Advanced Theming</a>
+<ul>
+<li><a href="#61-creating-dark-themes">6.1 Creating Dark Themes</a></li>
+<li><a href="#62-creating-light-themes">6.2 Creating Light Themes</a></li>
+<li><a href="#63-accent-color-systems">6.3 Accent Color Systems</a></li>
+<li><a href="#64-gradient-techniques">6.4 Gradient Techniques</a></li>
+<li><a href="#65-border-styling-patterns">6.5 Border Styling Patterns</a></li>
+</ul>
+</li>
+<li><a href="#7-icon-themes">7. Icon Themes</a>
+<ul>
+<li><a href="#71-icon-theme-system">7.1 Icon Theme System</a></li>
+<li><a href="#72-creating-icon-themes">7.2 Creating Icon Themes</a></li>
+<li><a href="#73-icon-resolution">7.3 Icon Resolution</a></li>
+</ul>
+</li>
+<li><a href="#8-troubleshooting">8. Troubleshooting</a>
+<ul>
+<li><a href="#81-theme-not-applying">8.1 Theme Not Applying</a></li>
+<li><a href="#82-syntax-colors-not-changing">8.2 Syntax Colors Not Changing</a></li>
+<li><a href="#83-hot-reload-not-working">8.3 Hot Reload Not Working</a></li>
+<li><a href="#84-common-qss-mistakes">8.4 Common QSS Mistakes</a></li>
+</ul>
+</li>
+</ol>
+
+<hr>
+
+<h2>1. Understanding Qt Style Sheets (QSS)</h2>
+
+<h3>1.1 What is QSS?</h3>
+
+<p>Qt Style Sheets (QSS) is Qt's styling language, similar to CSS but designed specifically for Qt widgets. QSS allows you to customize the appearance of Qt applications without modifying the underlying C++ code.</p>
+
+<p><strong>Key Points:</strong></p>
+<ul>
+<li>Based on CSS2 syntax</li>
+<li>Widget-specific, not DOM-based</li>
+<li>Applied at runtime</li>
+<li>Supports cascading and inheritance</li>
+<li>Uses Qt-specific selectors and properties</li>
+</ul>
+
+<hr>
+
+<h3>1.2 QSS vs CSS: Key Differences</h3>
+
+<p>While QSS syntax resembles CSS, there are important differences:</p>
+
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>CSS</th>
+<th>QSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Target</strong></td>
+<td>HTML elements</td>
+<td>Qt widgets</td>
+</tr>
+<tr>
+<td><strong>Box Model</strong></td>
+<td>Full CSS box model</td>
+<td>Simplified Qt layout</td>
+</tr>
+<tr>
+<td><strong>Selectors</strong></td>
+<td>Class, ID, element</td>
+<td>Widget class, object name</td>
+</tr>
+<tr>
+<td><strong>Units</strong></td>
+<td>px, em, rem, %, vh/vw</td>
+<td>px only</td>
+</tr>
+<tr>
+<td><strong>Flexbox/Grid</strong></td>
+<td>Yes</td>
+<td>No (use Qt layouts)</td>
+</tr>
+<tr>
+<td><strong>Animations</strong></td>
+<td>CSS animations, transitions</td>
+<td>No (use Qt animations)</td>
+</tr>
+<tr>
+<td><strong>Shadow</strong></td>
+<td>box-shadow, text-shadow</td>
+<td><strong>NOT SUPPORTED</strong></td>
+</tr>
+<tr>
+<td><strong>Transforms</strong></td>
+<td>rotate, scale, skew</td>
+<td><strong>NOT SUPPORTED</strong></td>
+</tr>
+<tr>
+<td><strong>Gradients</strong></td>
+<td>Linear, radial, conic</td>
+<td>Linear only (limited)</td>
+</tr>
+</tbody>
+</table>
+
+<hr>
+
+<h3>1.3 QSS Limitations</h3>
+
+<p><strong>What QSS CANNOT do:</strong></p>
+
+<ol>
+<li><p><strong>No Drop Shadows</strong></p>
+<pre><code>/* This DOES NOT WORK in QSS */
+QPushButton {
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    text-shadow: 2px 2px 4px #000000;
+}
+</code></pre>
+<p><strong>Workaround:</strong> Use border highlights/lowlights to simulate depth.</p>
+</li>
+<li><p><strong>No CSS Transforms</strong></p>
+<pre><code>/* This DOES NOT WORK in QSS */
+QLabel {
+    transform: rotate(45deg);
+    transform: scale(1.2);
+}
+</code></pre>
+</li>
+<li><p><strong>No Animations or Transitions</strong></p>
+<pre><code>/* This DOES NOT WORK in QSS */
+QPushButton {
+    transition: background-color 0.3s ease;
+}
+QPushButton:hover {
+    animation: pulse 1s infinite;
+}
+</code></pre>
+</li>
+<li><p><strong>No Flexbox or Grid</strong><br />
+- QSS does not support modern CSS layout systems<br />
+- Use Qt's layout managers (QHBoxLayout, QVBoxLayout, QGridLayout)</p>
+</li>
+<li><p><strong>Limited Pseudo-Elements</strong><br />
+- No <code>::before</code> or <code>::after</code> for content insertion<br />
+- Only widget-specific sub-controls (e.g., <code>::drop-down</code>, <code>::handle</code>)</p>
+</li>
+<li><p><strong>No calc() Function</strong></p>
+<pre><code>/* This DOES NOT WORK in QSS */
+width: calc(100% - 20px);
+</code></pre>
+</li>
+<li><p><strong>No Media Queries</strong><br />
+- No responsive design via @media<br />
+- One stylesheet for all screen sizes</p>
+</li>
+<li><p><strong>Limited Font Control</strong><br />
+- No <code>@font-face</code> for custom fonts<br />
+- Use Qt's font database instead</p>
+</li>
+</ol>
+
+<hr>
+
+<h3>1.4 QSS Capabilities</h3>
+
+<p><strong>What QSS CAN do:</strong></p>
+
+<ol>
+<li><strong>Colors and Backgrounds</strong>
+<ul>
+<li>Solid colors (hex, rgb, rgba, named)</li>
+<li>Linear gradients (qlineargradient)</li>
+<li>Background images</li>
+</ul>
+</li>
+<li><strong>Borders</strong>
+<ul>
+<li>Border width, style, color</li>
+<li>Border radius (rounded corners)</li>
+<li>Per-side border styling</li>
+</ul>
+</li>
+<li><strong>Spacing</strong>
+<ul>
+<li>Padding and margin</li>
+<li>Min/max width and height</li>
+</ul>
+</li>
+<li><strong>Fonts</strong>
+<ul>
+<li>Font family, size, weight, style</li>
+<li>Text alignment and decoration</li>
+</ul>
+</li>
+<li><strong>Pseudo-States</strong>
+<ul>
+<li>:hover, :pressed, :checked, :disabled, :focus</li>
+<li>:selected, :enabled, :on, :off</li>
+</ul>
+</li>
+<li><strong>Sub-Controls</strong>
+<ul>
+<li>Widget-specific parts (QComboBox::drop-down, QScrollBar::handle)</li>
+</ul>
+</li>
+<li><strong>Selectors</strong>
+<ul>
+<li>Type selectors (QWidget)</li>
+<li>ID selectors (#objectName)</li>
+<li>Descendant selectors (QWidget QPushButton)</li>
+<li>Property selectors ([property="value"])</li>
+</ul>
+</li>
+</ol>
+
+<hr>
+
+<h2>2. Vex Theme System</h2>
+
+<h3>2.1 Theme File Location</h3>
+
+<p>Vex themes are stored as <code>.qss</code> files in the following directory:</p>
+
+<pre><code>~/.vex/themes/stylesheets/
+</code></pre>
+
+<p><strong>On different platforms:</strong></p>
+<ul>
+<li><strong>Linux:</strong> <code>/home/username/.vex/themes/stylesheets/</code></li>
+<li><strong>Windows:</strong> <code>C:\Users\username\.vex\themes\stylesheets\</code></li>
+<li><strong>macOS:</strong> <code>/Users/username/.vex/themes/stylesheets/</code></li>
+</ul>
+
+<p><strong>Built-in themes</strong> are stored in the application resources:</p>
+<pre><code>:/vex.qss (default theme)
+</code></pre>
+
+<hr>
+
+<h3>2.2 VEX#QSS Block: Custom Properties</h3>
+
+<p>Vex extends standard QSS with a custom <code>VEX#QSS</code> block for editor-specific properties. This block must appear at the top of your theme file.</p>
+
+<p><strong>Syntax:</strong></p>
+<pre><code>VEX#QSS {
+    property-name: value;
+}
+</code></pre>
+
+<p><strong>Example:</strong></p>
+<pre><code>VEX#QSS {
+    line-highlight-color: rgba(0, 60, 30, 102);
+    line-number-color-fg: rgb(100, 180, 100);
+    line-number-color-bg: rgb(30, 30, 30);
+    comment: rgb(128, 128, 128);
+    critical: rgb(255, 255, 255);
+    quote: rgb(0, 255, 0);
+    keyword: rgb(135, 206, 250);
+    string: rgb(255, 165, 0);
+}
+</code></pre>
+
+<hr>
+
+<h3>2.3 Syntax Highlighting Colors</h3>
+
+<p>The VEX#QSS block defines five core syntax highlighting colors that are sent to the SyntaxCore plugin:</p>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>comment</code></td>
+<td>Comments in code</td>
+<td><code>rgb(128, 128, 128)</code> (gray)</td>
+</tr>
+<tr>
+<td><code>critical</code></td>
+<td>Critical/important text</td>
+<td><code>rgb(255, 255, 255)</code> (white)</td>
+</tr>
+<tr>
+<td><code>quote</code></td>
+<td>Quoted strings, numbers</td>
+<td><code>rgb(0, 255, 0)</code> (green)</td>
+</tr>
+<tr>
+<td><code>keyword</code></td>
+<td>Language keywords</td>
+<td><code>rgb(135, 206, 250)</code> (light blue)</td>
+</tr>
+<tr>
+<td><code>string</code></td>
+<td>String literals</td>
+<td><code>rgb(255, 165, 0)</code> (orange)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>How it works:</strong></p>
+<ol>
+<li>LookAndFeelCore extracts these colors from the VEX#QSS block</li>
+<li>Creates a <code>SyntaxColorEvent</code> with the color map</li>
+<li>Posts the event to the main window</li>
+<li>SyntaxCore plugin receives and applies the colors</li>
+</ol>
+
+<p><strong>Supported color formats:</strong></p>
+<pre><code>comment: rgb(128, 128, 128);
+keyword: rgba(135, 206, 250, 255);
+string: #FFA500;
+quote: rgba(0, 255, 0, 200);  /* with transparency */
+</code></pre>
+
+<hr>
+
+<h3>2.4 Editor-Specific Properties</h3>
+
+<p>Beyond syntax colors, the VEX#QSS block supports editor visual properties:</p>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>line-highlight-color</code></td>
+<td>Current line highlight</td>
+<td><code>rgba(0, 60, 30, 102)</code></td>
+</tr>
+<tr>
+<td><code>line-number-color-fg</code></td>
+<td>Line number text color</td>
+<td><code>rgb(100, 180, 100)</code></td>
+</tr>
+<tr>
+<td><code>line-number-color-bg</code></td>
+<td>Line number background</td>
+<td><code>rgb(30, 30, 30)</code></td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>How it works:</strong></p>
+<ul>
+<li>Properties are extracted via regex: <code>VEX#QSS\s*\{([^}]*)\}</code></li>
+<li>Applied to all <code>QPlainTextEdit</code> widgets with objectName "VexEditor"</li>
+<li>Set as Qt properties: <code>lineHighlightColor</code>, <code>lineNumberFg</code>, <code>lineNumberBg</code></li>
+<li>Editor viewport is updated to reflect changes</li>
+</ul>
+
+<hr>
+
+<h3>2.5 Theme Hot Reloading</h3>
+
+<p>Vex supports <strong>hot reloading</strong> of themes: changes to the active theme file are automatically detected and applied without restarting the editor.</p>
+
+<p><strong>How it works:</strong></p>
+<ol>
+<li><code>QFileSystemWatcher</code> monitors the stylesheets directory</li>
+<li>When a file changes, <code>onThemeFileChanged()</code> is triggered</li>
+<li>If the changed file is the current theme, it's reloaded</li>
+<li>Status bar shows: "Theme hot-reloaded: [name]"</li>
+</ol>
+
+<p><strong>To use hot reloading:</strong></p>
+<ol>
+<li>Open your theme file in Vex</li>
+<li>Make changes and save (Ctrl+S)</li>
+<li>Watch the changes apply instantly</li>
+</ol>
+
+<p><strong>Note:</strong> Hot reload does NOT work for built-in resource themes (:/vex.qss).</p>
+
+<hr>
+
+<h2>3. Creating Your First Theme</h2>
+
+<h3>3.1 Using the Built-in Theme Creator</h3>
+
+<p>The easiest way to create a theme is through Vex's built-in creator:</p>
+
+<p><strong>Steps:</strong></p>
+<ol>
+<li>Go to <strong>View → Themes → Create New Theme...</strong></li>
+<li>Enter a name for your theme (e.g., "My Dark Theme")</li>
+<li>Click OK</li>
+<li>The theme file opens automatically in the editor</li>
+<li>The default template (:/vex.qss) is copied as a starting point</li>
+<li>The theme is immediately applied</li>
+<li>Edit and save (Ctrl+S) to see changes live</li>
+</ol>
+
+<p><strong>What happens behind the scenes:</strong></p>
+<pre><code>// Template is copied
+QFile templateFile(":/vex.qss");
+QFile newFile("~/.vex/themes/stylesheets/My Dark Theme.qss");
+
+// File is opened via fileReq system
+// Theme is applied and selected in menu
+// File watcher is added for hot reloading
+</code></pre>
+
+<hr>
+
+<h3>3.2 Manual Theme Creation</h3>
+
+<p>You can also create themes manually:</p>
+
+<p><strong>Steps:</strong></p>
+<ol>
+<li>Navigate to <code>~/.vex/themes/stylesheets/</code></li>
+<li>Create a new file: <code>mytheme.qss</code></li>
+<li>Copy the structure from the default theme or start from scratch</li>
+<li>Add your VEX#QSS block</li>
+<li>Add standard QSS styling</li>
+<li>Restart Vex or use <strong>View → Themes</strong> to select it</li>
+</ol>
+
+<hr>
+
+<h3>3.3 Theme File Structure</h3>
+
+<p>A complete Vex theme follows this structure:</p>
+
+<pre><code>/*
+     Theme Name: My Dark Theme
+     Author: Your Name
+     Description: A custom dark theme for Vex
+*/
+
+/* ============================================
+   VEX CUSTOM PROPERTIES
+   ============================================ */
+VEX#QSS {
+    line-highlight-color: rgba(0, 60, 30, 102);
+    line-number-color-fg: rgb(100, 180, 100);
+    line-number-color-bg: rgb(30, 30, 30);
+    comment: rgb(128, 128, 128);
+    critical: rgb(255, 255, 255);
+    quote: rgb(0, 255, 0);
+    keyword: rgb(135, 206, 250);
+    string: rgb(255, 165, 0);
+}
+
+/* ============================================
+   MAIN WINDOW
+   ============================================ */
+QMainWindow {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+}
+
+/* ============================================
+   TEXT EDITOR
+   ============================================ */
+QPlainTextEdit {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    selection-background-color: #264f78;
+    selection-color: #ffffff;
+}
+
+/* ============================================
+   MENUS
+   ============================================ */
+QMenuBar {
+    background-color: #2d2d30;
+    color: #cccccc;
+}
+
+/* ... more styling ... */
+</code></pre>
+
+<p><strong>Structure guidelines:</strong></p>
+<ol>
+<li>Start with a comment block (theme name, author, description)</li>
+<li>VEX#QSS block comes first</li>
+<li>Organize by component (main window, editor, menus, etc.)</li>
+<li>Use comments to separate sections</li>
+<li>Group related selectors together</li>
+</ol>
+
+<hr>
+
+<h2>4. QSS Styling Guide</h2>
+
+<h3>4.1 Basic Selectors</h3>
+
+<p><strong>Type Selector</strong> (matches all widgets of a class):</p>
+<pre><code>QPushButton {
+    background-color: #3a6a3a;
+}
+</code></pre>
+
+<p><strong>ID Selector</strong> (matches specific objectName):</p>
+<pre><code>#VexTab {
+    background-color: #252526;
+}
+
+QComboBox#SyntaxLanguageSelector {
+    min-width: 80px;
+}
+</code></pre>
+
+<p><strong>Descendant Selector</strong> (hierarchy):</p>
+<pre><code>QStatusBar QComboBox {
+    background: #3a6a3a;
+}
+
+QTabWidget QPushButton {
+    border-radius: 4px;
+}
+</code></pre>
+
+<p><strong>Universal Selector</strong>:</p>
+<pre><code>* {
+    font-family: "Consolas", "Courier New", monospace;
+}
+</code></pre>
+
+<hr>
+
+<h3>4.2 Pseudo-States</h3>
+
+<p>Pseudo-states apply styles based on widget state:</p>
+
+<table>
+<thead>
+<tr>
+<th>Pseudo-State</th>
+<th>Trigger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>:hover</code></td>
+<td>Mouse over the widget</td>
+</tr>
+<tr>
+<td><code>:pressed</code></td>
+<td>Widget is being clicked</td>
+</tr>
+<tr>
+<td><code>:checked</code></td>
+<td>Checkable widget is checked</td>
+</tr>
+<tr>
+<td><code>:unchecked</code></td>
+<td>Checkable widget is unchecked</td>
+</tr>
+<tr>
+<td><code>:enabled</code></td>
+<td>Widget is enabled</td>
+</tr>
+<tr>
+<td><code>:disabled</code></td>
+<td>Widget is disabled</td>
+</tr>
+<tr>
+<td><code>:focus</code></td>
+<td>Widget has keyboard focus</td>
+</tr>
+<tr>
+<td><code>:selected</code></td>
+<td>Item is selected (lists, menus)</td>
+</tr>
+<tr>
+<td><code>:on</code></td>
+<td>Toggle widget is on</td>
+</tr>
+<tr>
+<td><code>:off</code></td>
+<td>Toggle widget is off</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Examples:</strong></p>
+<pre><code>QPushButton:hover {
+    background-color: #4a7a4a;
+    border-color: #7ab07a;
+}
+
+QPushButton:pressed {
+    background-color: #1a3a1a;
+}
+
+QAction:disabled {
+    color: #666666;
+}
+
+QTabBar::tab:selected {
+    background-color: #1e3a1e;
+    color: #e0ffe0;
+}
+</code></pre>
+
+<hr>
+
+<h3>4.3 Sub-Controls</h3>
+
+<p>Sub-controls style specific parts of complex widgets:</p>
+
+<p><strong>QComboBox sub-controls:</strong></p>
+<pre><code>QComboBox::drop-down {
+    background: #3a6a3a;
+    border-left: 1px solid #4a7a4a;
+    width: 16px;
+}
+
+QComboBox::down-arrow {
+    image: url(:/icons/arrow-down.png);
+    width: 12px;
+    height: 12px;
+}
+</code></pre>
+
+<p><strong>QScrollBar sub-controls:</strong></p>
+<pre><code>QScrollBar::handle:vertical {
+    background: #454545;
+    min-height: 20px;
+    border-radius: 4px;
+}
+
+QScrollBar::add-line:vertical {
+    height: 0px;
+}
+
+QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+</code></pre>
+
+<p><strong>QTabBar sub-controls:</strong></p>
+<pre><code>QTabBar::tab {
+    background-color: #2d2d30;
+    padding: 6px 14px;
+}
+
+QTabBar::tab:selected {
+    background-color: #1e3a1e;
+}
+
+QTabBar::close-button {
+    image: url(:/icons/close.png);
+}
+</code></pre>
+
+<hr>
+
+<h3>4.4 Common Properties</h3>
+
+<p><strong>Color Properties:</strong></p>
+<pre><code>color: #d4d4d4;                    /* text color */
+background-color: #1e1e1e;         /* background */
+border-color: #454545;             /* border color */
+selection-background-color: #264f78;
+selection-color: #ffffff;
+</code></pre>
+
+<p><strong>Border Properties:</strong></p>
+<pre><code>border: 1px solid #454545;         /* all sides */
+border-top: 2px solid #6aa06a;
+border-bottom: 2px solid #0a1a0a;
+border-left: 1px solid #4a7a4a;
+border-right: 1px solid #1a2a1a;
+border-radius: 4px;                /* rounded corners */
+border-top-left-radius: 8px;
+border-top-right-radius: 8px;
+</code></pre>
+
+<p><strong>Spacing Properties:</strong></p>
+<pre><code>padding: 6px;                      /* all sides */
+padding: 6px 14px;                 /* vertical horizontal */
+padding: 2px 6px 2px 6px;          /* top right bottom left */
+margin: 4px;
+margin-left: 10px;
+</code></pre>
+
+<p><strong>Size Properties:</strong></p>
+<pre><code>min-width: 80px;
+max-width: 120px;
+min-height: 18px;
+max-height: 22px;
+width: 100px;
+height: 30px;
+</code></pre>
+
+<p><strong>Font Properties:</strong></p>
+<pre><code>font-family: "Consolas", monospace;
+font-size: 12px;
+font-weight: bold;                 /* or normal */
+font-style: italic;                /* or normal */
+</code></pre>
+
+<hr>
+
+<h3>4.5 Gradients</h3>
+
+<p>QSS supports <strong>linear gradients only</strong> via <code>qlineargradient</code>:</p>
+
+<p><strong>Vertical Gradient:</strong></p>
+<pre><code>background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+    stop: 0 #3a6a3a,
+    stop: 1 #1a3a1a);
+</code></pre>
+
+<p><strong>Horizontal Gradient:</strong></p>
+<pre><code>background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
+    stop: 0 #2a5a2a,
+    stop: 0.5 #454545,
+    stop: 1 #0a1a0a);
+</code></pre>
+
+<p><strong>Diagonal Gradient:</strong></p>
+<pre><code>background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,
+    stop: 0 #4a7a4a,
+    stop: 1 #2a5a2a);
+</code></pre>
+
+<p><strong>Multi-Stop Gradient:</strong></p>
+<pre><code>background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+    stop: 0 #2a5a2a,
+    stop: 0.4 #1a3a1a,
+    stop: 0.7 #0a1a0a,
+    stop: 1 #000000);
+</code></pre>
+
+<p><strong>Gradient Coordinates:</strong></p>
+<ul>
+<li><code>x1, y1</code> = start point (0 to 1, relative to widget)</li>
+<li><code>x2, y2</code> = end point (0 to 1, relative to widget)</li>
+<li><code>stop: position color</code> = color at position (0.0 to 1.0)</li>
+</ul>
+
+<hr>
+
+<h3>4.6 Colors and Transparency</h3>
+
+<p><strong>Color Formats:</strong></p>
+<pre><code>/* Named colors */
+background-color: white;
+color: black;
+
+/* Hex (6-digit) */
+background-color: #1e1e1e;
+border-color: #454545;
+
+/* RGB */
+color: rgb(212, 212, 212);
+background: rgb(30, 30, 30);
+
+/* RGBA (with transparency) */
+background-color: rgba(0, 60, 30, 102);  /* last value: 0-255 alpha */
+border-color: rgba(100, 180, 100, 200);
+</code></pre>
+
+<p><strong>Transparency Tips:</strong></p>
+<ul>
+<li>Use <code>rgba()</code> for semi-transparent colors</li>
+<li>Alpha value: 0 = fully transparent, 255 = fully opaque</li>
+<li>Useful for highlights, overlays, and subtle effects</li>
+</ul>
+
+<hr>
+
+<h2>5. Styling Vex Components</h2>
+
+<h3>5.1 Main Window</h3>
+
+<pre><code>QMainWindow {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+}
+</code></pre>
+
+<p><strong>Properties to customize:</strong></p>
+<ul>
+<li><code>background-color</code> - main background</li>
+<li><code>color</code> - default text color</li>
+</ul>
+
+<hr>
+
+<h3>5.2 Text Editor (QPlainTextEdit)</h3>
+
+<pre><code>QPlainTextEdit {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    selection-background-color: #264f78;
+    selection-color: #ffffff;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 12px;
+}
+</code></pre>
+
+<p><strong>Properties to customize:</strong></p>
+<ul>
+<li><code>background-color</code> - editor background</li>
+<li><code>color</code> - default text color</li>
+<li><code>selection-background-color</code> - selected text background</li>
+<li><code>selection-color</code> - selected text color</li>
+<li><code>font-family</code> - code font</li>
+<li><code>font-size</code> - text size</li>
+</ul>
+
+<p><strong>Additional customization via VEX#QSS:</strong></p>
+<ul>
+<li><code>line-highlight-color</code> - current line highlight</li>
+<li><code>line-number-color-fg</code> - line number text</li>
+<li><code>line-number-color-bg</code> - line number gutter</li>
+</ul>
+
+<hr>
+
+<h3>5.3 Menu Bar and Menus</h3>
+
+<p><strong>Menu Bar:</strong></p>
+<pre><code>QMenuBar {
+    background-color: #2d2d30;
+    color: #cccccc;
+}
+
+QMenuBar::item:selected {
+    background-color: #3e3e42;
+}
+</code></pre>
+
+<p><strong>Menu:</strong></p>
+<pre><code>QMenu {
+    background-color: #2d2d30;
+    color: #cccccc;
+    border: 1px solid #454545;
+    border-radius: 6px;
+    padding: 4px 0px;
+}
+
+QMenu::item {
+    padding: 6px 24px 6px 24px;
+    margin: 2px 4px;
+    border-radius: 4px;
+}
+
+QMenu::item:selected {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #2a5a2a,
+        stop: 1 #1a3a1a);
+    color: #c0f0c0;
+}
+
+QMenu::item:disabled {
+    color: #666666;
+}
+
+QMenu::separator {
+    height: 1px;
+    background: #454545;
+    margin: 6px 10px;
+}
+</code></pre>
+
+<hr>
+
+<h3>5.4 Status Bar</h3>
+
+<pre><code>QStatusBar {
+    background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
+        stop: 0 #2a5a2a,
+        stop: 0.4 #1a3a1a,
+        stop: 0.7 #0a1a0a,
+        stop: 1 #000000);
+    color: #c0f0c0;
+    border-top: 2px solid #4a8a4a;
+    padding: 2px 6px;
+}
+
+QStatusBar QLabel {
+    background: rgba(60, 100, 60, 100);
+    border: 1px solid #3a6a3a;
+    border-radius: 3px;
+    padding: 1px 8px;
+}
+</code></pre>
+
+<hr>
+
+<h3>5.5 Tab Widget</h3>
+
+<pre><code>QTabWidget::pane {
+    border: 1px solid #454545;
+    background-color: #252526;
+}
+
+QTabBar::tab {
+    background-color: #2d2d30;
+    color: #969696;
+    padding: 6px 14px;
+    border: 1px solid #454545;
+}
+
+QTabBar::tab:hover {
+    background: #2a5a2a;
+    color: #c0f0c0;
+}
+
+QTabBar::tab:selected {
+    background: #1e3a1e;
+    color: #e0ffe0;
+    border-top: 2px solid #4a8a4a;
+}
+
+QTabBar::tab:last {
+    border-top-right-radius: 8px;
+}
+</code></pre>
+
+<hr>
+
+<h3>5.6 Combo Boxes (Language Selector)</h3>
+
+<pre><code>QStatusBar QComboBox {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #3a6a3a,
+        stop: 1 #1a3a1a);
+    color: #e0ffe0;
+    border: 1px solid #4a7a4a;
+    border-radius: 3px;
+    padding: 2px 6px;
+    min-width: 80px;
+}
+
+QStatusBar QComboBox:hover {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #4a7a4a,
+        stop: 1 #2a5a2a);
+}
+
+QStatusBar QComboBox::drop-down {
+    background: #3a6a3a;
+    border-left: 1px solid #4a7a4a;
+    width: 16px;
+}
+
+QStatusBar QComboBox::down-arrow {
+    image: none;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 3px solid #e0ffe0;
+    width: 0;
+    height: 0;
+}
+
+QStatusBar QComboBox QAbstractItemView {
+    background: #2a4a2a;
+    color: #e0ffe0;
+    border: 1px solid #4a7a4a;
+    selection-background-color: #3a6a3a;
+}
+
+QStatusBar QComboBox QAbstractItemView::item {
+    padding: 2px 6px;
+    min-height: 16px;
+}
+
+QStatusBar QComboBox QAbstractItemView::item:hover {
+    background: #4a7a4a;
+}
+</code></pre>
+
+<hr>
+
+<h2>6. Advanced Theming</h2>
+
+<h3>6.1 Creating Dark Themes</h3>
+
+<p><strong>Dark Theme Principles:</strong></p>
+<ol>
+<li>Use dark backgrounds (#1e1e1e, #252526, #2d2d30)</li>
+<li>Light text (#d4d4d4, #cccccc, #ffffff)</li>
+<li>Subtle borders (#454545, #3e3e42)</li>
+<li>Accent colors for highlights</li>
+<li>Lower contrast for less eye strain</li>
+</ol>
+
+<p><strong>Recommended Color Palette:</strong></p>
+<pre><code>/* Background Layers */
+--bg-deepest: #1e1e1e;
+--bg-deep: #252526;
+--bg-medium: #2d2d30;
+--bg-light: #3e3e42;
+
+/* Text */
+--text-primary: #d4d4d4;
+--text-secondary: #cccccc;
+--text-muted: #969696;
+--text-disabled: #666666;
+
+/* Borders */
+--border-dark: #454545;
+--border-light: #5a5a5a;
+
+/* Accent (customize to your preference) */
+--accent-primary: #2a5a2a;
+--accent-hover: #4a7a4a;
+--accent-active: #1a3a1a;
+</code></pre>
+
+<hr>
+
+<h3>6.2 Creating Light Themes</h3>
+
+<p><strong>Light Theme Principles:</strong></p>
+<ol>
+<li>Light backgrounds (#ffffff, #f3f3f3, #e8e8e8)</li>
+<li>Dark text (#000000, #333333, #666666)</li>
+<li>Visible but not harsh borders (#cccccc, #d4d4d4)</li>
+<li>Softer accent colors</li>
+<li>Adequate contrast for readability</li>
+</ol>
+
+<p><strong>Recommended Color Palette:</strong></p>
+<pre><code>/* Background Layers */
+--bg-lightest: #ffffff;
+--bg-light: #f3f3f3;
+--bg-medium: #e8e8e8;
+--bg-dark: #d4d4d4;
+
+/* Text */
+--text-primary: #000000;
+--text-secondary: #333333;
+--text-muted: #666666;
+--text-disabled: #999999;
+
+/* Borders */
+--border-light: #cccccc;
+--border-dark: #a0a0a0;
+
+/* Accent */
+--accent-primary: #007acc;
+--accent-hover: #005a9e;
+--accent-active: #003d6b;
+</code></pre>
+
+<p><strong>Example Light Theme VEX#QSS:</strong></p>
+<pre><code>VEX#QSS {
+    line-highlight-color: rgba(200, 220, 255, 80);
+    line-number-color-fg: rgb(80, 80, 80);
+    line-number-color-bg: rgb(245, 245, 245);
+    comment: rgb(0, 128, 0);
+    critical: rgb(0, 0, 0);
+    quote: rgb(163, 21, 21);
+    keyword: rgb(0, 0, 255);
+    string: rgb(163, 21, 21);
+}
+
+QMainWindow {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+QPlainTextEdit {
+    background-color: #ffffff;
+    color: #000000;
+    selection-background-color: #add6ff;
+    selection-color: #000000;
+}
+</code></pre>
+
+<hr>
+
+<h3>6.3 Accent Color Systems</h3>
+
+<p><strong>Single Accent Color:</strong></p>
+<pre><code>/* Define your accent */
+--accent: #2a5a2a;
+
+/* Use it throughout */
+QMenu::item:selected {
+    background-color: #2a5a2a;  /* your accent */
+}
+
+QTabBar::tab:selected {
+    border-top-color: #2a5a2a;  /* your accent */
+}
+
+QPushButton:hover {
+    background-color: #2a5a2a;  /* your accent */
+}
+</code></pre>
+
+<p><strong>Multi-Tone Accent System:</strong></p>
+<pre><code>/* Lightest to darkest */
+--accent-100: #8ac08a;
+--accent-200: #6aa06a;
+--accent-300: #4a7a4a;
+--accent-400: #3a6a3a;
+--accent-500: #2a5a2a;  /* primary */
+--accent-600: #1a3a1a;
+--accent-700: #0a1a0a;
+
+/* Use different tones for depth */
+QPushButton {
+    background: #2a5a2a;       /* primary */
+    border-top: 1px solid #4a7a4a;  /* lighter */
+    border-bottom: 1px solid #0a1a0a;  /* darker */
+}
+
+QPushButton:hover {
+    background: #3a6a3a;       /* one shade lighter */
+}
+</code></pre>
+
+<hr>
+
+<h3>6.4 Gradient Techniques</h3>
+
+<p><strong>Depth and Dimension:</strong></p>
+<pre><code>/* 3D raised effect */
+QPushButton {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #4a7a4a,      /* lighter top */
+        stop: 1 #2a5a2a);     /* darker bottom */
+    border-top: 1px solid #6aa06a;
+    border-bottom: 1px solid #1a3a1a;
+}
+
+/* 3D pressed effect */
+QPushButton:pressed {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #1a3a1a,      /* darker top (inverted) */
+        stop: 1 #3a6a3a);     /* lighter bottom */
+    border-top: 1px solid #1a2a1a;
+    border-bottom: 1px solid #6aa06a;
+}
+</code></pre>
+
+<p><strong>Ambient Highlight:</strong></p>
+<pre><code>/* Subtle glow effect */
+QMenu::item:selected {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #2a5a2a,
+        stop: 0.5 #1a3a1a,
+        stop: 1 #0a1a0a);
+}
+</code></pre>
+
+<p><strong>Metallic Effect:</strong></p>
+<pre><code>/* Simulating metal sheen */
+QStatusBar {
+    background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
+        stop: 0 #2a5a2a,
+        stop: 0.3 #3a6a3a,
+        stop: 0.5 #4a7a4a,
+        stop: 0.7 #3a6a3a,
+        stop: 1 #2a5a2a);
+}
+</code></pre>
+
+<hr>
+
+<h3>6.5 Border Styling Patterns</h3>
+
+<p><strong>Inset (Recessed) Effect:</strong></p>
+<pre><code>/* Looks pressed in */
+QPlainTextEdit {
+    border-top: 2px solid #0a1a0a;     /* dark top */
+    border-left: 1px solid #1a2a1a;    /* dark left */
+    border-bottom: 1px solid #4a7a4a;  /* light bottom */
+    border-right: 1px solid #3a6a3a;   /* light right */
+}
+</code></pre>
+
+<p><strong>Outset (Raised) Effect:</strong></p>
+<pre><code>/* Looks raised */
+QPushButton {
+    border-top: 2px solid #6aa06a;     /* light top */
+    border-left: 1px solid #4a7a4a;    /* light left */
+    border-bottom: 2px solid #0a1a0a;  /* dark bottom */
+    border-right: 1px solid #1a2a1a;   /* dark right */
+}
+</code></pre>
+
+<p><strong>Glow Effect (Without box-shadow):</strong></p>
+<pre><code>/* Multi-layer borders */
+QTabBar::tab:selected {
+    border: 2px solid #4a8a4a;
+    outline: 1px solid #2a5a2a;
+    outline-offset: -3px;
+}
+
+/* Or use gradient borders */
+QMenu::item:selected {
+    border-top: 1px solid #4a8a4a;     /* bright */
+    border-bottom: 1px solid #0a150a;  /* dark */
+    border-left: 1px solid #3a6a3a;    /* medium */
+    border-right: 1px solid #1a2a1a;   /* darker */
+}
+</code></pre>
+
+<hr>
+
+<h2>7. Icon Themes</h2>
+
+<h3>7.1 Icon Theme System</h3>
+
+<p>Vex supports custom icon themes through the LookAndFeelCore plugin. Icons are used for:</p>
+<ul>
+<li>Language icons in the syntax selector</li>
+<li>Menu icons</li>
+<li>Toolbar icons</li>
+<li>Tab close buttons</li>
+</ul>
+
+<p><strong>Icon Storage:</strong></p>
+<pre><code>~/.vex/themes/icon/
+  ├── my-icon-theme/
+  │   ├── python.svg
+  │   ├── javascript.svg
+  │   ├── text-x-generic.svg
+  │   └── ...
+  └── another-theme/
+      └── ...
+</code></pre>
+
+<p><strong>Icon Resolution Priority:</strong></p>
+<ol>
+<li>User icon theme (<code>~/.vex/themes/icon/[theme-name]/</code>)</li>
+<li>System icon themes (Linux: XDG paths, <code>/usr/share/icons</code>)</li>
+<li>Qt built-in theme icons</li>
+<li>Fallback to default</li>
+</ol>
+
+<hr>
+
+<h3>7.2 Creating Icon Themes</h3>
+
+<p><strong>Steps:</strong></p>
+<ol>
+<li>
+<p>Create a folder in <code>~/.vex/themes/icon/</code></p>
+<pre><code>mkdir -p ~/.vex/themes/icon/my-icons
+</code></pre>
+</li>
+<li>
+<p>Add icon files (supported formats: SVG, PNG, ICO, ICNS, SVGZ)</p>
+<pre><code>my-icons/
+├── python.svg
+├── python.png
+├── text-x-generic.svg
+├── application-javascript.svg
+└── text-html.svg
+</code></pre>
+</li>
+<li>
+<p>In Vex, go to <strong>View → Icon Theme → my-icons (User)</strong></p>
+</li>
+</ol>
+
+<p><strong>Icon Naming:</strong></p>
+<ul>
+<li>Use standard icon names from XDG specification</li>
+<li>For syntax highlighting: match the ICNS value in .vxsyn files</li>
+<li>Common names: <code>text-x-generic</code>, <code>python</code>, <code>text-html</code>, <code>application-javascript</code></li>
+</ul>
+
+<p><strong>Icon Size:</strong></p>
+<ul>
+<li>Vex uses 16x16 for most UI elements</li>
+<li>SVG is preferred (scales well)</li>
+<li>PNG should be at least 16x16, ideally 32x32 or higher for HiDPI</li>
+</ul>
+
+<hr>
+
+<h3>7.3 Icon Resolution</h3>
+
+<p><strong>How icons are resolved:</strong></p>
+<pre><code>QIcon resolveIcon(const QString &baseName) {
+    // 1. Check user theme
+    if (!currentIconTheme.isEmpty()) {
+        QString userPath = "~/.vex/themes/icon/" + currentIconTheme;
+        // Try: baseName.svg, .png, .ico, .icns, .svgz
+        if (found) return QIcon(path);
+    }
+    
+    // 2. Fall back to system
+    return Settings::resolveIcon(baseName);
+}
+</code></pre>
+
+<p><strong>Example:</strong></p>
+<pre><code>// In SyntaxCore plugin
+ICNS = "python"
+
+// LookAndFeelCore searches:
+// 1. ~/.vex/themes/icon/[current-theme]/python.svg
+// 2. ~/.vex/themes/icon/[current-theme]/python.png
+// 3. System theme: /usr/share/icons/.../python.svg
+// 4. Qt theme icons
+// 5. Fallback: text-x-generic
+</code></pre>
+
+<hr>
+
+<h2>8. Troubleshooting</h2>
+
+<h3>8.1 Theme Not Applying</h3>
+
+<p><strong>Problem:</strong> Selected theme doesn't appear to load.</p>
+
+<p><strong>Solutions:</strong></p>
+<ol>
+<li>
+<p><strong>Check file location:</strong></p>
+<ul>
+<li>Themes must be in <code>~/.vex/themes/stylesheets/</code></li>
+<li>File must have <code>.qss</code> extension</li>
+</ul>
+</li>
+<li>
+<p><strong>Check file permissions:</strong></p>
+<pre><code>chmod 644 ~/.vex/themes/stylesheets/mytheme.qss
+</code></pre>
+</li>
+<li>
+<p><strong>Check for syntax errors:</strong></p>
+<ul>
+<li>Missing semicolons</li>
+<li>Unclosed braces <code>{}</code></li>
+<li>Invalid property names</li>
+<li>Malformed gradient syntax</li>
+</ul>
+</li>
+<li>
+<p><strong>Restart Vex:</strong></p>
+<ul>
+<li>Some changes require a restart</li>
+<li>Or use <strong>View → Themes</strong> to re-select</li>
+</ul>
+</li>
+<li>
+<p><strong>Check status bar:</strong></p>
+<ul>
+<li>Look for error messages like "Failed to load theme"</li>
+</ul>
+</li>
+</ol>
+
+<hr>
+
+<h3>8.2 Syntax Colors Not Changing</h3>
+
+<p><strong>Problem:</strong> Syntax highlighting colors don't update with theme.</p>
+
+<p><strong>Solutions:</strong></p>
+<ol>
+<li>
+<p><strong>Check VEX#QSS block exists:</strong></p>
+<pre><code>VEX#QSS {
+    comment: rgb(128, 128, 128);
+    critical: rgb(255, 255, 255);
+    quote: rgb(0, 255, 0);
+    keyword: rgb(135, 206, 250);
+    string: rgb(255, 165, 0);
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Verify color format:</strong></p>
+<ul>
+<li>Use <code>rgb()</code> or <code>rgba()</code> or hex <code>#RRGGBB</code></li>
+<li>No spaces in hex: <code>#FF5733</code> not <code># FF 57 33</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Check SyntaxCore plugin is loaded:</strong></p>
+<ul>
+<li>Syntax highlighting requires SyntaxCore.so/dll</li>
+<li>Without it, colors won't apply</li>
+</ul>
+</li>
+<li>
+<p><strong>Reopen file or switch language:</strong></p>
+<ul>
+<li>Syntax colors apply when language is activated</li>
+<li>Switch to "Plain Text" then back to your language</li>
+</ul>
+</li>
+<li>
+<p><strong>Check property names exactly:</strong></p>
+<ul>
+<li>Must be: <code>comment</code>, <code>critical</code>, <code>quote</code>, <code>keyword</code>, <code>string</code></li>
+<li>Case-sensitive</li>
+</ul>
+</li>
+</ol>
+
+<hr>
+
+<h3>8.3 Hot Reload Not Working</h3>
+
+<p><strong>Problem:</strong> Changes to theme file don't apply automatically.</p>
+
+<p><strong>Solutions:</strong></p>
+<ol>
+<li>
+<p><strong>Verify theme is file-based:</strong></p>
+<ul>
+<li>Hot reload does NOT work for <code>:/vex.qss</code> (built-in resource)</li>
+<li>Only works for files in <code>~/.vex/themes/stylesheets/</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Check file watcher:</strong></p>
+<ul>
+<li>File must be the currently active theme</li>
+<li>Status bar should show "Theme file changed: [name]"</li>
+</ul>
+</li>
+<li>
+<p><strong>Save file properly:</strong></p>
+<ul>
+<li>Use Ctrl+S or File → Save</li>
+<li>Ensure no write errors</li>
+</ul>
+</li>
+<li>
+<p><strong>Manual reload:</strong></p>
+<ul>
+<li>Go to <strong>View → Themes</strong></li>
+<li>Select "None (No Theme)"</li>
+<li>Select your theme again</li>
+</ul>
+</li>
+<li>
+<p><strong>Restart if needed:</strong></p>
+<ul>
+<li>Some changes (like font-family) may require restart</li>
+</ul>
+</li>
+</ol>
+
+<hr>
+
+<h3>8.4 Common QSS Mistakes</h3>
+
+<p><strong>1. Trying to use CSS shadows:</strong></p>
+<pre><code>/* WRONG - does not work in QSS */
+QPushButton {
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* RIGHT - use borders for depth */
+QPushButton {
+    border-top: 1px solid #6aa06a;
+    border-bottom: 2px solid #0a1a0a;
+}
+</code></pre>
+
+<p><strong>2. Missing semicolons:</strong></p>
+<pre><code>/* WRONG */
+QPushButton {
+    background-color: #2a5a2a
+    color: #e0ffe0
+}
+
+/* RIGHT */
+QPushButton {
+    background-color: #2a5a2a;
+    color: #e0ffe0;
+}
+</code></pre>
+
+<p><strong>3. Incorrect gradient syntax:</strong></p>
+<pre><code>/* WRONG - CSS gradient syntax */
+background: linear-gradient(to bottom, #3a6a3a, #1a3a1a);
+
+/* RIGHT - QSS gradient syntax */
+background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+    stop: 0 #3a6a3a,
+    stop: 1 #1a3a1a);
+</code></pre>
+
+<p><strong>4. Forgetting objectName selectors need #:</strong></p>
+<pre><code>/* WRONG */
+QComboBox VexTab {
+    background: #252526;
+}
+
+/* RIGHT */
+#VexTab {
+    background: #252526;
+}
+</code></pre>
+
+<p><strong>5. Using calc() or CSS variables:</strong></p>
+<pre><code>/* WRONG - QSS doesn't support these */
+width: calc(100% - 20px);
+color: var(--primary-color);
+
+/* RIGHT - use fixed values */
+width: 200px;
+color: #2a5a2a;
+</code></pre>
+
+<p><strong>6. Comma-separated selectors without full paths:</strong></p>
+<pre><code>/* WRONG */
+QPushButton, QToolButton {
+    background: #2a5a2a;
+}
+
+/* BETTER - repeat full selector */
+QPushButton {
+    background: #2a5a2a;
+}
+
+QToolButton {
+    background: #2a5a2a;
+}
+</code></pre>
+
+<p><strong>7. Over-specific selectors causing conflicts:</strong></p>
+<pre><code>/* Can cause specificity issues */
+QMainWindow QWidget QPlainTextEdit {
+    background: #1e1e1e;
+}
+
+/* Better - be as specific as needed */
+QPlainTextEdit {
+    background: #1e1e1e;
+}
+</code></pre>
+
+<hr>
+
+</body>
+</html>

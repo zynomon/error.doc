@@ -1,0 +1,1822 @@
+<page icon="plugin"><h1>Vex Core Plugin API</h1>
+<hr />
+<p><strong>V</strong>ex 4.0 introduced a revolutionary plugin architecture that transformed Vex from a monolithic application into a modular, extensible system. The Core Plugin API enables developers to extend Vex's functionality through dynamically loaded shared libraries.</p>
+<p>The plugin system is defined in <code>Plugvex.H</code> and orchestrated by the <code>PluginLoader</code> class, which handles plugin discovery, loading, initialization, and lifecycle management.</p>
+<hr />
+<h1 id="table-of-contents">Table of Contents</h1>
+<ol>
+<li><a href="#1-plugin-system-overview">Plugin System Overview</a>
+<ul>
+<li><a href="#11-what-are-core-plugins">1.1 What Are Core Plugins?</a></li>
+<li><a href="#12-plugin-architecture">1.2 Plugin Architecture</a></li>
+<li><a href="#13-plugin-lifecycle">1.3 Plugin Lifecycle</a></li>
+<li><a href="#14-plugin-vs-monolithic-design">1.4 Plugin vs Monolithic Design</a></li>
+</ul>
+</li>
+<li><a href="#2-plugin-importance-tiers">2. Plugin Importance Tiers</a>
+<ul>
+<li><a href="#21-xylem-plugins">2.1 Xylem Plugins</a></li>
+<li><a href="#22-phloem-plugins">2.2 Phloem Plugins</a></li>
+<li><a href="#23-simple-plugins">2.3 Simple Plugins</a></li>
+<li><a href="#24-initialization-order">2.4 Initialization Order</a></li>
+</ul>
+</li>
+<li><a href="#3-coreplugin-interface">3. CorePlugin Interface</a>
+<ul>
+<li><a href="#31-interface-definition">3.1 Interface Definition</a></li>
+<li><a href="#32-pluginmetadata-structure">3.2 PluginMetadata Structure</a></li>
+<li><a href="#33-required-methods">3.3 Required Methods</a></li>
+<li><a href="#34-initialization-parameters">3.4 Initialization Parameters</a></li>
+</ul>
+</li>
+<li><a href="#4-creating-a-core-plugin">4. Creating a Core Plugin</a>
+<ul>
+<li><a href="#41-plugin-file-structure">4.1 Plugin File Structure</a></li>
+<li><a href="#42-basic-plugin-template">4.2 Basic Plugin Template</a></li>
+<li><a href="#43-build-configuration-cmake">4.3 Build Configuration (CMake)</a></li>
+<li><a href="#44-plugin-metadata">4.4 Plugin Metadata</a></li>
+<li><a href="#45-qt-plugin-system-integration">4.5 Qt Plugin System Integration</a></li>
+</ul>
+</li>
+<li><a href="#5-plugin-discovery-and-loading">5. Plugin Discovery and Loading</a>
+<ul>
+<li><a href="#51-plugin-search-paths">5.1 Plugin Search Paths</a></li>
+<li><a href="#52-platform-specific-extensions">5.2 Platform-Specific Extensions</a></li>
+<li><a href="#53-loading-process">5.3 Loading Process</a></li>
+<li><a href="#54-error-handling">5.4 Error Handling</a></li>
+</ul>
+</li>
+<li><a href="#6-command-line-interface-cmdline">6. Command Line Interface (CmdLine)</a>
+<ul>
+<li><a href="#61-cmdline-system">6.1 CmdLine System</a></li>
+<li><a href="#62-adding-commands">6.2 Adding Commands</a></li>
+<li><a href="#63-parsing-arguments">6.3 Parsing Arguments</a></li>
+<li><a href="#64-accessing-values">6.4 Accessing Values</a></li>
+<li><a href="#65-flag-arguments">6.5 Flag Arguments</a></li>
+</ul>
+</li>
+<li><a href="#7-accessing-vex-components">7. Accessing Vex Components</a>
+<ul>
+<li><a href="#71-mainwindow-access">7.1 MainWindow Access</a></li>
+<li><a href="#72-finding-child-widgets">7.2 Finding Child Widgets</a></li>
+<li><a href="#73-settings-system">7.3 Settings System</a></li>
+<li><a href="#74-menu-integration">7.4 Menu Integration</a></li>
+<li><a href="#75-status-bar-integration">7.5 Status Bar Integration</a></li>
+</ul>
+</li>
+<li><a href="#8-built-in-core-plugins">8. Built-in Core Plugins</a>
+<ul>
+<li><a href="#81-vexcore-plugin">8.1 VexCore Plugin</a></li>
+<li><a href="#82-syntaxcore-plugin">8.2 SyntaxCore Plugin</a></li>
+<li><a href="#83-lookandfeelcore-plugin">8.3 LookAndFeelCore Plugin</a></li>
+</ul>
+</li>
+<li><a href="#9-advanced-plugin-development">9. Advanced Plugin Development</a>
+<ul>
+<li><a href="#91-inter-plugin-communication">9.1 Inter-Plugin Communication</a></li>
+<li><a href="#92-qt-signals-and-slots">9.2 Qt Signals and Slots</a></li>
+<li><a href="#93-event-system-integration">9.3 Event System Integration</a></li>
+<li><a href="#94-file-watching">9.4 File Watching</a></li>
+<li><a href="#95-dynamic-ui-creation">9.5 Dynamic UI Creation</a></li>
+</ul>
+</li>
+<li><a href="#10-plugin-possibilities">10. Plugin Possibilities</a>
+<ul>
+<li><a href="#101-editor-extensions">10.1 Editor Extensions</a></li>
+<li><a href="#102-language-support">10.2 Language Support</a></li>
+<li><a href="#103-version-control-integration">10.3 Version Control Integration</a></li>
+<li><a href="#104-build-system-integration">10.4 Build System Integration</a></li>
+<li><a href="#105-terminal-integration">10.5 Terminal Integration</a></li>
+<li><a href="#106-project-management">10.6 Project Management</a></li>
+<li><a href="#107-code-intelligence">10.7 Code Intelligence</a></li>
+<li><a href="#108-debugging">10.8 Debugging</a></li>
+</ul>
+</li>
+<li><a href="#11-debug-mode">11. Debug Mode</a>
+<ul>
+<li><a href="#111-enabling-debug-mode">11.1 Enabling Debug Mode</a></li>
+<li><a href="#112-debug-output">11.2 Debug Output</a></li>
+<li><a href="#113-error-dialogs">11.3 Error Dialogs</a></li>
+</ul>
+</li>
+<li><a href="#12-troubleshooting">12. Troubleshooting</a>
+<ul>
+<li><a href="#121-plugin-not-loading">12.1 Plugin Not Loading</a></li>
+<li><a href="#122-initialization-failures">12.2 Initialization Failures</a></li>
+<li><a href="#123-crashes-and-isolation">12.3 Crashes and Isolation</a></li>
+<li><a href="#124-build-issues">12.4 Build Issues</a></li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="1-plugin-system-overview">1. Plugin System Overview</h2>
+<h3 id="11-what-are-core-plugins">1.1 What Are Core Plugins?</h3>
+<p><strong>Core Plugins</strong> are dynamically loaded shared libraries (.so on Linux) that extend Vex's functionality. Each plugin implements the <code>CorePlugin</code> interface and is loaded at application startup.</p>
+<p><strong>Key Characteristics:</strong>
+- <strong>Dynamic Loading</strong>: Loaded at runtime via Qt's plugin system
+- <strong>Isolated</strong>: Each plugin runs in isolation; crashes don't affect other plugins
+- <strong>Modular</strong>: Core functionality is divided into separate plugins
+- <strong>Extensible</strong>: New features can be added without modifying Vex core
+- <strong>Version-Specific</strong>: Plugins declare interface version (<code>"vex.core/4.0"</code>)</p>
+<p><strong>Core vs User Plugins:</strong>
+- <strong>Core Plugins</strong>: Built with Vex, installed system-wide, fundamental features
+- <strong>User Plugins</strong> <em>(Future)</em>: User-created, installed to <code>~/.vex/plugins/</code>, optional extensions</p>
+<hr />
+<h3 id="12-plugin-architecture">1.2 Plugin Architecture</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                         Vex Application (main.cxx)                          │
+└─────────────────────────────────────┬───────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           PluginLoader (Plugvex.H)                          │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │                      Plugin Discovery                                 │  │
+│  │              Search paths: .so/.dll/.dylib                            │  │
+│  └───────────────────────────────────────────────────────────────────────┘  │
+│                                      │                                      │
+│         ┌────────────────────────────┼────────────────────────────┐         │
+│         ▼                            ▼                            ▼         │
+│  ┌─────────────┐              ┌─────────────┐              ┌─────────────┐  │
+│  │ Xylem Phase │              │ Phloem Phase│              │Simple Phase │  │
+│  ├─────────────┤              ├─────────────┤              ├─────────────┤  │
+│  │ VexCore.so  │              │SyntaxCore.so│              │Future       │  │
+│  │ UI, tabs,   │              │Syntax       │              │plugins      │  │
+│  │ editor      │              │highlighting │              │             │  │
+│  └─────────────┘              └─────────────┘              └─────────────┘  │
+│         │                            │                            │         │
+│         └────────────────────────────┼────────────────────────────┘         │
+│                                      ▼                                      │
+│                              ┌─────────────┐                                │
+│                              │   Runtime   │                                │
+│                              └─────────────┘                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr />
+<h3 id="13-plugin-lifecycle">1.3 Plugin Lifecycle</h3>
+<pre><code>    Main          PluginLoader       Xylem Plugin    Phloem Plugin    Simple Plugin
+     │                  │                   │               │               │
+     │ loadAndInitialize│                   │               │               │
+     │─────────────────►│                   │               │               │
+     │                  │                   │               │               │
+     │                  │Search plugin paths│               │               │
+     │                  │──────────┐        │               │               │
+     │                  │◄─────────┘        │               │               │
+     │                  │                   │               │               │
+     │                  │ Load .so          │               │               │
+     │                  │──────────────────►│               │               │
+     │                  │                   │               │               │
+     │                  │Categorize by importance           │               │
+     │                  │                   │               │               │
+     │                  │ initialize()      │               │               │
+     │                  │──────────────────►│               │               │
+     │                  │                   │──┐            │               │
+     │                  │                   │  │ return true│               │
+     │                  │                   │◄─┘            │               │
+     │                  │                   │               │               │
+     │                  │ initialize()      │               │               │
+     │                  │─────────────────────────────────► │               │
+     │                  │                   │               │──┐            │
+     │                  │                   │               │  │ return true│
+     │                  │                   │               │◄─┘            │
+     │                  │                   │               │               │
+     │                  │ initialize()      │               │               │
+     │                  │─────────────────────────────────────────────────► │
+     │                  │                   │               │               │──┐
+     │                  │                   │               │               │  │ return true
+     │                  │                   │               │               │◄─┘
+     │                  │                   │               │               │
+     │                  │ Parse command line│               │               │
+     │                  │──────────┐        │               │               │
+     │                  │◄─────────┘        │               │               │
+     │                  │                   │               │               │
+     │◄─────────────────│ Initialization complete           │               │
+     │                  │                   │               │               │
+     │   Application runs (Runtime)         │               │               │
+     │                  │                   │               │               │
+     │                  │ cleanup()         │               │               │
+     │                  │──────────────────►│               │               │
+     │                  │─────────────────────────────────► │               │
+     │                  │─────────────────────────────────────────────────► │
+</code></pre>
+<hr />
+<h3 id="14-plugin-vs-monolithic-design">1.4 Plugin vs Monolithic Design</h3>
+<pre><code>Monolithic (Vex 1.x-3.x)              Plugin-Based (Vex 4.0+)
+┌─────────────────────┐              ┌─────────────────────────────────────┐
+│   Vex Application   │              │         Vex Core (Minimal)          │
+│  ┌───────────────┐  │              │  ┌───────────────────────────────┐  │
+│  │    Editor     │  │              │  │        VexCore.so             │  │
+│  ├───────────────┤  │              │  │    UI, tabs, editor           │  │
+│  │     Tabs      │  │              │  └───────────────────────────────┘  │
+│  ├───────────────┤  │              │  ┌───────────────────────────────┐  │
+│  │    Syntax     │  │              │  │       SyntaxCore.so           │  │
+│  ├───────────────┤  │              │  │    Syntax highlighting        │  │
+│  │    Themes     │  │              │  └───────────────────────────────┘  │
+│  ├───────────────┤  │              │  ┌───────────────────────────────┐  │
+│  │  Everything   │  │              │  │    LookAndFeelCore.so         │  │
+│  └───────────────┘  │              │  │    Themes, styles             │  │
+└─────────────────────┘              │  └───────────────────────────────┘  │
+                                     │  ┌───────────────────────────────┐  │
+                                     │  │        Future.so              │  │
+                                     │  └───────────────────────────────┘  │
+                                     └─────────────────────────────────────┘
+</code></pre>
+<hr />
+<h2 id="2-plugin-importance-tiers">2. Plugin Importance Tiers</h2>
+<h3 id="21-xylem-plugins">2.1 Xylem Plugins</h3>
+<p><strong>Definition:</strong> Xylem (木部 - wood tissue that transports water upward) plugins are <strong>structural</strong> plugins that provide essential UI components.</p>
+<p><strong>Characteristics:</strong>
+- <strong>First to initialize</strong>
+- Provide fundamental UI structure
+- Other plugins depend on them
+- Critical to application function</p>
+<p><strong>Example: VexCore</strong></p>
+<pre><code class="language-cpp">PluginMetadata meta() const override {
+    PluginMetadata metadata;
+    metadata.importance = PluginMetadata::Xylem;  // Structural
+    return metadata;
+}
+</code></pre>
+<p><strong>Responsibilities:</strong>
+- Create main UI widgets (tab system, editor widgets)
+- Set up central widget
+- Provide object names for other plugins to find
+- Establish application structure</p>
+<p><strong>Why "Xylem"?</strong>
+Just as xylem tissue forms the structural core of a plant and transports essential resources upward, Xylem plugins form the structural core of Vex and provide essential UI components that flow throughout the application.</p>
+<hr />
+<h3 id="22-phloem-plugins">2.2 Phloem Plugins</h3>
+<p><strong>Definition:</strong> Phloem (韧皮部 - tissue that transports nutrients) plugins <strong>enhance and enrich</strong> existing UI components.</p>
+<p><strong>Characteristics:</strong>
+- <strong>Second to initialize</strong> (after Xylem)
+- Depend on Xylem plugins' UI structure
+- Add features to existing widgets
+- Non-critical but important</p>
+<p><strong>Examples:</strong>
+- <strong>SyntaxCore</strong>: Adds syntax highlighting to editors
+- <strong>LookAndFeelCore</strong>: Adds theming to UI</p>
+<pre><code class="language-cpp">PluginMetadata meta() const override {
+    PluginMetadata metadata;
+    metadata.importance = PluginMetadata::Phloem;  // Enhancement
+    return metadata;
+}
+</code></pre>
+<p><strong>Responsibilities:</strong>
+- Find and enhance widgets created by Xylem plugins
+- Add functionality to existing UI
+- Integrate with established systems
+- Provide enrichment features</p>
+<p><strong>Why "Phloem"?</strong>
+Just as phloem tissue distributes nutrients throughout a plant to enrich all parts, Phloem plugins distribute enhancements throughout Vex's UI to enrich the user experience.</p>
+<hr />
+<h3 id="23-simple-plugins">2.3 Simple Plugins</h3>
+<p><strong>Definition:</strong> Simple plugins are <strong>standalone features</strong> that don't depend on complex initialization order.</p>
+<p><strong>Characteristics:</strong>
+- <strong>Last to initialize</strong>
+- Self-contained functionality
+- Can work independently
+- Optional features</p>
+<p><strong>Examples (Future):</strong>
+- Terminal integration
+- File browser
+- Search tools
+- Custom tools</p>
+<pre><code class="language-cpp">PluginMetadata meta() const override {
+    PluginMetadata metadata;
+    metadata.importance = PluginMetadata::Simple;  // Standalone
+    return metadata;
+}
+</code></pre>
+<p><strong>Responsibilities:</strong>
+- Provide standalone features
+- Add menu items, toolbars, dialogs
+- Can assume all core UI is ready
+- Independent operation</p>
+<hr />
+<h3 id="24-initialization-order">2.4 Initialization Order</h3>
+<pre><code>
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              Start                                          │
+│                                │                                            │
+│                                ▼                                            │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │                      Xylem Phase                                      │  │
+│  │                  Create UI structure                                  │  │
+│  └───────────────────────────────────────────────────────────────────────┘  │
+│                                │                                            │
+│                                ▼                                            │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │                      Phloem Phase                                     │  │
+│  │                 Enhance UI components                                 │  │
+│  └───────────────────────────────────────────────────────────────────────┘  │
+│                                │                                            │
+│                                ▼                                            │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │                      Simple Phase                                     │  │
+│  │               Add standalone features                                 │  │
+│  └───────────────────────────────────────────────────────────────────────┘  │
+│                                │                                            │
+│                                ▼                                            │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │                      CmdLine Parse                                    │  │
+│  │                  Process arguments                                    │  │
+│  └───────────────────────────────────────────────────────────────────────┘  │
+│                                │                                            │
+│                                ▼                                            │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │                      Runtime                                          │  │
+│  │               Application runs                                        │  │
+│  └───────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Why This Order Matters:</strong></p>
+<pre><code>VexCore (Xylem) ──┬── Creates QTabWidget (VexTab)
+                  │
+                  └── Creates QPlainTextEdit (VexEditor)
+                                    │
+                                    ▼
+SyntaxCore (Phloem) ────────────────┼── Finds VexTab and VexEditor
+                                    │   Applies syntax highlighting
+                                    │
+                                    ▼
+LookAndFeelCore (Phloem) ───────────┼── Finds widgets
+                                    │   Applies color properties
+                                    │
+                                    ▼
+                              Enhancement Complete
+</code></pre>
+<p><strong>If order were reversed:</strong>
+- SyntaxCore would fail to find "VexEditor" (doesn't exist yet)
+- LookAndFeelCore would have no widgets to style
+- Plugin loading will be more messed up.
+- Application could crash silently or malfunction but in most of case the core crash handler prevents it.</p>
+<hr />
+<h2 id="3-coreplugin-interface">3. CorePlugin Interface</h2>
+<h3 id="31-interface-definition">3.1 Interface Definition</h3>
+<pre><code class="language-cpp">class CorePlugin {
+public:
+    virtual ~CorePlugin() = default;
+    
+    // Return plugin metadata (importance tier)
+    virtual PluginMetadata meta() const = 0;
+    
+    // Initialize plugin with Vex components
+    virtual bool initialize(MainWindow* window, 
+                          Settings* settings, 
+                          CmdLine&amp; cmdLine) = 0;
+};
+ 
+Q_DECLARE_INTERFACE(CorePlugin, "vex.core/4.0")
+</code></pre>
+<p><strong>Key Points:</strong>
+- Pure virtual interface (abstract base class)
+- Must be implemented by all plugins
+- <code>Q_DECLARE_INTERFACE</code> registers with Qt's meta-object system
+- Interface version string: <code>"vex.core/4.0"</code></p>
+<hr />
+<h3 id="32-pluginmetadata-structure">3.2 PluginMetadata Structure</h3>
+<pre><code class="language-cpp">struct PluginMetadata {
+    enum Importance {
+        Xylem,   // Structural (UI framework)
+        Phloem,  // Enhancement (features)
+        Simple   // Standalone (tools)
+    };
+    
+    Importance importance;
+};
+</code></pre>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-cpp">PluginMetadata meta() const override {
+    PluginMetadata metadata;
+    metadata.importance = PluginMetadata::Phloem;
+    return metadata;
+}
+</code></pre>
+<hr />
+<h3 id="33-required-methods">3.3 Required Methods</h3>
+<p><strong>1. meta() - Plugin Metadata</strong></p>
+<pre><code class="language-cpp">PluginMetadata meta() const override;
+</code></pre>
+<ul>
+<li>Returns plugin importance tier</li>
+<li>Called during categorization phase</li>
+<li>Determines initialization order</li>
+</ul>
+<p><strong>2. initialize() - Plugin Initialization</strong></p>
+<pre><code class="language-cpp">bool initialize(MainWindow* window, 
+                Settings* settings, 
+                CmdLine&amp; cmdLine) override;
+</code></pre>
+<ul>
+<li>Called once during startup</li>
+<li>Receives core Vex components</li>
+<li>Return <code>true</code> on success, <code>false</code> on failure</li>
+<li>Failures logged in debug mode</li>
+</ul>
+<hr />
+<h3 id="34-initialization-parameters">3.4 Initialization Parameters</h3>
+<p><strong>MainWindow* window:</strong>
+- Pointer to Vex's main window (QMainWindow)
+- Use to find child widgets
+- Add menus, toolbars, actions
+- Access status bar</p>
+<p><strong>Settings* settings:</strong>
+- Pointer to Vex's settings system
+- Persistent key-value storage
+- Configuration management
+- User preferences</p>
+<p><strong>CmdLine&amp; cmdLine:</strong>
+- Reference to command-line interface
+- Add custom flags/arguments
+- Parse command-line options
+- Access launch parameters</p>
+<hr />
+<h2 id="4-creating-a-core-plugin">4. Creating a Core Plugin</h2>
+<h3 id="41-plugin-file-structure">4.1 Plugin File Structure</h3>
+<pre><code>MyPlugin/
+├── MyPlugin.cxx          # Plugin implementation
+├── MyPlugin.H            # Optional header (if needed)
+├── CMakeLists.txt        # Build configuration
+└── resources.qrc         # Optional Qt resources
+</code></pre>
+<p><strong>Minimal Structure:</strong></p>
+<pre><code>MyPlugin.cxx              # Single file plugin
+</code></pre>
+<hr />
+<h3 id="42-basic-plugin-template">4.2 Basic Plugin Template</h3>
+<pre><code class="language-cpp">#include &lt;QObject&gt;
+#include &lt;QtPlugin&gt;
+#include &lt;QMainWindow&gt;
+#include &lt;QMessageBox&gt;
+#include "Plugvex.H"
+#include "Settings.H"
+ 
+class MyPlugin : public QObject, public CorePlugin {
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "vex.core/4.0")
+    Q_INTERFACES(CorePlugin)
+ 
+public:
+    PluginMetadata meta() const override {
+        PluginMetadata metadata;
+        metadata.importance = PluginMetadata::Simple;
+        return metadata;
+    }
+ 
+    bool initialize(MainWindow* window, Settings* settings, CmdLine&amp; cmdLine) override {
+        Q_UNUSED(settings)
+        Q_UNUSED(cmdLine)
+        
+        m_mainWindow = reinterpret_cast&lt;QMainWindow*&gt;(window);
+        
+        // Your initialization code here
+        m_mainWindow-&gt;statusBar()-&gt;showMessage("MyPlugin loaded!", 2000);
+        
+        return true;
+    }
+ 
+private:
+    QMainWindow* m_mainWindow{nullptr};
+};
+ 
+#include "MyPlugin.moc"
+</code></pre>
+<p><strong>Key Components:</strong></p>
+<ol>
+<li>
+<p><strong>Include QObject and Plugin Macros:</strong></p>
+<pre><code class="language-cpp">#include &lt;QObject&gt;
+#include &lt;QtPlugin&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Inherit from QObject and CorePlugin:</strong></p>
+<pre><code class="language-cpp">class MyPlugin : public QObject, public CorePlugin
+</code></pre>
+</li>
+<li>
+<p><strong>Add Qt Macros:</strong></p>
+<pre><code class="language-cpp">Q_OBJECT
+Q_PLUGIN_METADATA(IID "vex.core/4.0")
+Q_INTERFACES(CorePlugin)
+</code></pre>
+</li>
+<li>
+<p><strong>Implement Interface:</strong></p>
+<pre><code class="language-cpp">PluginMetadata meta() const override { ... }
+bool initialize(...) override { ... }
+</code></pre>
+</li>
+<li>
+<p><strong>Include MOC File:</strong></p>
+<pre><code class="language-cpp">#include "MyPlugin.moc"
+</code></pre>
+</li>
+</ol>
+<hr />
+<h3 id="43-build-configuration-cmake">4.3 Build Configuration (CMake)</h3>
+<p><strong>CMakeLists.txt:</strong></p>
+<pre><code class="language-cmake">cmake_minimum_required(VERSION 3.16)
+project(MyPlugin LANGUAGES CXX)
+ 
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+ 
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+ 
+# Create shared library
+add_library(MyPlugin SHARED MyPlugin.cxx)
+ 
+# Link Qt libraries
+target_link_libraries(MyPlugin PRIVATE 
+    Qt6::Core 
+    Qt6::Widgets
+)
+ 
+# Include Vex headers (Plugvex.H, Settings.H)
+target_include_directories(MyPlugin PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/../..
+)
+ 
+# Remove 'lib' prefix
+set_target_properties(MyPlugin PROPERTIES PREFIX "")
+</code></pre>
+<p><strong>Build:</strong></p>
+<pre><code class="language-bash">mkdir build
+cd build
+cmake ..
+make
+</code></pre>
+<p><strong>Output:</strong>
+- Linux: <code>MyPlugin.so</code></p>
+<hr />
+<h3 id="44-plugin-metadata">4.4 Plugin Metadata</p>
+<p><strong>Choosing Importance Tier:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Choose Xylem if:</th>
+<th>Choose Phloem if:</th>
+<th>Choose Simple if:</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Creates main UI widgets</td>
+<td>Enhances existing widgets</td>
+<td>Standalone feature</td>
+</tr>
+<tr>
+<td>Provides structure for others</td>
+<td>Depends on Xylem widgets</td>
+<td>No dependencies</td>
+</tr>
+<tr>
+<td>Must load first</td>
+<td>Must load after Xylem</td>
+<td>Load order doesn't matter</td>
+</tr>
+<tr>
+<td>Example: Tab system</td>
+<td>Example: Syntax highlighter</td>
+<td>Example: Terminal</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example Decisions:</strong></p>
+<pre><code class="language-cpp">// VexCore - creates fundamental UI
+PluginMetadata::Xylem
+ 
+// SyntaxCore - enhances editor widgets
+PluginMetadata::Phloem
+ 
+// TerminalPlugin - standalone tool
+PluginMetadata::Simple
+</code></pre>
+<hr />
+<h3 id="45-qt-plugin-system-integration">4.5 Qt Plugin System Integration</h3>
+<p><strong>Required Qt Macros:</strong></p>
+<pre><code class="language-cpp">Q_OBJECT
+</code></pre>
+<ul>
+<li>Enables Qt's meta-object system</li>
+<li>Required for signals/slots</li>
+<li>Required for all QObject-derived classes</li>
+</ul>
+<pre><code class="language-cpp">Q_PLUGIN_METADATA(IID "vex.core/4.0")
+</code></pre>
+<ul>
+<li>Declares plugin interface version</li>
+<li>Must match <code>Q_DECLARE_INTERFACE</code> in Plugvex.H</li>
+<li>Enables Qt plugin loader to recognize the plugin</li>
+</ul>
+<pre><code class="language-cpp">Q_INTERFACES(CorePlugin)
+</code></pre>
+<ul>
+<li>Declares which interface(s) the class implements</li>
+<li>Allows <code>qobject_cast&lt;CorePlugin*&gt;()</code> to work</li>
+<li>Required for plugin loading</li>
+</ul>
+<hr />
+<h2 id="5-plugin-discovery-and-loading">5. Plugin Discovery and Loading</h2>
+<h3 id="51-plugin-search-paths">5.1 Plugin Search Paths</h3>
+<pre><code>
+┌─────────────────────────────────────────────────────────────────┐
+│                        Plugin Search                            │
+│                            │                                    │
+│         ┌──────────────────┼──────────────────┐                 │
+│         ▼                  ▼                  ▼                 │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐          │
+│  │Application  │    │/usr/lib/vex│     │(Linux only) │          │
+│  │Directory    │    │(Linux only) │    │             │          │
+│  └─────────────┘    └─────────────┘    └─────────────┘          │
+│         │                  │                  │                 │
+│         └──────────────────┼──────────────────┘                 │
+│                            ▼                                    │
+│              ┌─────────────────────────┐                        │
+│              │ Found .so .dll .dylib?  │                        │
+│              └─────────────────────────┘                        │
+│                     │           │                               │
+│               Yes   │           │   No                          │
+│                     ▼           ▼                               │
+│            ┌─────────────┐  ┌───────────┐                       │
+│             tryLoadPlugin│  │Continue   │                       │
+│            └─────────────┘  └───────────┘                       │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Search Order:</strong>
+1. <strong>Application directory</strong> (where vex executable is)
+   - Linux: <code>/usr/bin/</code> or build directory</p>
+<ol start="2">
+<li><strong>/usr/lib/vex</strong> (Linux only)
+   - System-wide plugin installation
+   - Requires root/sudo to install</li>
+</ol>
+<p><strong>Code:</strong></p>
+<pre><code class="language-cpp">QStringList paths;
+paths &lt;&lt; QCoreApplication::applicationDirPath();
+ 
+#if defined(Q_OS_UNIX) &amp;&amp; !defined(Q_OS_DARWIN)
+    paths &lt;&lt; "/usr/lib/vex";
+#endif
+</code></pre>
+<hr />
+<h3 id="52-platform-specific-extensions">5.2 Platform-Specific Extensions</h3>
+<pre><code>
+┌─────────────────────────────────────────────────────────────────┐
+│                         Platform?                               │
+│                            │                                    │
+│         ┌──────────────────┼──────────────────┐                 │
+│         ▼                  ▼                  ▼                 │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐          │
+│  │   Linux     │    │   Windows   │    │   macOS     │          │
+│  │   *.so      │    │   *.dll     │    │   *.dylib   │          │
+│  └─────────────┘    └─────────────┘    └─────────────┘          │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Extension Detection:</strong></p>
+<pre><code class="language-cpp">QStringList getPluginExtensions() {
+    QStringList extensions;
+#ifdef Q_OS_WIN
+    extensions &lt;&lt; "*.dll";
+#elif defined(Q_OS_MAC)
+    extensions &lt;&lt; "*.dylib";
+#else
+    extensions &lt;&lt; "*.so";
+#endif
+    return extensions;
+}
+</code></pre>
+<hr />
+<h3 id="53-loading-process">5.3 Loading Process</h3>
+<pre><code>PluginLoader          QPluginLoader          Plugin
+     │                      │                    │
+     │ new QPluginLoader()  │                    │
+     │─────────────────────►│                    │
+     │                      │                    │
+     │ load()               │                    │
+     │─────────────────────►│                    │
+     │                      │───┐                │
+     │                      │   │ Load library   │
+     │                      │◄──┘                │
+     │◄─────────────────────│ true/false         │
+     │                      │                    │
+     │ instance()           │                    │
+     │─────────────────────►│                    │
+     │                      │────┐               │
+     │                      │    │ create instance
+     │                      │◄───┘               │
+     │◄─────────────────────│ QObject*           │
+     │                      │                    │
+     │ qobject_cast&lt;CorePlugin*&gt;()               │
+     │──────────┐            │                    │
+     │          │            │                    │
+     │          │            │                    │
+     │◄─────────┘            │                    │
+     │                      │                    │
+     │ Add to category list │                    │
+     │──────────┐           │                    │
+     │          │           │                    │
+     │◄─────────┘           │                    │
+</code></pre>
+<p><strong>Code:</strong></p>
+<pre><code class="language-cpp">QPluginLoader* tryLoadPlugin(const QString&amp; path, QList&lt;PluginError&gt;&amp; errors) {
+    QPluginLoader* loader = new QPluginLoader(path);
+    
+    if (!loader-&gt;load()) {
+        errors.append({filename, loader-&gt;errorString()});
+        delete loader;
+        return nullptr;
+    }
+    
+    QObject* instance = loader-&gt;instance();
+    if (!instance) {
+        errors.append({filename, "Plugin created no instance"});
+        loader-&gt;unload();
+        delete loader;
+        return nullptr;
+    }
+    
+    CorePlugin* plugin = qobject_cast&lt;CorePlugin*&gt;(instance);
+    if (!plugin) {
+        errors.append({filename, "Not a valid CorePlugin interface"});
+        loader-&gt;unload();
+        delete loader;
+        return nullptr;
+    }
+    
+    return loader;
+}
+</code></pre>
+<hr />
+<h3 id="54-error-handling">5.4 Error Handling</h3>
+<p><strong>Error Types:</strong></p>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                      Plugin Loading                             │
+│                            │                                    │
+│                            ▼                                    │
+│                   ┌────────────────┐                           │
+│                   │   Load Check   │                           │
+│                   └────────────────┘                           │
+│                      │         │                               │
+│              Fails   │         │   Success                     │
+│                      ▼         ▼                               │
+│              ┌───────────┐  ┌────────────────┐                 │
+│              │Load Error │  │ Instance Check│                 │
+│              └───────────┘  └────────────────┘                 │
+│                                 │         │                    │
+│                         Fails   │         │   Success          │
+│                                 ▼         ▼                    │
+│                         ┌───────────┐  ┌────────────────┐     │
+│                         │Instance   │  │  Cast Check   │     │
+│                         │Error      │  └────────────────┘     │
+│                         └───────────┘         │         │     │
+│                                        Fails  │         │ Success
+│                                               ▼         ▼     │
+│                                       ┌───────────┐  ┌────────┐│
+│                                       │Interface  │  │Success ││
+│                                       │Error      │  └────────┘│
+│                                       └───────────┘           │
+│                                              │                 │
+│                                              ▼                 │
+│                                      ┌───────────────┐         │
+│                                      │  Error List   │         │
+│                                      └───────────────┘         │
+│                                              │                 │
+│                                              ▼                 │
+│                                      ┌───────────────┐         │
+│                                      │Show Error     │         │
+│                                      │Summary        │         │
+│                                      └───────────────┘         │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Error Structure:</strong></p>
+<pre><code class="language-cpp">struct PluginError {
+    QString filename;
+    QString error;
+};
+</code></pre>
+<p><strong>Error Summary (Debug Mode):</strong></p>
+<pre><code class="language-cpp">void showErrorSummary(const QList&lt;PluginError&gt;&amp; errors) {
+    if (!Debug_Mode) return;
+    
+    QString summary = QString("Failed to load %1 plugin(s):\n\n")
+                             .arg(errors.size());
+    
+    for (const auto&amp; err : errors) {
+        summary += QString("• %1\n  %2\n\n")
+                          .arg(err.filename, err.error);
+    }
+    
+    QMessageBox::warning(nullptr, "Plugin Load Errors", summary);
+}
+</code></pre>
+<hr />
+<h2 id="6-command-line-interface-cmdline">6. Command Line Interface (CmdLine)</h2>
+<h3 id="61-cmdline-system">6.1 CmdLine System</h3>
+<p>The <code>CmdLine</code> class provides a unified command-line argument system for Vex and all plugins.</p>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                         Plugins                                 │
+│                            │                                    │
+│                    addCommand()                                 │
+│                            ▼                                    │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                    CmdLine Singleton                    │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                            │                                    │
+│                      parse()                                    │
+│                            ▼                                    │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │              QCommandLineParser                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│          │              │              │                       │
+│          ▼              ▼              ▼                       │
+│   ┌──────────┐   ┌──────────┐   ┌──────────┐                 │
+│   │  Help/   │   │ Custom   │   │ Plugins  │                 │
+│   │ Version  │   │ Commands │   │ access   │                 │
+│   └──────────┘   └──────────┘   │ values   │                 │
+│                                  └──────────┘                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Key Features:</strong>
+- <strong>Singleton Pattern</strong>: One instance shared by all plugins
+- <strong>Command Registration</strong>: Plugins register before parse()
+- <strong>Multiple Aliases</strong>: Commands can have multiple names
+- <strong>Help Generation</strong>: Automatic help text formatting
+- <strong>Flag Arguments</strong>: Advanced argument parsing</p>
+<hr />
+<h3 id="62-adding-commands">6.2 Adding Commands</h3>
+<p><strong>Command Structure:</strong></p>
+<pre><code class="language-cpp">struct CMD {
+    QStringList names;   // Command aliases
+    QString help;        // Help description
+    QString value;       // Value placeholder (empty for flags)
+};
+</code></pre>
+<p><strong>Adding a Command:</strong></p>
+<pre><code class="language-cpp">bool initialize(MainWindow* window, Settings* settings, CmdLine&amp; cmdLine) override {
+    // Add a flag (no value)
+    cmdLine.addCommand({{"v", "verbose"}, "Enable verbose output", ""});
+    
+    // Add a valued option
+    cmdLine.addCommand({{"o", "output"}, "Output file path", "file"});
+    
+    // Add with multiple aliases
+    cmdLine.addCommand({{"t", "theme", "style"}, "Theme name", "name"});
+    
+    return true;
+}
+</code></pre>
+<p><strong>Built-in Commands:</strong></p>
+<pre><code class="language-cpp">// Registered by PluginLoader
+cmdLine.addCommand({{"d", "debug"}, "Enable debug mode", ""});
+ 
+// Automatic Qt commands
+--help, -h         Show help
+--version          Show version
+</code></pre>
+<hr />
+<h3 id="63-parsing-arguments">6.3 Parsing Arguments</h3>
+<p><strong>Parse Flow:</strong></p>
+<pre><code>    Main          PluginLoader       CmdLine       QCommandLineParser
+     │                  │               │                  │
+     │                  │ All plugins add commands        │
+     │                  │──────────────►│                  │
+     │                  │               │                  │
+     │ loadAndInitialize(argc, argv)    │                  │
+     │─────────────────►│               │                  │
+     │                  │               │                  │
+     │                  │ parse(argc, argv)               │
+     │                  │──────────────►│                  │
+     │                  │               │ parse()         │
+     │                  │               │─────────────────►│
+     │                  │               │                  │
+     │                  │               │ HelpRequested   │
+     │                  │               │◄─────────────────│
+     │                  │               │                  │
+     │                  │ HelpRequested │                  │
+     │                  │◄──────────────│                  │
+     │                  │               │                  │
+     │                  │ exit(0)       │                  │
+     │                  │──────────┐    │                  │
+     │                  │          │    │                  │
+     │                  │◄─────────┘    │                  │
+     │                  │               │                  │
+     │                  │ ParseOk       │                  │
+     │                  │◄──────────────│                  │
+     │                  │               │                  │
+     │◄─────────────────│ Continue      │                  │
+</code></pre>
+<p><strong>Parse Results:</strong></p>
+<pre><code class="language-cpp">enum ParseResult {
+    ParseOk,            // Successful parse
+    ParseError,         // Invalid arguments
+    HelpRequested,      // --help flag
+    VersionRequested    // --version flag
+};
+</code></pre>
+<hr />
+<h3 id="64-accessing-values">6.4 Accessing Values</h3>
+<p><strong>Checking if Set:</strong></p>
+<pre><code class="language-cpp">if (cmdLine.isSet("verbose")) {
+    qDebug() &lt;&lt; "Verbose mode enabled";
+}
+ 
+if (cmdLine.isSet("debug")) {
+    Debug_Mode = true;
+}
+</code></pre>
+<p><strong>Getting Values:</strong></p>
+<pre><code class="language-cpp">QString output = cmdLine.value("output");
+if (!output.isEmpty()) {
+    qDebug() &lt;&lt; "Output file:" &lt;&lt; output;
+}
+ 
+QString theme = cmdLine.value("theme");
+applyTheme(theme);
+</code></pre>
+<p><strong>Positional Arguments:</strong></p>
+<pre><code class="language-cpp">// vex file1.txt file2.txt
+QStringList files = cmdLine.positionalArgs();
+for (const QString &amp;file : files) {
+    openFile(file);
+}
+</code></pre>
+<hr />
+<h3 id="65-flag-arguments">6.5 Flag Arguments</h3>
+<p><strong>Advanced Feature</strong>: Get all arguments after a flag</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash">vex --open file1.txt file2.txt file3.txt --theme dark
+</code></pre>
+<p><strong>Access:</strong></p>
+<pre><code class="language-cpp">// Get all files after --open
+QStringList files = cmdLine.flagArgs("open");
+// Returns: ["file1.txt", "file2.txt", "file3.txt"]
+ 
+// Get theme value
+QString theme = cmdLine.flagArgs("theme");
+// Returns: ["dark"]
+</code></pre>
+<p><strong>Use Cases:</strong>
+- Multiple file opening
+- List-based arguments
+- Complex command structures</p>
+<hr />
+<h2 id="7-accessing-vex-components">7. Accessing Vex Components</h2>
+<h3 id="71-mainwindow-access">7.1 MainWindow Access</h3>
+<p><strong>Receiving MainWindow:</strong></p>
+<pre><code class="language-cpp">bool initialize(MainWindow* window, Settings* settings, CmdLine&amp; cmdLine) override {
+    m_mainWindow = reinterpret_cast&lt;QMainWindow*&gt;(window);
+    return true;
+}
+</code></pre>
+<p><strong>Why reinterpret_cast?</strong>
+- <code>MainWindow</code> is forward-declared in Plugvex.H
+- Full definition is in main.cxx
+- Plugins don't have access to full class definition
+- <code>reinterpret_cast</code> treats it as <code>QMainWindow*</code></p>
+<p><strong>Common Operations:</strong></p>
+<pre><code class="language-cpp">// Access menu bar
+QMenuBar* menuBar = m_mainWindow-&gt;menuBar();
+ 
+// Access status bar
+QStatusBar* statusBar = m_mainWindow-&gt;statusBar();
+statusBar-&gt;showMessage("Plugin initialized", 2000);
+ 
+// Set central widget
+m_mainWindow-&gt;setCentralWidget(myWidget);
+ 
+// Window properties
+m_mainWindow-&gt;setWindowTitle("Vex - My Plugin");
+</code></pre>
+<hr />
+<h3 id="72-finding-child-widgets">7.2 Finding Child Widgets</h3>
+<p><strong>By Object Name:</strong></p>
+<pre><code class="language-cpp">// Find QTabWidget named "VexTab"
+QTabWidget* tabs = m_mainWindow-&gt;findChild&lt;QTabWidget*&gt;("VexTab");
+if (tabs) {
+    int count = tabs-&gt;count();
+    qDebug() &lt;&lt; "Found" &lt;&lt; count &lt;&lt; "tabs";
+}
+ 
+// Find QStackedWidget
+QStackedWidget* stack = m_mainWindow-&gt;findChild&lt;QStackedWidget*&gt;("VexStack");
+</code></pre>
+<p><strong>Find Multiple Widgets:</strong></p>
+<pre><code class="language-cpp">// Find all QPlainTextEdit with objectName "VexEditor"
+QList&lt;QPlainTextEdit*&gt; editors = 
+    tabs-&gt;findChildren&lt;QPlainTextEdit*&gt;("VexEditor");
+ 
+for (QPlainTextEdit* editor : editors) {
+    // Apply settings to each editor
+    editor-&gt;setFont(codeFont);
+}
+</code></pre>
+<p><strong>Widget Hierarchy:</strong></p>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                        MainWindow                               │
+│                            │                                    │
+│                            ▼                                    │
+│              ┌─────────────────────────┐                       │
+│              │  VexStack               │                       │
+│              │  QStackedWidget         │                       │
+│              └─────────────────────────┘                       │
+│                            │                                    │
+│                            ▼                                    │
+│              ┌─────────────────────────┐                       │
+│              │  VexTab                 │                       │
+│              │  QTabWidget             │                       │
+│              └─────────────────────────┘                       │
+│                    │           │                               │
+│                    ▼           ▼                               │
+│         ┌──────────────┐ ┌──────────────┐                     │
+│         │    Tab 1     │ │    Tab 2     │                     │
+│         └──────────────┘ └──────────────┘                     │
+│                    │           │                               │
+│                    ▼           ▼                               │
+│         ┌──────────────┐ ┌──────────────┐                     │
+│         │  VexEditor   │ │  VexEditor   │                     │
+│         │QPlainTextEdit│ │QPlainTextEdit│                     │
+│         └──────────────┘ └──────────────┘                     │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr />
+<h3 id="73-settings-system">7.3 Settings System</h3>
+<p><strong>Singleton Access:</strong></p>
+<pre><code class="language-cpp">Settings&amp; settings = Settings::instance();
+</code></pre>
+<p><strong>Storing Values:</strong></p>
+<pre><code class="language-cpp">// Store string
+settings.setValue("currentTheme", "dark.qss");
+ 
+// Store integer
+settings.setValue("fontSize", 12);
+ 
+// Store boolean
+settings.setValue("showLineNumbers", true);
+ 
+// Store complex types
+QStringList recentFiles = {"file1.txt", "file2.cpp"};
+settings.setValue("recentFiles", recentFiles);
+</code></pre>
+<p><strong>Retrieving Values:</strong></p>
+<pre><code class="language-cpp">// With default value
+QString theme = settings.get&lt;QString&gt;("currentTheme", "default.qss");
+int fontSize = settings.get&lt;int&gt;("fontSize", 12);
+bool showLineNumbers = settings.get&lt;bool&gt;("showLineNumbers", true);
+ 
+// Check if exists
+if (settings.contains("currentTheme")) {
+    QString theme = settings.get&lt;QString&gt;("currentTheme");
+}
+</code></pre>
+<p><strong>Removing Values:</strong></p>
+<pre><code class="language-cpp">settings.remove("oldSetting");
+</code></pre>
+<p><strong>Settings File Location:</strong></p>
+<pre><code>~/.vex/vex.conf
+</code></pre>
+<p><strong>File Format (INI):</strong></p>
+<pre><code class="language-ini">[General]
+currentTheme=dark.qss
+fontSize=12
+showLineNumbers=true
+</code></pre>
+<hr />
+<h3 id="74-menu-integration">7.4 Menu Integration</h3>
+<p><strong>Finding Existing Menu:</strong></p>
+<pre><code class="language-cpp">QMenuBar* menuBar = m_mainWindow-&gt;menuBar();
+QList&lt;QAction*&gt; actions = menuBar-&gt;actions();
+ 
+QMenu* viewMenu = nullptr;
+for (QAction* action : actions) {
+    if (action-&gt;text() == "&amp;View" || action-&gt;text() == "View") {
+        viewMenu = action-&gt;menu();
+        break;
+    }
+}
+</code></pre>
+<p><strong>Creating New Menu:</strong></p>
+<pre><code class="language-cpp">if (!viewMenu) {
+    viewMenu = menuBar-&gt;addMenu("&amp;View");
+}
+</code></pre>
+<p><strong>Adding Menu Items:</strong></p>
+<pre><code class="language-cpp">// Add action
+QAction* action = viewMenu-&gt;addAction("My Feature");
+connect(action, &amp;QAction::triggered, this, &amp;MyPlugin::onFeatureTriggered);
+ 
+// Add with shortcut
+QAction* toggleAction = viewMenu-&gt;addAction("Toggle Feature");
+toggleAction-&gt;setShortcut(QKeySequence("Ctrl+Shift+T"));
+toggleAction-&gt;setCheckable(true);
+ 
+// Add separator
+viewMenu-&gt;addSeparator();
+ 
+// Add submenu
+QMenu* subMenu = viewMenu-&gt;addMenu("Sub Features");
+subMenu-&gt;addAction("Feature 1");
+subMenu-&gt;addAction("Feature 2");
+</code></pre>
+<p><strong>Action Groups (Mutually Exclusive):</strong></p>
+<pre><code class="language-cpp">QActionGroup* group = new QActionGroup(this);
+group-&gt;setExclusive(true);
+ 
+QAction* opt1 = menu-&gt;addAction("Option 1");
+opt1-&gt;setCheckable(true);
+group-&gt;addAction(opt1);
+ 
+QAction* opt2 = menu-&gt;addAction("Option 2");
+opt2-&gt;setCheckable(true);
+group-&gt;addAction(opt2);
+ 
+connect(group, &amp;QActionGroup::triggered, 
+        this, &amp;MyPlugin::onOptionChanged);
+</code></pre>
+<hr />
+<h3 id="75-status-bar-integration">7.5 Status Bar Integration</h3>
+<p><strong>Simple Messages:</strong></p>
+<pre><code class="language-cpp">QStatusBar* statusBar = m_mainWindow-&gt;statusBar();
+ 
+// Temporary message (2 seconds)
+statusBar-&gt;showMessage("Operation completed", 2000);
+ 
+// Permanent message
+statusBar-&gt;showMessage("Ready");
+ 
+// Clear message
+statusBar-&gt;clearMessage();
+</code></pre>
+<p><strong>Permanent Widgets:</strong></p>
+<pre><code class="language-cpp">// Add label
+QLabel* label = new QLabel("Status: Ready");
+statusBar-&gt;addPermanentWidget(label);
+ 
+// Add at specific position
+statusBar-&gt;insertPermanentWidget(0, label);
+ 
+// Add combo box (like language selector)
+QComboBox* combo = new QComboBox();
+combo-&gt;setObjectName("MyCombo");
+combo-&gt;addItems({"Option 1", "Option 2"});
+statusBar-&gt;addPermanentWidget(combo);
+</code></pre>
+<p><strong>Example: Language Selector</strong></p>
+<pre><code class="language-cpp">selector = new QComboBox(m_mainWindow);
+selector-&gt;setObjectName("SyntaxLanguageSelector");
+selector-&gt;setToolTip("Select syntax highlighting");
+selector-&gt;addItem("Auto");
+selector-&gt;addItem("Python");
+selector-&gt;addItem("C++");
+ 
+m_mainWindow-&gt;statusBar()-&gt;insertPermanentWidget(0, selector);
+ 
+connect(selector, QOverload&lt;int&gt;::of(&amp;QComboBox::currentIndexChanged),
+        this, &amp;MyPlugin::onLanguageChanged);
+</code></pre>
+<hr />
+<h2 id="8-built-in-core-plugins">8. Built-in Core Plugins</h2>
+<h3 id="81-vexcore-plugin">8.1 VexCore Plugin</h3>
+<p><strong>Importance:</strong> Xylem (Structural)</p>
+<p><strong>Responsibilities:</strong>
+- Create main UI structure
+- Tab widget system
+- Text editor widgets
+- File operations
+- Basic editing functionality</p>
+<p><strong>Key Components:</strong></p>
+<pre><code class="language-cpp">QStackedWidget* stack = new QStackedWidget();
+stack-&gt;setObjectName("VexStack");
+ 
+QTabWidget* tabs = new QTabWidget();
+tabs-&gt;setObjectName("VexTab");
+ 
+QPlainTextEdit* editor = new QPlainTextEdit();
+editor-&gt;setObjectName("VexEditor");
+</code></pre>
+<p><strong>Provides for Other Plugins:</strong>
+- <code>VexStack</code> - Main stacked widget container
+- <code>VexTab</code> - Tab system for multiple files
+- <code>VexEditor</code> - Text editor instances</p>
+<hr />
+<h3 id="82-syntaxcore-plugin">8.2 SyntaxCore Plugin</h3>
+<p><strong>Importance:</strong> Phloem (Enhancement)</p>
+<p><strong>Responsibilities:</strong>
+- Syntax highlighting system
+- Language detection
+- .vxsyn file parsing
+- TextPainter integration
+- Language selector UI</p>
+<p><strong>Dependencies:</strong>
+- Requires <code>VexTab</code> (from VexCore)
+- Requires <code>VexEditor</code> instances (from VexCore)</p>
+<p><strong>Key Features:</strong>
+- Dynamic syntax file loading
+- Hot reload support
+- Multi-language support
+- File extension matching
+- Content-based detection</p>
+<p><strong>See:</strong> <a href="vxsyn-documentation.md">Vex Syntax Documentation</a></p>
+<hr />
+<h3 id="83-lookandfeelcore-plugin">8.3 LookAndFeelCore Plugin</h3>
+<p><strong>Importance:</strong> Phloem (Enhancement)</p>
+<p><strong>Responsibilities:</strong>
+- Theme system (QSS)
+- Icon theme management
+- Qt style selection
+- VEX#QSS custom properties
+- Hot reload support</p>
+<p><strong>Dependencies:</strong>
+- Can work independently
+- Enhances <code>VexEditor</code> if present</p>
+<p><strong>Key Features:</strong>
+- Custom VEX#QSS block parsing
+- Syntax color integration
+- Theme hot reloading
+- Icon resolution system
+- File watcher integration</p>
+<p><strong>See:</strong> <a href="vex-theming-guide.md">Vex Theming Guide</a></p>
+<hr />
+<h2 id="9-advanced-plugin-development">9. Advanced Plugin Development</h2>
+<h3 id="91-inter-plugin-communication">9.1 Inter-Plugin Communication</h3>
+<p><strong>Event System:</strong></p>
+<pre><code class="language-cpp">// Define custom event
+class MyCustomEvent : public QEvent {
+public:
+    static const QEvent::Type eventType = 
+        static_cast&lt;QEvent::Type&gt;(QEvent::User + 1001);
+    
+    MyCustomEvent(const QString&amp; data)
+        : QEvent(eventType), m_data(data) {}
+    
+    QString data() const { return m_data; }
+    
+private:
+    QString m_data;
+};
+ 
+// Send event (from one plugin)
+MyCustomEvent* event = new MyCustomEvent("Hello from Plugin A");
+QApplication::postEvent(m_mainWindow, event);
+ 
+// Receive event (in another plugin)
+bool eventFilter(QObject* obj, QEvent* event) override {
+    if (event-&gt;type() == MyCustomEvent::eventType) {
+        MyCustomEvent* myEvent = static_cast&lt;MyCustomEvent*&gt;(event);
+        qDebug() &lt;&lt; "Received:" &lt;&lt; myEvent-&gt;data();
+        return true;
+    }
+    return false;
+}
+ 
+// Install event filter
+m_mainWindow-&gt;installEventFilter(this);
+</code></pre>
+<p><strong>Shared Object Access:</strong></p>
+<pre><code class="language-cpp">// Plugin A creates a shared widget
+QWidget* sharedWidget = new QWidget();
+sharedWidget-&gt;setObjectName("SharedData");
+sharedWidget-&gt;setProperty("pluginAData", QVariant::fromValue(myData));
+ 
+// Plugin B accesses shared widget
+QWidget* shared = m_mainWindow-&gt;findChild&lt;QWidget*&gt;("SharedData");
+if (shared) {
+    QVariant data = shared-&gt;property("pluginAData");
+    // Use data
+}
+</code></pre>
+<hr />
+<h3 id="92-qt-signals-and-slots">9.2 Qt Signals and Slots</h3>
+<p><strong>Connecting to Qt Signals:</strong></p>
+<pre><code class="language-cpp">// Connect to tab change
+QTabWidget* tabs = m_mainWindow-&gt;findChild&lt;QTabWidget*&gt;("VexTab");
+if (tabs) {
+    connect(tabs, &amp;QTabWidget::currentChanged,
+            this, &amp;MyPlugin::onTabChanged);
+}
+ 
+// Connect to text change
+QPlainTextEdit* editor = findCurrentEditor();
+if (editor) {
+    connect(editor, &amp;QPlainTextEdit::textChanged,
+            this, &amp;MyPlugin::onTextChanged);
+}
+</code></pre>
+<p><strong>Creating Custom Signals:</strong></p>
+<pre><code class="language-cpp">class MyPlugin : public QObject, public CorePlugin {
+    Q_OBJECT
+    
+signals:
+    void dataProcessed(const QString&amp; result);
+    void errorOccurred(const QString&amp; error);
+    
+public slots:
+    void processData(const QString&amp; input) {
+        // Process data
+        if (success) {
+            emit dataProcessed(result);
+        } else {
+            emit errorOccurred(errorMsg);
+        }
+    }
+};
+</code></pre>
+<hr />
+<h3 id="93-event-system-integration">9.3 Event System Integration</h3>
+<p><strong>Custom Event Example (from LookAndFeelCore):</strong></p>
+<pre><code class="language-cpp">class SyntaxColorEvent : public QEvent {
+public:
+    static const QEvent::Type eventType = 
+        static_cast&lt;QEvent::Type&gt;(QEvent::User + 1000);
+    
+    SyntaxColorEvent(const QMap&lt;QString, QColor&gt;&amp; colors)
+        : QEvent(eventType), m_colors(colors) {}
+    
+    QMap&lt;QString, QColor&gt; colors() const { return m_colors; }
+    
+private:
+    QMap&lt;QString, QColor&gt; m_colors;
+};
+ 
+// Send colors to SyntaxCore
+SyntaxColorEvent* event = new SyntaxColorEvent(syntaxColors);
+QApplication::postEvent(m_mainWindow, event);
+</code></pre>
+<p><strong>Receiving Custom Events:</strong></p>
+<pre><code class="language-cpp">// In SyntaxCore or any plugin
+bool event(QEvent* event) override {
+    if (event-&gt;type() == SyntaxColorEvent::eventType) {
+        SyntaxColorEvent* colorEvent = 
+            static_cast&lt;SyntaxColorEvent*&gt;(event);
+        updateColors(colorEvent-&gt;colors());
+        return true;
+    }
+    return QObject::event(event);
+}
+</code></pre>
+<hr />
+<h3 id="94-file-watching">9.4 File Watching</h3>
+<p><strong>QFileSystemWatcher Integration:</strong></p>
+<pre><code class="language-cpp">class MyPlugin : public QObject, public CorePlugin {
+    Q_OBJECT
+    
+public:
+    bool initialize(MainWindow* window, Settings* settings, CmdLine&amp; cmdLine) override {
+        m_watcher = new QFileSystemWatcher(this);
+        
+        QString configPath = Settings::basePath() + "/myconfig";
+        m_watcher-&gt;addPath(configPath);
+        
+        connect(m_watcher, &amp;QFileSystemWatcher::directoryChanged,
+                this, &amp;MyPlugin::onDirectoryChanged);
+        connect(m_watcher, &amp;QFileSystemWatcher::fileChanged,
+                this, &amp;MyPlugin::onFileChanged);
+        
+        return true;
+    }
+    
+private slots:
+    void onDirectoryChanged(const QString&amp; path) {
+        qDebug() &lt;&lt; "Directory changed:" &lt;&lt; path;
+        reloadConfig();
+    }
+    
+    void onFileChanged(const QString&amp; path) {
+        qDebug() &lt;&lt; "File changed:" &lt;&lt; path;
+        
+        // Re-add if deleted
+        if (!m_watcher-&gt;files().contains(path)) {
+            m_watcher-&gt;addPath(path);
+        }
+        
+        reloadFile(path);
+    }
+    
+private:
+    QFileSystemWatcher* m_watcher{nullptr};
+};
+</code></pre>
+<hr />
+<h3 id="95-dynamic-ui-creation">9.5 Dynamic UI Creation</h3>
+<p><strong>Creating Complex Widgets:</strong></p>
+<pre><code class="language-cpp">class MyPlugin : public QObject, public CorePlugin {
+public:
+    bool initialize(MainWindow* window, Settings* settings, CmdLine&amp; cmdLine) override {
+        m_mainWindow = reinterpret_cast&lt;QMainWindow*&gt;(window);
+        
+        // Create dock widget
+        QDockWidget* dock = new QDockWidget("My Tool", m_mainWindow);
+        dock-&gt;setObjectName("MyPluginDock");
+        
+        // Create content widget
+        QWidget* content = new QWidget();
+        QVBoxLayout* layout = new QVBoxLayout(content);
+        
+        QPushButton* btn1 = new QPushButton("Action 1");
+        QPushButton* btn2 = new QPushButton("Action 2");
+        QTextEdit* output = new QTextEdit();
+        
+        layout-&gt;addWidget(btn1);
+        layout-&gt;addWidget(btn2);
+        layout-&gt;addWidget(output);
+        
+        dock-&gt;setWidget(content);
+        
+        // Add to main window
+        m_mainWindow-&gt;addDockWidget(Qt::RightDockWidgetArea, dock);
+        
+        // Connect signals
+        connect(btn1, &amp;QPushButton::clicked, this, &amp;MyPlugin::onAction1);
+        connect(btn2, &amp;QPushButton::clicked, this, &amp;MyPlugin::onAction2);
+        
+        return true;
+    }
+};
+</code></pre>
+<hr />
+<h2 id="10-plugin-possibilities">10. Plugin Possibilities</h2>
+<h3 id="101-editor-extensions">10.1 Editor Extensions</h3>
+<p><strong>Line Numbers:</strong></p>
+<pre><code class="language-cpp">class LineNumberPlugin : public QObject, public CorePlugin {
+    // Add line number area to QPlainTextEdit
+    // Paint line numbers in gutter
+    // Handle scrolling and updates
+};
+</code></pre>
+<p><strong>Minimap:</strong></p>
+<pre><code class="language-cpp">class MinimapPlugin : public QObject, public CorePlugin {
+    // Create minimap widget
+    // Render scaled-down version of editor
+    // Handle scrolling synchronization
+};
+</code></pre>
+<p><strong>Autocomplete:</strong></p>
+<pre><code class="language-cpp">class AutocompletePlugin : public QObject, public CorePlugin {
+    // Monitor text input
+    // Show completion popup
+    // Language-specific completions
+};
+</code></pre>
+<p><strong>Bracket Matching:</strong></p>
+<pre><code class="language-cpp">class BracketMatchPlugin : public QObject, public CorePlugin {
+    // Highlight matching brackets
+    // Handle multiple bracket types
+    // Show mismatch errors
+};
+</code></pre>
+<hr />
+<h3 id="102-language-support">10.2 Language Support</h3>
+<p><strong>Language Server Protocol (LSP):</strong></p>
+<pre><code class="language-cpp">class LSPPlugin : public QObject, public CorePlugin {
+    // Connect to language servers
+    // Provide code intelligence
+    // Show diagnostics
+    // Handle completions, hover, definitions
+};
+</code></pre>
+<p><strong>Linting:</strong></p>
+<pre><code class="language-cpp">class LinterPlugin : public QObject, public CorePlugin {
+    // Run external linters
+    // Parse lint output
+    // Display inline warnings/errors
+    // Configurable rules
+};
+</code></pre>
+<p><strong>Formatting:</strong></p>
+<pre><code class="language-cpp">class FormatterPlugin : public QObject, public CorePlugin {
+    // Integration with clang-format, prettier, etc.
+    // Format on save
+    // Custom formatting rules
+};
+</code></pre>
+<hr />
+<h3 id="103-version-control-integration">10.3 Version Control Integration</h3>
+<p><strong>Git Integration:</strong></p>
+<pre><code class="language-cpp">class GitPlugin : public QObject, public CorePlugin {
+    // Show git status in UI
+    // Diff viewer
+    // Commit/push/pull
+    // Branch management
+    // Blame annotations
+};
+</code></pre>
+<p><strong>Diff Viewer:</strong></p>
+<pre><code class="language-cpp">class DiffViewerPlugin : public QObject, public CorePlugin {
+    // Side-by-side diff view
+    // Inline diff markers
+    // Navigate changes
+    // Merge conflict resolution
+};
+</code></pre>
+<hr />
+<h3 id="104-build-system-integration">10.4 Build System Integration</h3>
+<p><strong>CMake Integration:</strong></p>
+<pre><code class="language-cpp">class CMakePlugin : public QObject, public CorePlugin {
+    // Parse CMakeLists.txt
+    // Configure/build/run
+    // Target selection
+    // Build output parsing
+};
+</code></pre>
+<p><strong>Makefile Integration:</strong></p>
+<pre><code class="language-cpp">class MakePlugin : public QObject, public CorePlugin {
+    // Parse Makefiles
+    // Run make targets
+    // Error parsing
+    // Build status
+};
+</code></pre>
+<hr />
+<h3 id="105-terminal-integration">10.5 Terminal Integration</h3>
+<p><strong>Embedded Terminal:</strong></p>
+<pre><code class="language-cpp">class TerminalPlugin : public QObject, public CorePlugin {
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "vex.core/4.0")
+    Q_INTERFACES(CorePlugin)
+    
+public:
+    PluginMetadata meta() const override {
+        PluginMetadata metadata;
+        metadata.importance = PluginMetadata::Simple;
+        return metadata;
+    }
+    
+    bool initialize(MainWindow* window, Settings* settings, CmdLine&amp; cmdLine) override {
+        m_mainWindow = reinterpret_cast&lt;QMainWindow*&gt;(window);
+        
+        // Create terminal dock
+        QDockWidget* termDock = new QDockWidget("Terminal", m_mainWindow);
+        
+        // Embed terminal (pseudo-terminal on Unix)
+        m_terminal = createTerminalWidget();
+        termDock-&gt;setWidget(m_terminal);
+        
+        m_mainWindow-&gt;addDockWidget(Qt::BottomDockWidgetArea, termDock);
+        
+        return true;
+    }
+};
+</code></pre>
+<hr />
+<h3 id="106-project-management">10.6 Project Management</h3>
+<p><strong>Project Explorer:</strong></p>
+<pre><code class="language-cpp">class ProjectExplorerPlugin : public QObject, public CorePlugin {
+    // Tree view of project files
+    // File navigation
+    // File operations (create, delete, rename)
+    // Search in project
+};
+</code></pre>
+<p><strong>Session Management:</strong></p>
+<pre><code class="language-cpp">class SessionPlugin : public QObject, public CorePlugin {
+    // Save/restore open files
+    // Save cursor positions
+    // Save window layout
+    // Multiple sessions
+};
+</code></pre>
+<hr />
+<h3 id="107-code-intelligence">10.7 Code Intelligence</h3>
+<p><strong>Symbol Navigator:</strong></p>
+<pre><code class="language-cpp">class SymbolNavigatorPlugin : public QObject, public CorePlugin {
+    // Parse source files
+    // Show functions, classes, variables
+    // Jump to definition
+    // Find references
+};
+</code></pre>
+<p><strong>Code Outline:</strong></p>
+<pre><code class="language-cpp">class OutlinePlugin : public QObject, public CorePlugin {
+    // Show document structure
+    // Collapsible sections
+    // Quick navigation
+};
+</code></pre>
+<hr />
+<h3 id="108-debugging">10.8 Debugging</h3>
+<p><strong>Debugger Integration:</strong></p>
+<pre><code class="language-cpp">class DebuggerPlugin : public QObject, public CorePlugin {
+    // GDB/LLDB integration
+    // Breakpoint management
+    // Step through code
+    // Variable inspection
+    // Call stack view
+};
+</code></pre>
+<hr />
+<h2 id="11-debug-mode">11. Debug Mode</h2>
+<h3 id="111-enabling-debug-mode">11.1 Enabling Debug Mode</h3>
+<p><strong>Command Line:</strong></p>
+<pre><code class="language-bash">vex --debug
+vex -d
+</code></pre>
+<p><strong>Code:</strong></p>
+<pre><code class="language-cpp">cmdLine.addCommand({{"d", "debug"}, "Enable debug mode", ""});
+ 
+// After parse
+Debug_Mode = cmdLine.isSet("debug");
+</code></pre>
+<p><strong>Programmatic:</strong></p>
+<pre><code class="language-cpp">PluginLoader::setDebugMode(true);
+</code></pre>
+<hr />
+<h3 id="112-debug-output">11.2 Debug Output</h3>
+<p><strong>Debug Logging:</strong></p>
+<pre><code class="language-cpp">void Debug_Log(const QString&amp; message) {
+    if (Debug_Mode) {
+        qDebug() &lt;&lt; message;
+    }
+}
+ 
+// Usage
+Debug_Log("Successfully loaded plugin: VexCore.so");
+Debug_Log("Initializing Xylem plugins (3 found)");
+</code></pre>
+<p><strong>Warning Logging:</strong></p>
+<pre><code class="language-cpp">void Debug_Warning(const QString&amp; message) {
+    if (Debug_Mode) {
+        qWarning() &lt;&lt; message;
+    }
+}
+ 
+// Usage
+Debug_Warning("Failed to load plugin: BadPlugin.so");
+</code></pre>
+<p><strong>Critical Logging:</strong></p>
+<pre><code class="language-cpp">void Debug_Critical(const QString&amp; message) {
+    if (Debug_Mode) {
+        qCritical() &lt;&lt; message;
+    }
+}
+ 
+// Usage
+Debug_Critical("Plugin threw exception during Phloem phase");
+</code></pre>
+<hr />
+<h3 id="113-error-dialogs">11.3 Error Dialogs</h3>
+<p><strong>Error Summary (Debug Mode Only):</strong></p>
+<pre><code class="language-cpp">if (!errors.isEmpty() &amp;&amp; Debug_Mode) {
+    showErrorSummary(errors);
+}
+</code></pre>
+<p><strong>Initialization Failures:</strong></p>
+<pre><code class="language-cpp">try {
+    if (!plugin-&gt;initialize(window, settings, cmdLine)) {
+        if (Debug_Mode) {
+            QMessageBox::warning(nullptr, "Plugin Init Failed",
+                "Plugin returned false during initialization");
+        }
+    }
+} catch (const std::exception&amp; e) {
+    if (Debug_Mode) {
+        QMessageBox::critical(nullptr, "Plugin Exception!",
+            QString("Plugin threw exception:\n%1").arg(e.what()));
+    }
+}
+</code></pre>
+<hr />
+<h2 id="12-troubleshooting">12. Troubleshooting</h2>
+<h3 id="121-plugin-not-loading">12.1 Plugin Not Loading</h3>
+<p><strong>Problem:</strong> Plugin file exists but doesn't load.</p>
+<p><strong>Solutions:</strong></p>
+<ol>
+<li>
+<p><strong>Check file extension:</strong></p>
+<pre><code class="language-bash"># Linux
+ls *.so
+</code></pre>
+</li>
+<li>
+<p><strong>Check file permissions:</strong></p>
+<pre><code class="language-bash">chmod 755 MyPlugin.so
+</code></pre>
+</li>
+<li>
+<p><strong>Check dependencies:</strong></p>
+<pre><code class="language-bash"># Linux
+ldd MyPlugin.so
+</code></pre>
+</li>
+<li>
+<p><strong>Enable debug mode:</strong></p>
+<pre><code class="language-bash">vex --debug
+</code></pre>
+<p>Check error messages for specific failure reason.</p>
+</li>
+<li>
+<p><strong>Verify interface version:</strong></p>
+<pre><code class="language-cpp">Q_PLUGIN_METADATA(IID "vex.core/4.0")  // Must match
+</code></pre>
+</li>
+</ol>
+<hr />
+<h3 id="122-initialization-failures">12.2 Initialization Failures</h3>
+<p><strong>Problem:</strong> Plugin loads but initialize() returns false.</p>
+<p><strong>Debug Steps:</strong></p>
+<ol>
+<li>
+<p><strong>Add debug output:</strong></p>
+<pre><code class="language-cpp">bool initialize(...) override {
+    qDebug() &lt;&lt; "MyPlugin: Starting initialization";
+    
+    if (!m_mainWindow) {
+        qDebug() &lt;&lt; "MyPlugin: ERROR - Invalid window pointer";
+        return false;
+    }
+    
+    qDebug() &lt;&lt; "MyPlugin: Initialization successful";
+    return true;
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Check widget access:</strong></p>
+<pre><code class="language-cpp">QTabWidget* tabs = m_mainWindow-&gt;findChild&lt;QTabWidget*&gt;("VexTab");
+if (!tabs) {
+    qDebug() &lt;&lt; "MyPlugin: VexTab not found (VexCore not loaded?)";
+    return false;
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Verify importance tier:</strong>
+- Phloem plugins need Xylem widgets
+- Check if you're trying to access widgets that don't exist yet</p>
+</li>
+<li>
+<p><strong>Check exception handling:</strong>
+- Exceptions are caught and logged in debug mode
+- Use try-catch in your initialize()</p>
+</li>
+</ol>
+<hr />
+<h3 id="123-crashes-and-isolation">12.3 Crashes and Isolation</h3>
+<p><strong>Plugin Isolation:</strong></p>
+<pre><code class="language-cpp">try {
+    if (!plugin-&gt;initialize(window, settings, cmdLine)) {
+        // Failure logged, continue with other plugins
+    }
+} catch (const std::exception&amp; e) {
+    // Exception caught, other plugins unaffected
+    Debug_Critical("Plugin crashed but was isolated");
+}
+</code></pre>
+<p><strong>Crash Prevention:</strong></p>
+<ol>
+<li>
+<p><strong>Null pointer checks:</strong></p>
+<pre><code class="language-cpp">if (!m_mainWindow) return false;
+if (!tabs) return false;
+if (!editor) return false;
+</code></pre>
+</li>
+<li>
+<p><strong>Defensive programming:</strong></p>
+<pre><code class="language-cpp">QWidget* widget = m_mainWindow-&gt;findChild&lt;QWidget*&gt;("VexStack");
+QStackedWidget* stack = qobject_cast&lt;QStackedWidget*&gt;(widget);
+if (!stack) {
+    qDebug() &lt;&lt; "VexStack not found or wrong type";
+    return false;
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Resource cleanup:</strong></p>
+<pre><code class="language-cpp">~MyPlugin() {
+    if (m_watcher) {
+        delete m_watcher;
+        m_watcher = nullptr;
+    }
+}
+</code></pre>
+</li>
+</ol>
+<hr />
+<h3 id="124-build-issues">12.4 Build Issues</h3>
+<p><strong>CMake not finding Qt:</strong></p>
+<pre><code class="language-cmake"># Set Qt path explicitly
+set(CMAKE_PREFIX_PATH "/path/to/Qt/6.x/gcc_64")
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+</code></pre>
+<p><strong>MOC not running:</strong></p>
+<pre><code class="language-cmake"># Ensure AUTOMOC is on
+set(CMAKE_AUTOMOC ON)
+ 
+# Or run moc manually
+qt6_wrap_cpp(MOC_FILES MyPlugin.H)
+add_library(MyPlugin SHARED MyPlugin.cxx ${MOC_FILES})
+</code></pre>
+<p><strong>Missing .moc include:</strong></p>
+<pre><code class="language-cpp">#include "MyPlugin.moc"  // Must be at end of .cxx file
+</code></pre>
+<p><strong>Undefined symbols:</strong></p>
+<pre><code class="language-bash"># Check if Qt libraries are linked
+target_link_libraries(MyPlugin PRIVATE Qt6::Core Qt6::Widgets)
+ 
+# Check for missing includes
+#include "Plugvex.H"
+#include "Settings.H"
+</code></pre>
+<hr />
