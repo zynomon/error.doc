@@ -1,0 +1,860 @@
+<page icon="colorgrab"><h1>Customizing Linux Guide</h1>
+
+<p>Your computer is yours. The way it looks when you boot up, the login screen, the wallpaper, the icons, the way windows behave,
+
+all of it can be changed. This guide walks through every layer of customization, from the moment you turn on your machine to the moment you close your last window. Everything here works on any system that uses these components, regardless of what distribution you are running.</p>
+
+<hr />
+
+<h2>Table of Contents</h2>
+
+<ul>
+  <li><a href="#grub">1. GRUB Bootloader Theme</a>
+    <ul>
+      <li><a href="#grub-location">Theme Location and Structure</a></li>
+      <li><a href="#grub-config">Configuring GRUB Themes</a></li>
+      <li><a href="#grub-tools">Tools for GRUB Customization</a></li>
+    </ul>
+  </li>
+  <li><a href="#plymouth">2. Plymouth Boot Splash</a>
+    <ul>
+      <li><a href="#plymouth-themes">Available Plymouth Themes</a></li>
+      <li><a href="#plymouth-install">Installing and Switching Themes</a></li>
+      <li><a href="#plymouth-custom">Creating Custom Plymouth Themes</a></li>
+    </ul>
+  </li>
+  <li><a href="#sddm">3. SDDM Login Manager Theme</a>
+    <ul>
+      <li><a href="#sddm-location">SDDM Theme Locations</a></li>
+      <li><a href="#sddm-switch">Switching SDDM Themes</a></li>
+      <li><a href="#sddm-config">Manual SDDM Configuration</a></li>
+    </ul>
+  </li>
+  <li><a href="#ksplash">4. KSplash (Kirigami) Splash Screen</a>
+    <ul>
+      <li><a href="#ksplash-location">Splash Screen Locations</a></li>
+      <li><a href="#ksplash-select">Selecting and Installing Splash Screens</a></li>
+    </ul>
+  </li>
+  <li><a href="#wallpaper">5. Wallpapers</a>
+    <ul>
+      <li><a href="#wallpaper-location">System Wallpaper Directories</a></li>
+      <li><a href="#wallpaper-set">Setting Wallpapers</a></li>
+      <li><a href="#wallpaper-slideshow">Creating Slideshows</a></li>
+    </ul>
+  </li>
+  <li><a href="#mouse">6. Mouse Cursor Themes</a>
+    <ul>
+      <li><a href="#cursor-location">Cursor Theme Locations</a></li>
+      <li><a href="#cursor-switch">Switching Cursor Themes</a></li>
+    </ul>
+  </li>
+  <li><a href="#icons">7. Icon Themes</a>
+    <ul>
+      <li><a href="#icons-location">Icon Theme Locations</a></li>
+      <li><a href="#icons-switch">Switching Icon Themes</a></li>
+      <li><a href="#icons-custom">Custom Icons</a></li>
+    </ul>
+  </li>
+  <li><a href="#qtstyle">8. Qt Style (Widget Style)</a>
+    <ul>
+      <li><a href="#qtstyle-location">Qt Style Locations</a></li>
+      <li><a href="#qtstyle-switch">Switching Qt Styles</a></li>
+    </ul>
+  </li>
+  <li><a href="#kvantum">9. Kvantum Theme Engine</a>
+    <ul>
+      <li><a href="#kvantum-install">Installing Kvantum</a></li>
+      <li><a href="#kvantum-themes">Kvantum Theme Locations</a></li>
+      <li><a href="#kvantum-apply">Applying Kvantum Themes</a></li>
+    </ul>
+  </li>
+  <li><a href="#bashrc">10. Bashrc (Shell Customization)</a>
+    <ul>
+      <li><a href="#bashrc-file">The .bashrc File</a></li>
+      <li><a href="#bash-prompt">Customizing the Prompt</a></li>
+      <li><a href="#bash-aliases">Useful Aliases</a></li>
+      <li><a href="#bash-functions">Custom Functions</a></li>
+    </ul>
+  </li>
+  <li><a href="#kde-colors">11. KDE Color Schemes</a>
+    <ul>
+      <li><a href="#colors-location">Color Scheme Locations</a></li>
+      <li><a href="#colors-apply">Applying Color Schemes</a></li>
+      <li><a href="#colors-create">Creating Custom Color Schemes</a></li>
+    </ul>
+  </li>
+  <li><a href="#aurorae">12. KDE Aurorae Window Decorations</a>
+    <ul>
+      <li><a href="#aurorae-location">Aurorae Theme Locations</a></li>
+      <li><a href="#aurorae-apply">Applying Aurorae Themes</a></li>
+      <li><a href="#aurorae-create">Creating Aurorae Themes</a></li>
+    </ul>
+  </li>
+  <li><a href="#integration">13. Bringing It All Together</a></li>
+</ul>
+
+<hr />
+
+<h2 id="grub">1. GRUB Bootloader Theme</h2>
+
+<p>GRUB (Grand Unified Bootloader) is what you see when you first turn on your computer - the menu that lets you choose which operating system to boot. It can be themed with backgrounds, fonts, and custom layouts.</p>
+
+<h3 id="grub-location">Theme Location and Structure</h3>
+
+<p>GRUB themes live in:</p>
+
+<pre><code>/boot/grub/themes/
+/usr/share/grub/themes/</code></pre>
+
+<p>A GRUB theme is a directory containing:</p>
+<ul>
+  <li><code>theme.txt</code> - the main configuration file</li>
+  <li><code>background.png</code> or <code>background.jpg</code> - the background image</li>
+  <li><code>*.pf2</code> - font files (GRUB-specific format)</li>
+  <li><code>*.png</code> - icons for menu items, progress bars, etc.</li>
+</ul>
+
+<p><strong>Example theme.txt structure:</strong></p>
+
+<pre><code>title-text: "GRUB Boot Menu"
+desktop-image: "background.png"
+desktop-color: "#000000"
+
+terminal-font: "DejaVuSans-12.pf2"
+
++ boot_menu {
+  left = 30%
+  top = 40%
+  width = 40%
+  height = 30%
+  item_color = "#ffffff"
+  selected_item_color = "#000000"
+  item_font = "DejaVuSans-12.pf2"
+  selected_item_font = "DejaVuSans-12.pf2"
+  item_pixmap_style = "menu_item.png"
+  selected_item_pixmap_style = "menu_item_selected.png"
+}</code></pre>
+
+<h3 id="grub-config">Configuring GRUB Themes</h3>
+
+<p>To apply a theme, edit <file url="/etc/default/grub">/etc/default/grub</file> and add or modify:</p>
+
+<pre><code>GRUB_THEME="/boot/grub/themes/your-theme/theme.txt"
+GRUB_GFXMODE="1920x1080"
+GRUB_GFXPAYLOAD_LINUX="keep"</code></pre>
+
+<p>After making changes, update GRUB:</p>
+
+<bash>sudo update-grub</bash>
+
+<p>Or on some systems:</p>
+
+<bash>sudo grub-mkconfig -o /boot/grub/grub.cfg</bash>
+
+<h3 id="grub-tools">Tools for GRUB Customization</h3>
+
+<p>Several tools can help you manage GRUB themes:</p>
+
+<bash>sudo apt install grub-customizer      # GUI tool for GRUB configuration
+sudo apt install grub-theme-starfield   # Install a sample theme</bash>
+
+<p>You can also download themes from sites like <a href="https://www.gnome-look.org/browse/cat/109/">gnome-look.org</a>. Extract them to <file url="/boot/grub/themes/"></file> and update GRUB.</p>
+
+<hr />
+
+<h2 id="plymouth">2. Plymouth Boot Splash</h2>
+
+<p>Plymouth is the graphical boot splash that appears after GRUB and before the login screen. It shows the boot process with animations and progress indicators.</p>
+
+<h3 id="plymouth-themes">Available Plymouth Themes</h3>
+
+<p>Common Plymouth themes include:</p>
+
+<bash>sudo apt install plymouth-theme-*     # List all available themes</bash>
+
+<p>Some popular themes:</p>
+<ul>
+  <li><code>plymouth-theme-spinfinity</code> - rotating infinity symbol</li>
+  <li><code>plymouth-theme-solar</code> - sun-like animation</li>
+  <li><code>plymouth-theme-breeze</code> - KDE's Breeze theme</li>
+  <li><code>plymouth-theme-lone</code> - minimal text-based</li>
+</ul>
+
+<h3 id="plymouth-install">Installing and Switching Themes</h3>
+
+<p>Install a theme:</p>
+
+<bash>sudo apt install plymouth-theme-breeze</bash>
+
+<p>Switch to a different theme:</p>
+
+<bash>sudo update-alternatives --config default.plymouth</bash>
+
+<p>Select the number corresponding to your desired theme, then update the initramfs:</p>
+
+<bash>sudo update-initramfs -u</bash>
+
+<p>To preview a theme without rebooting:</p>
+
+<bash>sudo plymouthd --debug --tty --no-daemon
+sudo plymouth --show-splash
+sudo plymouth --quit</bash>
+
+<h3 id="plymouth-custom">Creating Custom Plymouth Themes</h3>
+
+<p>A Plymouth theme is a directory in <file url="/usr/share/plymouth/themes/"></file> containing:</p>
+
+<ul>
+  <li><code>*.plymouth</code> - the theme configuration file</li>
+  <li><code>*.png</code> - images for the animation</li>
+  <li><code>*.script</code> - optional script for advanced animations</li>
+</ul>
+
+<p>To create a custom theme, copy an existing theme and modify the images and configuration.</p>
+
+<hr />
+
+<h2 id="sddm">3. SDDM Login Manager Theme</h2>
+
+<p>SDDM (Simple Desktop Display Manager) is the login screen. It is highly themeable and supports both Qt-based and QML-based themes.</p>
+
+<h3 id="sddm-location">SDDM Theme Locations</h3>
+
+<p>SDDM themes are stored in:</p>
+
+<pre><code>/usr/share/sddm/themes/
+~/.local/share/sddm/themes/</code></pre>
+
+<p>Each theme is a directory containing:</p>
+<ul>
+  <li><code>theme.conf</code> - theme configuration</li>
+  <li><code>Main.qml</code> - QML interface file</li>
+  <li><code>*.png</code> - background and UI images</li>
+  <li><code>fonts/</code> - optional fonts directory</li>
+</ul>
+
+<h3 id="sddm-switch">Switching SDDM Themes</h3>
+
+<p>Using the system settings (graphical):</p>
+<p>Go to System Settings > Startup and Shutdown > Login Screen (SDDM). Click "Get New SDDM Themes" to download themes, or select from installed ones.</p>
+
+<p>Using the terminal:</p>
+
+<bash>sudo nano /etc/sddm.conf</bash>
+
+<p>Add or modify:</p>
+
+<pre><code>[Theme]
+Current=your-theme-name</code></pre>
+
+<p>To see installed themes:</p>
+
+<bash>ls /usr/share/sddm/themes/</bash>
+
+<h3 id="sddm-config">Manual SDDM Configuration</h3>
+
+<p>SDDM can be extensively configured. The main configuration file is <file url="/etc/sddm.conf"></file>. Common settings:</p>
+
+<pre><code>[Theme]
+Current=breeze
+CursorTheme=breeze_cursors
+Font=Noto Sans,10
+
+[Users]
+DefaultSession=plasma
+HideUsers=root
+RememberLastUser=true
+
+[General]
+HaltCommand=/usr/bin/systemctl poweroff
+RebootCommand=/usr/bin/systemctl reboot
+Numlock=on</code></pre>
+
+<p>To configure a specific theme's settings, look for <code>theme.conf</code> inside the theme directory.</p>
+
+<hr />
+
+<h2 id="ksplash">4. KSplash (Kirigami) Splash Screen</h2>
+
+<p>KSplash is the splash screen that appears after login while the desktop loads. KDE Plasma uses Kirigami-based splash screens.</p>
+
+<h3 id="ksplash-location">Splash Screen Locations</h3>
+
+<p>KSplash themes are stored in:</p>
+
+<pre><code>/usr/share/plasma/look-and-feel/
+~/.local/share/plasma/look-and-feel/</code></pre>
+
+<p>Look-and-feel packages often include splash screens. Standalone splash screens are stored in:</p>
+
+<pre><code>/usr/share/plasma/splash/
+~/.local/share/plasma/splash/</code></pre>
+
+<h3 id="ksplash-select">Selecting and Installing Splash Screens</h3>
+
+<p>To change the splash screen:</p>
+<p>System Settings > Appearance > Splash Screen. Select from the list or click "Get New Splash Screens" to download more.</p>
+
+<p>To manually install a splash screen, download a <code>.tar.gz</code> file and extract it to <file url="~/.local/share/plasma/splash/"></file>. It should appear in the settings immediately.</p>
+
+<p>Each splash screen directory contains:</p>
+<ul>
+  <li><code>metadata.desktop</code> - theme metadata</li>
+  <li><code>contents/</code> - the actual QML files and images</li>
+</ul>
+
+<hr />
+
+<h2 id="wallpaper">5. Wallpapers</h2>
+
+<p>Wallpapers set the visual tone for your desktop environment. They can be static images, slideshows, or even dynamic wallpapers that change based on time.</p>
+
+<h3 id="wallpaper-location">System Wallpaper Directories</h3>
+
+<p>System-wide wallpapers are stored in:</p>
+
+<pre><code>/usr/share/wallpapers/
+/usr/share/backgrounds/</code></pre>
+
+<p>User-installed wallpapers typically go in:</p>
+
+<pre><code>~/Pictures/Wallpapers/
+~/.local/share/wallpapers/</code></pre>
+
+<p>Each wallpaper can be a simple image or a folder with metadata:</p>
+
+<pre><code>~/.local/share/wallpapers/MyWallpaper/
+├── metadata.desktop
+├── contents/
+│   ├── images/
+│   │   ├── 1920x1080.png
+│   │   ├── 2560x1440.png
+│   │   └── 3840x2160.png
+│   └── screenshots/
+│       └── preview.png</code></pre>
+
+<h3 id="wallpaper-set">Setting Wallpapers</h3>
+
+<p>Using the graphical interface:</p>
+<p>Right-click the desktop > Configure Desktop and Wallpaper. Choose image, slideshow, or dynamic wallpaper.</p>
+
+<p>Using the terminal (Plasma-specific):</p>
+
+<bash>plasma-apply-wallpaperimage /path/to/image.jpg</bash>
+
+<h3 id="wallpaper-slideshow">Creating Slideshows</h3>
+
+<p>To create a wallpaper slideshow, create a folder with your images, then in Desktop Settings, select "Slideshow" and point it to that folder. Configure interval and transition effects.</p>
+
+<p>For more advanced slideshows, you can create a <code>slideshow.ini</code> file:</p>
+
+<pre><code>[General]
+interval=300
+transition=CrossFade
+
+[Slide 1]
+file=/home/user/Pictures/wallpapers/sunset.jpg
+duration=60
+
+[Slide 2]
+file=/home/user/Pictures/wallpapers/mountain.jpg
+duration=60</code></pre>
+
+<hr />
+
+<h2 id="mouse">6. Mouse Cursor Themes</h2>
+
+<p>Cursor themes change how your pointer looks and behaves.</p>
+
+<h3 id="cursor-location">Cursor Theme Locations</h3>
+
+<p>Cursor themes are stored in:</p>
+
+<pre><code>/usr/share/icons/
+~/.local/share/icons/
+~/.icons/</code></pre>
+
+<p>Each cursor theme is a directory containing:</p>
+<ul>
+  <li><code>cursor.theme</code> - theme metadata</li>
+  <li><code>cursors/</code> - the actual cursor files (X11 format)</li>
+  <li>Optional <code>index.theme</code> for icon theme compatibility</li>
+</ul>
+
+<p>Popular cursor themes include:</p>
+<ul>
+  <li><strong>Breeze</strong> - KDE's default, clean and modern</li>
+  <li><strong>Oxygen</strong> - the classic KDE cursor set</li>
+  <li><strong>Adwaita</strong> - GNOME's cursor theme</li>
+  <li><strong>Polar</strong>, <strong>Capitaine</strong>, <strong>Bibata</strong> - community favorites</li>
+</ul>
+
+<h3 id="cursor-switch">Switching Cursor Themes</h3>
+
+<p>Using the graphical interface:</p>
+<p>System Settings > Appearance > Cursors. Select from the list or click "Get New Cursor Themes" to download more.</p>
+
+<p>Using the terminal:</p>
+
+<bash>sudo update-alternatives --config x-cursor-theme</bash>
+
+<p>Or set per-user:</p>
+
+<bash>nano ~/.config/kcminputrc</bash>
+
+<pre><code>[Mouse]
+cursorTheme=breeze_cursors
+cursorSize=24</code></pre>
+
+<p>Cursor changes take effect after logging out and back in, or by restarting the application.</p>
+
+<hr />
+
+<h2 id="icons">7. Icon Themes</h2>
+
+<p>Icon themes determine how application icons, folder icons, and system icons look.</p>
+
+<h3 id="icons-location">Icon Theme Locations</h3>
+
+<p>Icon themes are stored in:</p>
+
+<pre><code>/usr/share/icons/
+~/.local/share/icons/
+~/.icons/</code></pre>
+
+<p>An icon theme directory contains:</p>
+<ul>
+  <li><code>index.theme</code> - theme metadata and inheritance</li>
+  <li><code>actions/</code>, <code>apps/</code>, <code>devices/</code>, etc. - icon subdirectories</li>
+  <li><code>scalable/</code> - SVG icons</li>
+  <li><code>22x22/</code>, <code>48x48/</code>, <code>256x256/</code> - raster icon sizes</li>
+</ul>
+
+<p>Popular icon themes:</p>
+<ul>
+  <li><strong>Breeze</strong> - KDE's default, consistent and modern</li>
+  <li><strong>Papirus</strong> - colorful, covers many applications</li>
+  <li><strong>Adwaita</strong> - GNOME's default</li>
+  <li><strong>Numix</strong> - flat, modern design</li>
+  <li><strong>Flat Remix</strong> - colorful and consistent</li>
+</ul>
+
+<h3 id="icons-switch">Switching Icon Themes</h3>
+
+<p>Using the graphical interface:</p>
+<p>System Settings > Appearance > Icons. Select from the list or click "Get New Icons" to download more.</p>
+
+<p>Using the terminal:</p>
+
+<bash>nano ~/.config/kdeglobals</bash>
+
+<pre><code>[Icons]
+Theme=papirus</code></pre>
+
+<p>For Qt applications outside KDE, you may also need to set:</p>
+
+<bash>qt6ct &amp;   # Qt6 Configuration Tool (if installed)</bash>
+
+<h3 id="icons-custom">Custom Icons</h3>
+
+<p>To override a specific icon, place a PNG or SVG file at:</p>
+
+<pre><code>~/.local/share/icons/hicolor/48x48/apps/myapp.png</code></pre>
+
+<p>Then update the icon cache:</p>
+
+<bash>gtk-update-icon-cache ~/.local/share/icons/hicolor</bash>
+
+<hr />
+
+<h2 id="qtstyle">8. Qt Style (Widget Style)</h2>
+
+<p>Qt styles control how the widgets in Qt applications look - buttons, scrollbars, menus, and other interface elements.</p>
+
+<h3 id="qtstyle-location">Qt Style Locations</h3>
+
+<p>Qt styles are installed as libraries in:</p>
+
+<pre><code>/usr/lib/x86_64-linux-gnu/qt5/plugins/styles/
+/usr/lib/x86_64-linux-gnu/qt6/plugins/styles/
+~/.local/lib/qt5/plugins/styles/</code></pre>
+
+<p>Common built-in styles:</p>
+<ul>
+  <li><strong>Breeze</strong> - KDE's default, modern and clean</li>
+  <li><strong>Fusion</strong> - cross-platform, professional look</li>
+  <li><strong>Windows</strong> - classic Windows 9x style</li>
+  <li><strong>Fluent</strong>, <strong>Materia</strong> - community styles</li>
+</ul>
+
+<h3 id="qtstyle-switch">Switching Qt Styles</h3>
+
+<p>Using the graphical interface:</p>
+<p>System Settings > Appearance > Application Style. Select from the list. Click "Configure GNOME/GTK Application Style" for GTK integration.</p>
+
+<p>Using the terminal (Qt5):</p>
+
+<bash>export QT_STYLE_OVERRIDE=Breeze</bash>
+
+<p>For persistent configuration:</p>
+
+<bash>nano ~/.config/qt5ct/qt5ct.conf</bash>
+
+<pre><code>[Appearance]
+style=Breeze</code></pre>
+
+<p>For Qt6, use <code>qt6ct</code> similarly.</p>
+
+<p>To see all available styles:</p>
+
+<bash>find /usr/lib -name "*.so" | grep styles</bash>
+
+<hr />
+
+<h2 id="kvantum">9. Kvantum Theme Engine</h2>
+
+<p>Kvantum is an SVG-based theme engine for Qt applications. It allows for highly detailed, customizable themes with transparency, gradients, and custom widget designs.</p>
+
+<h3 id="kvantum-install">Installing Kvantum</h3>
+
+<bash>sudo apt install kvantum kvantum-qt5</bash>
+
+<p>For Qt6 support, you may need additional packages.</p>
+
+<h3 id="kvantum-themes">Kvantum Theme Locations</h3>
+
+<p>Kvantum themes are stored in:</p>
+
+<pre><code>/usr/share/Kvantum/
+~/.config/Kvantum/</code></pre>
+
+<p>Each theme is a directory containing:</p>
+<ul>
+  <li><code>*.svg</code> - the SVG theme file</li>
+  <li><code>*.kvconfig</code> - configuration file</li>
+  <li><code>*.qss</code> - optional Qt Style Sheet overrides</li>
+</ul>
+
+<p>Popular Kvantum themes:</p>
+<ul>
+  <li><strong>KvArc</strong> - Arc-style theme</li>
+  <li><strong>KvMateria</strong> - Material Design style</li>
+  <li><strong>KvOxygen</strong> - Oxygen style adaptation</li>
+  <li><strong>Nordic</strong> - Nord color scheme</li>
+</ul>
+
+<h3 id="kvantum-apply">Applying Kvantum Themes</h3>
+
+<p>Launch Kvantum Manager:</p>
+
+<bash>kvantummanager</bash>
+
+<p>Select a theme and click "Apply".</p>
+
+<p>To use Kvantum as the default Qt style:</p>
+<p>System Settings > Appearance > Application Style. Select "kvantum" from the list.</p>
+
+<p>To configure Kvantum from the terminal:</p>
+
+<bash>kvantummanager --set ThemeName</bash>
+
+<p>For per-application overrides, you can set:</p>
+
+<bash>env QT_STYLE_OVERRIDE=kvantum application-name</bash>
+
+<hr />
+
+<h2 id="bashrc">10. Bashrc (Shell Customization)</h2>
+
+<p>The <file url="~/.bashrc"></file> file is executed every time you open an interactive bash shell. It is where you customize your terminal experience.</p>
+
+<h3 id="bashrc-file">The .bashrc File</h3>
+
+<p>Your <file url="~/.bashrc"></file> file is located in your home directory. If it doesn't exist, create it:</p>
+
+<bash>touch ~/.bashrc</bash>
+
+<p>After editing, apply changes with:</p>
+
+<bash>source ~/.bashrc</bash>
+
+<p>Or open a new terminal.</p>
+
+<h3 id="bash-prompt">Customizing the Prompt</h3>
+
+<p>The PS1 variable controls your prompt. A simple colorful prompt:</p>
+
+<pre><code>PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '</code></pre>
+
+<p>Common prompt elements:</p>
+<ul>
+  <li><code>\u</code> - username</li>
+  <li><code>\h</code> - hostname</li>
+  <li><code>\w</code> - current working directory (full path)</li>
+  <li><code>\W</code> - basename of current directory</li>
+  <li><code>\$</code> - $ for normal user, # for root</li>
+  <li><code>\t</code> - current time (24-hour)</li>
+  <li><code>\d</code> - date</li>
+  <li><code>\n</code> - newline</li>
+</ul>
+
+<p>Color codes (wrap in <code>\[\033[</code> and <code>m\]</code>):</p>
+<ul>
+  <li><code>01;32m</code> - bold green</li>
+  <li><code>01;34m</code> - bold blue</li>
+  <li><code>01;31m</code> - bold red</li>
+  <li><code>01;33m</code> - bold yellow</li>
+  <li><code>00m</code> - reset</li>
+</ul>
+
+<h3 id="bash-aliases">Useful Aliases</h3>
+
+<pre><code># Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Package management shortcuts
+alias update='sudo apt update && sudo apt upgrade'
+alias install='sudo apt install'
+alias remove='sudo apt remove'
+alias search='apt search'
+
+# System
+alias cls='clear'
+alias ports='netstat -tulanp'
+alias meminfo='free -m -l -t'
+alias cpuinfo='lscpu'
+
+# Git shortcuts
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit -m'
+alias gp='git push'
+alias gl='git log --oneline --graph'
+
+# Safety
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'</code></pre>
+
+<h3 id="bash-functions">Custom Functions</h3>
+
+<pre><code># Create a directory and cd into it
+mkcd() {
+    mkdir -p "$1" && cd "$1"
+}
+
+# Extract any compressed file
+extract() {
+    if [ -f $1 ] ; then
+        case $1 in
+            *.tar.bz2)   tar xjf $1     ;;
+            *.tar.gz)    tar xzf $1     ;;
+            *.bz2)       bunzip2 $1     ;;
+            *.rar)       unrar x $1     ;;
+            *.gz)        gunzip $1      ;;
+            *.tar)       tar xf $1      ;;
+            *.tbz2)      tar xjf $1     ;;
+            *.tgz)       tar xzf $1     ;;
+            *.zip)       unzip $1       ;;
+            *.Z)         uncompress $1  ;;
+            *.7z)        7z x $1        ;;
+            *)           echo "'$1' cannot be extracted" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# Find file by name
+ff() {
+    find . -type f -iname "*$1*" 2>/dev/null
+}
+
+# Kill process by name
+killp() {
+    pkill -f "$1"
+}</code></pre>
+
+<hr />
+
+<h2 id="kde-colors">11. KDE Color Schemes</h2>
+
+<p>Color schemes control the colors used throughout KDE Plasma applications - window backgrounds, text colors, selection highlights, and more.</p>
+
+<h3 id="colors-location">Color Scheme Locations</h3>
+
+<p>Color schemes are stored as <code>.colors</code> files in:</p>
+
+<pre><code>/usr/share/color-schemes/
+~/.local/share/color-schemes/</code></pre>
+
+<p>A color scheme file looks like:</p>
+
+<pre><code>[ColorEffects:Disabled]
+Effect=1
+
+[ColorEffects:Inactive]
+ChangeSelectionColor=1
+Effect=1
+
+[Colors:Window]
+BackgroundNormal=43,45,48
+BackgroundAlternate=53,55,58
+ForegroundNormal=248,248,242
+ForegroundInactive=127,127,127
+ForegroundActive=248,248,242
+
+[Colors:Selection]
+BackgroundNormal=61,174,233
+ForegroundNormal=255,255,255
+
+[Colors:Button]
+BackgroundNormal=49,51,54
+ForegroundNormal=248,248,242
+
+[Colors:View]
+BackgroundNormal=35,37,39
+ForegroundNormal=248,248,242
+
+[Colors:Tooltip]
+BackgroundNormal=49,51,54
+ForegroundNormal=248,248,242
+
+[General]
+Name=MyCustomTheme
+Description=A custom color scheme</code></pre>
+
+<h3 id="colors-apply">Applying Color Schemes</h3>
+
+<p>Using the graphical interface:</p>
+<p>System Settings > Appearance > Colors. Select from the list or click "Get New Color Schemes" to download more.</p>
+
+<p>To set from the terminal:</p>
+
+<bash>plasma-apply-colorscheme "MyCustomTheme"</bash>
+
+<p>Or edit <file url="~/.config/kdeglobals"></file>:</p>
+
+<pre><code>[General]
+ColorScheme=MyCustomTheme</code></pre>
+
+<h3 id="colors-create">Creating Custom Color Schemes</h3>
+
+<p>To create a custom color scheme:</p>
+<ol>
+  <li>Go to System Settings > Appearance > Colors</li>
+  <li>Select a base scheme</li>
+  <li>Click "Edit" to open the color editor</li>
+  <li>Modify colors for each element</li>
+  <li>Click "Save As" to save your custom scheme</li>
+</ol>
+
+<p>Color schemes can also be created manually. The easiest way is to copy an existing <code>.colors</code> file and modify the RGB values.</p>
+
+<p>Popular color schemes:</p>
+<ul>
+  <li><strong>Breeze</strong> - KDE's default</li>
+  <li><strong>Breeze Dark</strong> - dark version of Breeze</li>
+  <li><strong>Nord</strong> - arctic, blueish theme</li>
+  <li><strong>Dracula</strong> - dark with vibrant accents</li>
+  <li><strong>Catppuccin</strong> - pastel colors in various flavors</li>
+</ul>
+
+<hr />
+
+<h2 id="aurorae">12. KDE Aurorae Window Decorations</h2>
+
+<p>Aurorae is KDE's window decoration engine that uses SVG themes for window borders, title bars, and buttons. It allows for highly customizable window decorations.</p>
+
+<h3 id="aurorae-location">Aurorae Theme Locations</h3>
+
+<p>Aurorae themes are stored in:</p>
+
+<pre><code>/usr/share/kwin/aurorae/
+~/.local/share/kwin/aurorae/</code></pre>
+
+<p>Each theme is a directory containing:</p>
+<ul>
+  <li><code>metadata.desktop</code> - theme metadata</li>
+  <li><code>*.svg</code> - the SVG theme file</li>
+  <li><code>*.rc</code> - optional configuration</li>
+  <li><code>preview.png</code> - thumbnail preview</li>
+</ul>
+
+<h3 id="aurorae-apply">Applying Aurorae Themes</h3>
+
+<p>Using the graphical interface:</p>
+<p>System Settings > Appearance > Window Decorations. Select "Aurorae" from the theme list, then click "Get New Window Decorations" to download more, or select from installed ones.</p>
+
+<p>To apply from the terminal:</p>
+
+<bash>kwriteconfig5 --file kwinrc --group org.kde.kdecoration2 --key theme "Aurorae"
+kwriteconfig5 --file kwinrc --group Aurorae --key theme "ThemeName"
+kwin_x11 --replace &amp;   # Or kwin_wayland --replace for Wayland</bash>
+
+<h3 id="aurorae-create">Creating Aurorae Themes</h3>
+
+<p>Aurorae themes are SVG files with specific naming conventions for different elements:</p>
+
+<ul>
+  <li><code>titlebar.svg</code> - the main title bar</li>
+  <li><code>close.svg</code>, <code>maximize.svg</code>, <code>minimize.svg</code> - window buttons</li>
+  <li><code>decoration.svg</code> - overall decoration</li>
+</ul>
+
+<p>SVG elements use special IDs:</p>
+<pre><code>#titlebar
+#close
+#maximize
+#minimize
+#restore
+#help
+#shade
+#keepabove
+#keepbelow</code></pre>
+
+<p>Each button can have different states:</p>
+<ul>
+  <li><code>:active</code> - normal state</li>
+  <li><code>:hover</code> - mouse over</li>
+  <li><code>:pressed</code> - button clicked</li>
+</ul>
+
+<p>A simple example <code>metadata.desktop</code>:</p>
+
+<pre><code>[Desktop Entry]
+Name=My Theme
+Type=Service
+X-KDE-ServiceTypes=KWin/Aurorae
+X-KDE-PluginInfo-Name=mytheme
+X-KDE-PluginInfo-Category=aurorae</code></pre>
+
+<hr />
+
+<h2 id="integration">13. Bringing It All Together</h2>
+
+<p>Customization is most satisfying when all elements work together. Here is a workflow for creating a cohesive look:</p>
+
+<ol>
+  <li><strong>Start with a color scheme.</strong> Choose or create colors for windows, text, and highlights. This will influence everything else.</li>
+  <li><strong>Find or create a matching window decoration.</strong> Use Aurorae to make title bars match your color scheme.</li>
+  <li><strong>Pick an icon theme.</strong> Look for one that complements your color palette.</li>
+  <li><strong>Choose a cursor theme.</strong> Should be readable against your backgrounds.</li>
+  <li><strong>Select a Qt style.</strong> Kvantum offers the most flexibility for matching your color scheme.</li>
+  <li><strong>Set a wallpaper.</strong> Choose something that works with your color scheme without overwhelming it.</li>
+  <li><strong>Theme GRUB, Plymouth, and SDDM.</strong> These are the first things users see, so they set the tone.</li>
+  <li><strong>Customize your terminal.</strong> Use bashrc to match your color scheme in the terminal as well.</li>
+</ol>
+
+<p>Many cohesive theme packs bundle multiple components together. Look for "Global Themes" in System Settings - they can apply color schemes, icon themes, window decorations, and wallpapers all at once.</p>
+
+<p>Your customizations live in <file url="~/.config/"></file> and <file url="~/.local/share/"></file>. Back these up if you want to preserve your setup across reinstalls.</p>
+
+<hr />
+
+<p>Customization is about making your computer feel like yours. Every setting here can be changed, tweaked, or completely replaced. Start with one component, get comfortable, then move to the next. The system is designed to be flexible - take advantage of it.</p>

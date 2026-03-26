@@ -1893,7 +1893,7 @@ public:
         titleLabel->setAlignment(Qt::AlignCenter);
 
         auto *infoLabel = new QLabel(
-            "<p><b>Version:</b> 1.3</p>"
+            "<p><b>Version:</b> 1.4</p>"
             "<h3>About</h3>"
            "This documentation takes a time on startup is the main disatvantage except that using this is easy"
             "</ul>",
@@ -2486,7 +2486,7 @@ public:
 
         QDialog *splash = new QDialog(nullptr, Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
         splash->setAttribute(Qt::WA_TranslucentBackground);
-       splash->setFixedSize(300, 0);
+        splash->setFixedSize(300, 180);
         QVBoxLayout *splashLayout = new QVBoxLayout(splash);
         splashLayout->setAlignment(Qt::AlignCenter);
 
@@ -2494,7 +2494,7 @@ public:
         iconLabel->setPixmap(QIcon::fromTheme("error.doc", QIcon::fromTheme("help-browser")).pixmap(64, 64));
         iconLabel->setAlignment(Qt::AlignCenter);
 
-        QLabel *textLabel = new QLabel("Loading...\nit may take a while, be patient", splash);
+        QLabel *textLabel = new QLabel("Loading...\nit may take a while, be patient\nJust a minuite or so", splash);
         textLabel->setAlignment(Qt::AlignCenter);
 
         splashLayout->addWidget(iconLabel);
@@ -2575,7 +2575,6 @@ public:
 
         m_navTree->initializeManpages();
     }
-
 private slots:
     void navigateCurrentTab(const QString &url) {
         if (TabContent *tab = currentTab()) {
@@ -2662,7 +2661,6 @@ private slots:
         });
 
         connect(tab, &TabContent::pageIconFound, this, [this, index](const QString &iconName) {
-            // Update the tab's icon
             QIcon icon = QIcon::fromTheme(iconName);
             if (!icon.isNull()) {
                 m_tabWidget->setTabIcon(index, icon);
@@ -2864,7 +2862,7 @@ private slots:
     }
 
     void reloadShortcuts() {
-        for (QShortcut *shortcut : m_shortcuts) {
+        for (QShortcut *shortcut : std::as_const(m_shortcuts)) {
             delete shortcut;
         }
         m_shortcuts.clear();

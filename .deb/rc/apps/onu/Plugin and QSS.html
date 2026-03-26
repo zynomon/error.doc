@@ -67,15 +67,15 @@ public:
 
 <p><strong>Required methods:</strong></p>
 <ul>
-  <li><code>metadata()</code> — Returns information about the extension (name, version, maintainer, description, icon)</li>
-  <li><code>apply()</code> — Called when the extension is enabled. Use this to add toolbars, menu items, or set up functionality</li>
+  <li><code>metadata()</code> - Returns information about the extension (name, version, maintainer, description, icon)</li>
+  <li><code>apply()</code> - Called when the extension is enabled. Use this to add toolbars, menu items, or set up functionality</li>
 </ul>
 
 <p><strong>Optional methods:</strong></p>
 <ul>
-  <li><code>injectScript()</code> — Returns JavaScript code to inject into every webpage</li>
-  <li><code>onPageCreated()</code> — Called when a new web page is created. Useful for setting up page-specific hooks</li>
-  <li><code>getContextMenuActions()</code> — Returns custom actions to add to the right-click context menu</li>
+  <li><code>injectScript()</code> - Returns JavaScript code to inject into every webpage</li>
+  <li><code>onPageCreated()</code> - Called when a new web page is created. Useful for setting up page-specific hooks</li>
+  <li><code>getContextMenuActions()</code> - Returns custom actions to add to the right-click context menu</li>
 </ul>
 
 <h3 id="extension-metadata">Extension Metadata</h3>
@@ -247,13 +247,13 @@ QWebEngineView* getCurrentWebView() {
 <p>Plugins have access to these Onu classes (when included from the Onu source):</p>
 
 <ul>
-  <li><code>Browser_Backend</code> — Manage favorites, history, sessions, and tabs</li>
-  <li><code>Settings_Backend</code> — Read and write settings (public and encrypted)</li>
-  <li><code>Icon_Man</code> — Save and load icons from cache</li>
-  <li><code>Dialogs</code> — Open built-in dialogs (favorites, history, settings, etc.)</li>
-  <li><code>Onu_Window</code> — The main browser window</li>
-  <li><code>Onu_Web</code> — Web page class with extended functionality</li>
-  <li><code>Create_Toolbars</code> — Access to toolbar widgets</li>
+  <li><code>Browser_Backend</code> - Manage favorites, history, sessions, and tabs</li>
+  <li><code>Settings_Backend</code> - Read and write settings (public and encrypted)</li>
+  <li><code>Icon_Man</code> - Save and load icons from cache</li>
+  <li><code>Dialogs</code> - Open built-in dialogs (favorites, history, settings, etc.)</li>
+  <li><code>Onu_Window</code> - The main browser window</li>
+  <li><code>Onu_Web</code> - Web page class with extended functionality</li>
+  <li><code>Create_Toolbars</code> - Access to toolbar widgets</li>
 </ul>
 
 <p>To use these, include the appropriate headers and link against the Onu libraries.</p>
@@ -261,16 +261,16 @@ QWebEngineView* getCurrentWebView() {
 <h3 id="what-plugins-can-do">What Plugins Can Do</h3>
 
 <ul>
-  <li><strong>Add toolbar buttons</strong> — Add actions to any toolbar (Navigation, Favorites, etc.)</li>
-  <li><strong>Add menu items</strong> — Add actions to the main menu or context menus</li>
-  <li><strong>Inject JavaScript</strong> — Run custom scripts on every page load</li>
-  <li><strong>Modify page behavior</strong> — Connect to web engine signals and events</li>
-  <li><strong>Access settings</strong> — Read and write browser settings (public or encrypted)</li>
-  <li><strong>Manage favorites/history</strong> — Add, remove, or modify favorites and history entries</li>
-  <li><strong>Create dialogs</strong> — Open custom windows with Qt widgets</li>
-  <li><strong>Intercept network requests</strong> — Through the request interceptor system</li>
-  <li><strong>Add keyboard shortcuts</strong> — Register global shortcuts</li>
-  <li><strong>Use third-party libraries</strong> — Link against any library your plugin needs</li>
+  <li><strong>Add toolbar buttons</strong> - Add actions to any toolbar (Navigation, Favorites, etc.)</li>
+  <li><strong>Add menu items</strong> - Add actions to the main menu or context menus</li>
+  <li><strong>Inject JavaScript</strong> - Run custom scripts on every page load</li>
+  <li><strong>Modify page behavior</strong> - Connect to web engine signals and events</li>
+  <li><strong>Access settings</strong> - Read and write browser settings (public or encrypted)</li>
+  <li><strong>Manage favorites/history</strong> - Add, remove, or modify favorites and history entries</li>
+  <li><strong>Create dialogs</strong> - Open custom windows with Qt widgets</li>
+  <li><strong>Intercept network requests</strong> - Through the request interceptor system</li>
+  <li><strong>Add keyboard shortcuts</strong> - Register global shortcuts</li>
+  <li><strong>Use third-party libraries</strong> - Link against any library your plugin needs</li>
 </ul>
 
 <h3 id="best-practices">Best Practices</h3>
@@ -414,11 +414,11 @@ QMenu::item:selected {
 <p><strong>Finding widget names:</strong> To style specific widgets, you need to know their object names. Onu uses these object names:</p>
 
 <ul>
-  <li><code>NavigationToolbar</code> — The main navigation toolbar</li>
-  <li><code>SearchToolbar</code> — The address bar toolbar</li>
-  <li><code>FavoritesToolbar</code> — The favorites sidebar toolbar</li>
-  <li><code>RecentToolbar</code> — The recent history toolbar</li>
-  <li><code>TabToolbar</code> — The tab bar toolbar</li>
+  <li><code>NavigationToolbar</code> - The main navigation toolbar</li>
+  <li><code>SearchToolbar</code> - The address bar toolbar</li>
+  <li><code>FavoritesToolbar</code> - The favorites sidebar toolbar</li>
+  <li><code>RecentToolbar</code> - The recent history toolbar</li>
+  <li><code>TabToolbar</code> - The tab bar toolbar</li>
 </ul>
 
 <p>You can style them with selectors like:</p>
@@ -630,14 +630,14 @@ QLineEdit:focus {
 
 <p><strong>Pseudo-states you can use:</strong></p>
 <ul>
-  <li><code>:hover</code> — Mouse over the widget</li>
-  <li><code>:pressed</code> — Button is being pressed</li>
-  <li><code>:checked</code> — Checkable button is checked</li>
-  <li><code>:disabled</code> — Widget is disabled</li>
-  <li><code>:focus</code> — Widget has keyboard focus</li>
-  <li><code>:selected</code> — Item is selected (for tabs, menu items)</li>
-  <li><code>:active</code> — Window is active</li>
-  <li><code>:inactive</code> — Window is inactive</li>
+  <li><code>:hover</code> - Mouse over the widget</li>
+  <li><code>:pressed</code> - Button is being pressed</li>
+  <li><code>:checked</code> - Checkable button is checked</li>
+  <li><code>:disabled</code> - Widget is disabled</li>
+  <li><code>:focus</code> - Widget has keyboard focus</li>
+  <li><code>:selected</code> - Item is selected (for tabs, menu items)</li>
+  <li><code>:active</code> - Window is active</li>
+  <li><code>:inactive</code> - Window is inactive</li>
 </ul>
 
 <hr />

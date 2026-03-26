@@ -17,5 +17,6 @@
         <file>apps/onu/Issues.html</file>
         <file>apps/onu/Plugin and QSS.html</file>
         <file>apps/onu/Settings.html</file>
+        <file>customizing.html</file>
     </qresource>
 </RCC>

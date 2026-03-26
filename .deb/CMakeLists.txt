@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(doc VERSION 1.3 LANGUAGES CXX)
+project(doc VERSION 1.4 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets TextToSpeech)
