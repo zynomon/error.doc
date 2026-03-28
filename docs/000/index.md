@@ -26,8 +26,8 @@ Error exists in every type of operating system. Others hide it behind terms like
 </div>
 
 We currently ship several ISO variants:
-- error.os Neospace 2025 (NS25)
-- error.os Void (v1, v2)
+- error.os Neospace 2025 (NS25) / Neospace 26 ( NS26 )
+- error.os Void (v1, v2, v3)
 
 Here's an introduction to the Void and Neospace branches:
 
@@ -47,7 +47,7 @@ Here's an introduction to the Void and Neospace branches:
 
 ### Requirements
 
-**Neospace 2025 requirements:**
+**Neospace requirements:**
 <table>
 <tr>
 <td>Processor</td>
