@@ -7,7 +7,8 @@ embed-thumbnail: https://zynomon.github.io/error.doc/docs/002/thumb.png
 
 
 # Booting Up
-[Booting up is easy](./items/anim.webp)
+<img width="1408" height="1152" alt="e" src="https://github.com/user-attachments/assets/733a9f71-73d7-4265-9652-ec5d451ae408" />
+
 
 ## Boot Order.
 By default we have two bootloader for the ISO, this function is known as hybrid booting it supports BIOS and UEFI
@@ -30,12 +31,18 @@ and as for the modern UEFI we used grub bootloader.
 
 we tried our best to keep ISO Linux menu and grub menu similar.
 so here are the options we added here
+
+<br>
 __`Live (amd64) (English)`__ : it means it will boot into ISO for Preview and let you install it in friendly  and easy manner. that amd64 means cpu with 64 bit arch.  also recommended to click on thats why we put it on first everything except this is kind-of risky for newcomer. 
 
+<br>
 > IF YOU GET STUCK TRY TO PRESS THE RESTART KEY OF YOUR CHASSIS in these options below.
+<br>
 __`HDT`__: it's for detecting hardware and showing information about it, useful before booting up any OS for installation.
+<br>
 
 __`Memory Diagnostic Tool (memtest86+)`__: it's explainable through its name it shows informations about Random access memory 
+<br>
 
 ### Advanced Options
 ![!\[alt text\](image.png)](items/advanced-BIOS.png)
@@ -62,4 +69,5 @@ and as for root user is root and password is toor alternatively you get those in
 `crtl + alt + f2`   - tty2 ***to***  `crtl + alt + f6`  - tty6
 it appears like that in Live ISO.
 
+<img width="1023" height="672" alt="screen-08_08_13_55--2026" src="https://github.com/user-attachments/assets/d7d0c306-3506-4fa9-b8bc-c88638fd9587" />
 
