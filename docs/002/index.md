@@ -8,10 +8,6 @@ embed-thumbnail: https://zynomon.github.io/error.doc/docs/002/thumb.png
 
 # Booting Up
 <img width="1408" height="1152" alt="e" src="https://github.com/user-attachments/assets/733a9f71-73d7-4265-9652-ec5d451ae408" />
-<<<<<<< HEAD
-
-=======
->>>>>>> ff3778f (wwq)
 
 
 ### Boot Order
@@ -88,4 +84,4 @@ and as for root user is root and password is toor alternatively you get those in
 it appears like that in Live ISO.
 
 <img width="1023" height="672" alt="screen-08_08_13_55--2026" src="https://github.com/user-attachments/assets/d7d0c306-3506-4fa9-b8bc-c88638fd9587" />
-
+>>>>>>> Coming more.
