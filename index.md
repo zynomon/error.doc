@@ -14,4 +14,4 @@ A comprehensive guide to error.os, a Debian GNU/Linux based distribution
 - **First Steps**: [Introduction to error.os](https://zynomon.github.io/error.doc/docs/000)
 
 ## About This Documentation
-This documentation covers everything from basic setup to advanced customization of error.os and everything in between. Built for both new users and experienced Linux enthusiasts. but for advanced package details check [debian wiki](https://wiki.debian.org/).
+This documentation covers everything from basic setup to advanced customization of error.os and everything in between. Built for both new users and experienced Linux enthusiasts, but for advanced package details check [debian wiki](https://wiki.debian.org/).
