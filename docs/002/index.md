@@ -8,17 +8,35 @@ embed-thumbnail: https://zynomon.github.io/error.doc/docs/002/thumb.png
 
 # Booting Up
 <img width="1408" height="1152" alt="e" src="https://github.com/user-attachments/assets/733a9f71-73d7-4265-9652-ec5d451ae408" />
+<<<<<<< HEAD
+
+=======
+>>>>>>> ff3778f (wwq)
 
 
-## Boot Order.
-By default we have two bootloader for the ISO, this function is known as hybrid booting it supports BIOS and UEFI
-BIOS is the abbrivation of basic input output system it's what stays in your cmos battery of your motherboard.
+### Boot Order
 
-UEFI stays in the same place of BIOS but more modern  UEFI tends to have mouse input output recognition running in it. 
+After inserting your bootable medium, you need to tell your computer to boot from it.
 
-the key distinction of both is in booting up something. and configuring in them.
+1. Restart your computer
+2. Immediately press the boot menu key repeatedly:
+   - Common keys: **F10**, **F12**, **F1**, **Del**, **Esc**, or **F2**
+   - The exact key depends on your motherboard manufacturer
+   - Watch the screen for a message like "Press F12 for Boot Menu"
 
-Both has one thing in common that is editing the boot configuration after inserting the error.os ISO containing ventoy device spamm click  f10 f12 f1 or del key of your keyboard ( it changes according to the motherboard vendor )  it will open you to a place called BIOS look for boot options and add one entry starting with "UEFI:<sub>...</sub>" to the "boot #1" or at the first order by  clicking space enter and up and down keys of your keyboard. after than  press `f10` or look for save changes and reboot or similar and listen DO NOT Change other options in BIOS/UEFI Unless you are familiar with the environment. 
+3. From the boot menu, select your USB drive (look for "UEFI:" followed by your USB name)
+
+4. If the boot menu doesn't appear, enter BIOS/UEFI settings:
+   - Press the setup key (usually **Del**, **F2**, or **F10**) during startup
+   - Navigate to the **Boot** tab
+   - Move your USB drive to the first position (Boot #1)
+   - Press **F10** to save and exit
+
+> [!WARNING]
+> **DO NOT change other settings in BIOS/UEFI unless you are familiar with them.** Changing incorrect settings can prevent your computer from booting properly.
+
+The error.os ISO supports hybrid booting, which works with both BIOS and UEFI systems.
+
 
 ## Boot Options
 For BIOS we used the good old isolinux
