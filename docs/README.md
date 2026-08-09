@@ -6,14 +6,4 @@ if you want to remake or improve check the .deb folder
 
 ---
 
-If you want you can,
-
-
-
-
-
-
-contribute to this project
-
-Still not finished,,,,,,,
-.... 
+To build the c++ application you need a proper QtCreator setup set
