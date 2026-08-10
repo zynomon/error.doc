@@ -88,7 +88,8 @@ it appears like that in Live ISO.
 <img width="1023" height="672" alt="screen-08_08_13_55--2026" src="https://github.com/user-attachments/assets/d7d0c306-3506-4fa9-b8bc-c88638fd9587" />
 
 # Calamares: GUI Installer
-![Screenshot_20260810_152311](https://github.com/user-attachments/assets/1a173435-fd6d-42ae-b201-8e703df956ad)
+<img width="330" height="255" alt="image" src="https://github.com/user-attachments/assets/a6234ab2-89e4-4163-ae9c-5b53d7b1b32f" />
+
 Calamares Is an Open Source Project Which Is mostly maintained by KDE developers, It's mostly available as the default installer in Debian, Zorin-os , KDE Neon. While there are other  alternatives they aren't as universal as Calamares. What you are seeing is called [calamares-settings-error](https://zynomon.github.io/error/dists/stable/main/binary-all/e.html) (you could see the package there and inspect it, it's mostly 80% of original calamres-settings-debian) 
 
 ## Step 1: Welcome
@@ -99,10 +100,14 @@ Press next ( sorry for the broken ui , We need some suggestions for making some 
 <img width="1050" height="577" alt="Screenshot_20260810_112436" src="https://github.com/user-attachments/assets/99ef34ec-96e5-4bf6-98ec-a01b60bded71" />
 If you dont want some broken linguistic stuffs like numerals changing to the language you set etc. 
 dont touch it if you want your system and ui stuffs to be English and nothing else, and if you want to make the time auto-update after installation type this in the terminal 
+<br>
+
 ```bash
 sudo apt install systemd-timesyncd
 ```
-> [!INFO]
+<br>
+
+> [!TIP]
 > Don't get Confused. Location or locale aren't the same thing but this step metaphorically uses Location as an alias to locale, this won't be setting you up a new VPN to another country. 
 
 ## Step 3: Keyboard Mapping
