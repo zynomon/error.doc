@@ -73,15 +73,47 @@ __`Live (amd64 failsafe)`__ : in this mode the system avoids GPU and boots up wi
 > The installation guide below works with the GUI Based options eg. __`Live (amd64 failsafe)`__ , __`Live (amd64) (Bangla)`__  , __`Live (amd64) (English)`__ .
 
 
-### entering password:
+### Entering password:
 By default we added autologin to the sddm since in the last version it had issues,
 but if you want to access tty or by some chance sddm comes up again use these credential,
 username is error.user
 and password  is user
+<img width="1114" height="707" alt="screen-08_10_20_45--2026" src="https://github.com/user-attachments/assets/a26598ae-ff47-4063-a541-25c61631e2dd" />
+<br><br>
 
-and as for root user is root and password is toor alternatively you get those in the live tty through  using these key combination:
+And as for root user is root and password is toor alternatively you get those in the live tty through  using these key combination:
 `crtl + alt + f2`   - tty2 ***to***  `crtl + alt + f6`  - tty6
 it appears like that in Live ISO.
 
 <img width="1023" height="672" alt="screen-08_08_13_55--2026" src="https://github.com/user-attachments/assets/d7d0c306-3506-4fa9-b8bc-c88638fd9587" />
+
+# Calamares: GUI Installer
+![Screenshot_20260810_152311](https://github.com/user-attachments/assets/1a173435-fd6d-42ae-b201-8e703df956ad)
+Calamares Is an Open Source Project Which Is mostly maintained by KDE developers, It's mostly available as the default installer in Debian, Zorin-os , KDE Neon. While there are other  alternatives they aren't as universal as Calamares. What you are seeing is called [calamares-settings-error](https://zynomon.github.io/error/dists/stable/main/binary-all/e.html) (you could see the package there and inspect it, it's mostly 80% of original calamres-settings-debian) 
+
+## Step 1: Welcome
+Press next ( sorry for the broken ui , We need some suggestions for making some improvements )
+<img width="1055" height="577" alt="Screenshot_20260810_112346" src="https://github.com/user-attachments/assets/d6266dd1-a55f-49e4-8c6d-46383641481b" />
+
+## Step 2: Locale
+<img width="1050" height="577" alt="Screenshot_20260810_112436" src="https://github.com/user-attachments/assets/99ef34ec-96e5-4bf6-98ec-a01b60bded71" />
+If you dont want some broken linguistic stuffs like numerals changing to the language you set etc. 
+dont touch it if you want your system and ui stuffs to be English and nothing else, and if you want to make the time auto-update after installation type this in the terminal 
+```bash
+sudo apt install systemd-timesyncd
+```
+> [!INFO]
+> Don't get Confused. Location or locale aren't the same thing but this step metaphorically uses Location as an alias to locale, this won't be setting you up a new VPN to another country. 
+
+## Step 3: Keyboard Mapping
+<img width="1047" height="570" alt="Screenshot_20260810_112558" src="https://github.com/user-attachments/assets/96f3a472-809e-41e9-886e-9e67b4f63883" />
+Not all keyboards are not the same but this always selects the most commonly used QWERTY layout, so configuring any of it is pointless.
+
+> [!TIP]
+> Try to search your keyboard name and know about what layout it has ( may not work with some chinese unknown brand BTW )
+
+## Step 4: Partitioning 
+<img width="1048" height="562" alt="Screenshot_20260810_113919" src="https://github.com/user-attachments/assets/c9e267cf-affb-43ff-8ee4-ceac46d331f8" />
+
+
 >>>>>>> Coming more.
