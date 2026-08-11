@@ -186,13 +186,19 @@ and if you want to customize more you could do so. but in the end the headache n
 
 ## Step 5: [Setting Up User Password]
 <img width="684" height="335" alt="Screenshot_20260810_111909" src="https://github.com/user-attachments/assets/e81a2074-4467-414b-a7c9-425888ae183b" />
+
+
 This is self explanatory, but still here is the explanation, you would be using or seeing your "username" on terminal and stuff and your display name would be only shown on sddm ( login prompt ) screen lock prompt and kicker menu ( application menu ) and the third field sets a hostname it shows as  [username@hostname] on some terminal configuration, 
 so, <br>
+
+
 **first field** -> Display name    ( keep it long and Accurate doesnt much matters )
 **second field** -> username    ( keep it short )
 **third field** -> hostname  ( keep it short and aliased )
 **fourth field** -> password (you would need to frequently type it so keep it on your head)
-**tick ( autologin )** -> sddm autologin ( it autologs in on startup instead of asking for password, good for 1 user devices but not for security enthusiasts)<br>
+**tick ( autologin )** -> sddm autologin ( it autologs in on startup instead of asking for password, good for 1 user devices but not for security enthusiasts)
+
+<br>
 
 ## Step 6: [Conformation]
 <img width="1054" height="597" alt="Screenshot_20260810_112002" src="https://github.com/user-attachments/assets/d3be78bc-eccb-4fa1-9979-b6d52187e386" />
