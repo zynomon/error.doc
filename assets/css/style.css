@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------------------------
 
-                             Zynomon Aelius ©️ 2026
+                             Zynomon Aelius - 2026
                                 apache 2.0
 
                             project : style.css for jekyll theme;
@@ -784,8 +784,7 @@ td[align="right"] {
 }
 
 /*  --------------------------------------------------------------------------
-    BLOCKQUOTES & ALERTS */
-
+    BLOCKQUOTES */
 blockquote {
     border-left: 4px solid var(--accent);
     padding-left: 1.5rem;
@@ -817,27 +816,62 @@ blockquote.danger {
     background: rgba(255, 68, 68, 0.08);
 }
 
-/* Alert Blocks ---------- */
-.alert {
-    margin: 2rem 0;
-    padding: 1.5rem;
-    border-left: 4px solid;
-    border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
-    backdrop-filter: blur(8px);
-    box-shadow: var(--shadow-sm);
+blockquote.important {
+    border-left-color: #9b59b6;
+    background: rgba(155, 89, 182, 0.08);
 }
 
-.alert-info {
-    border-left-color: var(--info);
-    background: rgba(0, 191, 255, 0.1);
-    color: var(--fg-primary);
+blockquote.caution {
+    border-left-color: var(--error);
+    background: rgba(255, 68, 68, 0.08);
 }
 
-.alert-success {
-    border-left-color: var(--success);
-    background: rgba(0, 255, 65, 0.1);
-    color: var(--fg-primary);
+blockquote .title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'OCR A Std', 'OCR A', 'Nimbus Mono PS', 'Nimbus Mono', monospace;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid;
+    font-style: normal;
 }
+
+blockquote.note .title {
+    color: var(--info);
+    border-bottom-color: rgba(0, 191, 255, 0.3);
+}
+
+blockquote.tip .title {
+    color: var(--success);
+    border-bottom-color: rgba(0, 255, 65, 0.3);
+}
+
+blockquote.warning .title {
+    color: var(--warning);
+    border-bottom-color: rgba(255, 165, 0, 0.3);
+}
+
+blockquote.danger .title {
+    color: var(--error);
+    border-bottom-color: rgba(255, 68, 68, 0.3);
+}
+
+blockquote.important .title {
+    color: #9b59b6;
+    border-bottom-color: rgba(155, 89, 182, 0.3);
+}
+
+blockquote.caution .title {
+    color: var(--error);
+    border-bottom-color: rgba(255, 68, 68, 0.3);
+}
+
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
 
 /*  --------------------------------------------------------------------------
     img and figures */
