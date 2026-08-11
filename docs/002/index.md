@@ -92,9 +92,13 @@ it appears like that in Live ISO.
 
 Calamares Is an Open Source Project Which Is mostly maintained by KDE developers, It's mostly available as the default installer in Debian, Zorin-os , KDE Neon. While there are other  alternatives they aren't as universal as Calamares. What you are seeing is called [calamares-settings-error](https://zynomon.github.io/error/dists/stable/main/binary-all/e.html) (you could see the package there and inspect it, it's mostly 80% of original calamres-settings-debian) 
 
+<hr />
+
 ## Step 1: Welcome
 Press next ( sorry for the broken ui , We need some suggestions for making some improvements )
 <img width="1055" height="577" alt="Screenshot_20260810_112346" src="https://github.com/user-attachments/assets/d6266dd1-a55f-49e4-8c6d-46383641481b" />
+
+<hr />
 
 ## Step 2: Locale
 <img width="1050" height="577" alt="Screenshot_20260810_112436" src="https://github.com/user-attachments/assets/99ef34ec-96e5-4bf6-98ec-a01b60bded71" />
@@ -110,6 +114,8 @@ sudo apt install systemd-timesyncd
 > [!TIP]
 > Don't get Confused. Location or locale aren't the same thing but this step metaphorically uses Location as an alias to locale, this won't be setting you up a new VPN to another country. 
 
+<hr />
+
 ## Step 3: Keyboard Mapping
 <img width="1047" height="570" alt="Screenshot_20260810_112558" src="https://github.com/user-attachments/assets/96f3a472-809e-41e9-886e-9e67b4f63883" />
 Not all keyboards are not the same but this always selects the most commonly used QWERTY layout, so configuring any of it is pointless.
@@ -117,14 +123,24 @@ Not all keyboards are not the same but this always selects the most commonly use
 > [!TIP]
 > Try to search your keyboard name and know about what layout it has ( may not work with some chinese unknown brand BTW )
 
+<hr />
+
 ## Step 4: Partitioning 
 <img width="1048" height="562" alt="Screenshot_20260810_113919" src="https://github.com/user-attachments/assets/c9e267cf-affb-43ff-8ee4-ceac46d331f8" />
 
 This is the step where novice linux users make mistakes, So Keep the focus on
 
 ### What Partitioning Is?
+
+
+
+
 <details><summary>It's just piecing of the amount of storage ( HDD / Sata SSD / NVME SSD etc. ) you have for the OS to boot</summary>
-<br>
+
+   
+   
+   
+   <br>
    Linux uses the Unix file hierchy ( used by Android, MacOS, BSD and more.. )\
 
 
@@ -157,6 +173,9 @@ This is the step where novice linux users make mistakes, So Keep the focus on
 More information about them is <a href=https://zynomon.github.io/error.doc/docs/011/>here</a> you could check it out once you are done. <br>
 So it installs the OS into your storage and wipes out the corrent space you selected.<br>
 </details>
+
+
+
 It Basicallly shows 4 options when you met the certain requirements or it would show 1 ( manual installation ) option when there is problem with the automation, always double check ( restart/create a new partition from unallocated one from kde system partition manager )
 
 ### Option: #1 [Install Along Side]
@@ -183,6 +202,8 @@ for /boot you need 500mb of partition
 for swap try to choose the amount of gb as your ram has
 and as for the storage if you are into backing up stuffs select btrfs and if you are into keep it simple ext4 is the thing for "/" 
 and if you want to customize more you could do so. but in the end the headache needs to have it's worth.<br><br><br>
+
+<hr />
 
 ## Step 5: [Setting Up User Password]
 <img width="684" height="335" alt="Screenshot_20260810_111909" src="https://github.com/user-attachments/assets/e81a2074-4467-414b-a7c9-425888ae183b" />
@@ -223,9 +244,11 @@ There are also few issues and Defects on the installed system
 ### 1. Grub
 <img width="1060" height="659" alt="screen-08_10_21_51--2026" src="https://github.com/user-attachments/assets/1442124f-7fd7-4298-bd94-69a1ccbac4fa" />
 to fix this just type
+
 ```bash
 sudo update-grub
 ```
+
 <img width="1036" height="651" alt="screen-08_10_21_55--2026" src="https://github.com/user-attachments/assets/543b2a9a-4c92-439f-ad66-6965d2c67809" />
 in your terminal to update the bootloader ( we will add that in next patch ) <br><br><br>
 <img width="1005" height="756" alt="screen-08_10_22_42--2026" src="https://github.com/user-attachments/assets/51116e5f-bf19-4f43-a34e-81e4a0e50390" />
