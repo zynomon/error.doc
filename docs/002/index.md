@@ -6,6 +6,16 @@ embed-thumbnail: https://zynomon.github.io/error.doc/docs/002/thumb.png
 ---
 
 
+<div class="admonition admonition-warning">
+  <p class="admonition-title">Warning</p>
+  <p>WARNING.</p>
+</div>
+
+<div class="admonition admonition-tip">
+  <p class="admonition-title">Tip</p>
+  <p>TIP.</p>
+</div>
+
 # Booting Up
 <img width="1408" height="1152" alt="e" src="https://github.com/user-attachments/assets/733a9f71-73d7-4265-9652-ec5d451ae408" />
 
@@ -256,6 +266,9 @@ This is the real error.os grub theme.
 
 ### 2. Date & Time
 if you get any issue try to install ntp and configuring it. 
-ntp uses internet to fetch time data
+ntp uses internet to fetch time data from your location which would be accurate,
 
->>>>>>> Coming more.
+### 3. Onboarder ( `once` )
+The onboarder is called 'once' it shows guide for installing applications there was a mistake when typed firefox instead of firefox-esr which lead to package not found error, Dont worry, will be fixed in the next update
+
+<hr>
