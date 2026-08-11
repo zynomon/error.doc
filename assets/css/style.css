@@ -1017,50 +1017,7 @@ sup a.footnote:hover {
     background: rgba(65, 105, 225, 0.3);
 }
 
-/*  --------------------------------------------------------------------------
-    Admonition */
 
-.admonition-warning {
-    border-left-color: var(--warning);
-    background: rgba(255, 165, 0, 0.08);
-}
-
-.admonition-warning .admonition-title {
-    color: var(--warning);
-}
-
-.admonition-warning::before {
-    content: "";
-    position: absolute;
-    left: 1rem;
-    top: 1.25rem;
-    width: 1.5rem;
-    height: 1.5rem;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffa500' d='M1 21L12 2l11 19zm11.713-3.287Q13 17.425 13 17t-.288-.712T12 16t-.712.288T11 17t.288.713T12 18t.713-.288M11 15h2v-5h-2z'/%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-}
-
-.admonition-tip {
-    border-left-color: var(--success);
-    background: rgba(0, 255, 65, 0.06);
-}
-
-.admonition-tip .admonition-title {
-    color: var(--success);
-}
-
-.admonition-tip::before {
-    content: "";
-    position: absolute;
-    left: 1rem;
-    top: 1.25rem;
-    width: 1.5rem;
-    height: 1.5rem;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%2300ff41' d='M10.588 21.413Q10 20.825 10 20h4q0 .825-.587 1.413T12 22t-1.412-.587M8 19v-2h8v2zm.25-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2t5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16z'/%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-}
 /*  --------------------------------------------------------------------------
     Main website components ( not text formatting )*/
 
