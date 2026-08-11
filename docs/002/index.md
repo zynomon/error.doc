@@ -166,6 +166,11 @@ This installs the OS into a partition that has more than 5gb storage free so, it
 ### Option: #2 [Replace A Partition]
 <img width="1043" height="565" alt="Screenshot_20260810_114028" src="https://github.com/user-attachments/assets/a72f13da-a7f7-4c17-8fa3-e1e07f4f88f7" />
 It replaces and installs the OS into the given partition without any hassle ( best for dualbooting )<br><br>
+
+
+
+
+
 ## Option: #3 [Wipe Out Entire Disk]
 <img width="877" height="532" alt="image" src="https://github.com/user-attachments/assets/eefa8aa7-c9ac-43e5-8f32-17967f5b6c98" />
 It just wipes out your entire given disk for error.os ( best for using error.os on a daily basis, is it recommended ? no one ever did it before so unsure of what the answer would be. )<br><br><br>
@@ -179,7 +184,7 @@ for swap try to choose the amount of gb as your ram has
 and as for the storage if you are into backing up stuffs select btrfs and if you are into keep it simple ext4 is the thing for "/" 
 and if you want to customize more you could do so. but in the end the headache needs to have it's worth.<br><br><br>
 
-## Step 5: Setting Up User Password
+## Step 5: [Setting Up User Password]
 <img width="684" height="335" alt="Screenshot_20260810_111909" src="https://github.com/user-attachments/assets/e81a2074-4467-414b-a7c9-425888ae183b" />
 This is self explanatory, but still here is the explanation, you would be using or seeing your "username" on terminal and stuff and your display name would be only shown on sddm ( login prompt ) screen lock prompt and kicker menu ( application menu ) and the third field sets a hostname it shows as  [username@hostname] on some terminal configuration, 
 so, <br>
@@ -189,7 +194,7 @@ so, <br>
 **fourth field** -> password (you would need to frequently type it so keep it on your head)
 **tick ( autologin )** -> sddm autologin ( it autologs in on startup instead of asking for password, good for 1 user devices but not for security enthusiasts)<br>
 
-## Step 6: Conformation
+## Step 6: [Conformation]
 <img width="1054" height="597" alt="Screenshot_20260810_112002" src="https://github.com/user-attachments/assets/d3be78bc-eccb-4fa1-9979-b6d52187e386" />
 This is the step where you confirm if you did any mistakes if you are okay then click on "NEXT"
 > [!WARNING]
