@@ -207,5 +207,32 @@ This is the step where you confirm if you did any mistakes if you are okay then 
 > THIS ACTION DELETES THE EXISTING ACTUAL DATA ON YOUR DEVICE, THE DEVICE WHERE YOU ARE INSTALLING IT.
 
 ## Step 7: The Moment Of Truth
+<img width="1920" height="1080" alt="install" src="https://github.com/user-attachments/assets/f70d7fa1-53a7-46c8-9459-4d28556477ee" />
+
 Now The Real installation starts, it takes 3 to 8 mins could take upto 30 min depending on your device, and if it got stuck while installing ( may happen in VM ) try to increase the amount of ram and redo the process  when it freezes like your cursor doesnt moves. 
+
+## Step 8: Finish
+After finishing this would restart. 
+
+
+# Things After installation
+<img width="730" height="655" alt="screen-08_10_21_51--2026-01" src="https://github.com/user-attachments/assets/631b1cc4-6a43-4a48-b975-8d89cc061917" />
+after installation everything will work good.
+you would get an onboarding prompt after going through it you would be experiencing error.os
+There are also few issues and Defects on the installed system
+### 1. Grub
+<img width="1060" height="659" alt="screen-08_10_21_51--2026" src="https://github.com/user-attachments/assets/1442124f-7fd7-4298-bd94-69a1ccbac4fa" />
+to fix this just type
+```bash
+sudo update-grub
+```
+<img width="1036" height="651" alt="screen-08_10_21_55--2026" src="https://github.com/user-attachments/assets/543b2a9a-4c92-439f-ad66-6965d2c67809" />
+in your terminal to update the bootloader ( we will add that in next patch ) <br><br><br>
+<img width="1005" height="756" alt="screen-08_10_22_42--2026" src="https://github.com/user-attachments/assets/51116e5f-bf19-4f43-a34e-81e4a0e50390" />
+This is the real error.os grub theme.
+
+### 2. Date & Time
+if you get any issue try to install ntp and configuring it. 
+ntp uses internet to fetch time data
+
 >>>>>>> Coming more.
