@@ -120,5 +120,81 @@ Not all keyboards are not the same but this always selects the most commonly use
 ## Step 4: Partitioning 
 <img width="1048" height="562" alt="Screenshot_20260810_113919" src="https://github.com/user-attachments/assets/c9e267cf-affb-43ff-8ee4-ceac46d331f8" />
 
+This is the step where novice linux users make mistakes, So Keep the focus on
 
+### What Partitioning Is?
+<details><summary>It's just piecing of the amount of storage ( HDD / Sata SSD / NVME SSD etc. ) you have for the OS to boot</summary>
+<br>
+   Linux uses the Unix file hierchy ( used by Android, MacOS, BSD and more.. )\
+
+
+<code><pre>
+‎                                                     /    
+‎                                                     |
+    ---------------------------------------------------------------------------------------------------
+    |    |     |    |    |     |    |      |     |    |    |      |    |    |     |    |    |    |    |
+   bin  boot  dev  etc  home  lib  lib64 media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+</code></pre>
+
+   Thats why File expressions are expressed starting with "/"  /usr /run /sbin /bin /sys etc.<br>
+<h4>What these directory means?</h4>
+  <b>/usr</b> - User system resources. Contains programs, libraries, documentation.<br>
+<b>/usr/lib → /lib &amp; /usr/lib64 → /lib64</b> - Shared libraries and kernel modules.<br>
+<b>/usr/bin → /bin &amp; /usr/sbin → /sbin</b> - Essential and system administration binaries.<br>
+<b>/home</b> - User home directories. Personal files and settings for each user.<br>
+<b>/etc</b> - System-wide configuration files. Contains settings for OS, services, and applications.<br>
+<b>/proc &amp; /var &amp; /srv</b><br>
+&nbsp;&nbsp;/proc - Virtual filesystem. Runtime process and kernel information (CPU, memory, processes).<br>
+&nbsp;&nbsp;/var - Variable data. Logs, caches, spools, mail, databases that change frequently.<br>
+&nbsp;&nbsp;/srv - Service data. Data for system services like web servers (/srv/www/) or FTP.<br>
+<b>/boot</b> - Boot loader files. Contains Linux kernel (vmlinuz), initrd.img, and GRUB bootloader configuration.<br>
+<b>/dev</b> - Device files. Represents hardware devices (hard drives, USB, terminals, null, random).<br>
+<b>/media &amp; /mnt &amp; /opt</b><br>
+&nbsp;&nbsp;/media - Mount point for removable media (USB drives, CDs, DVDs). Auto-mounts here.<br>
+&nbsp;&nbsp;/mnt - Temporary mount point for manually mounted filesystems.<br>
+&nbsp;&nbsp;/opt - Optional third-party software packages (add-on applications).<br>
+
+More information about them is <a href=https://zynomon.github.io/error.doc/docs/011/>here</a> you could check it out once you are done. <br>
+So it installs the OS into your storage and wipes out the corrent space you selected.<br>
+</details>
+It Basicallly shows 4 options when you met the certain requirements or it would show 1 ( manual installation ) option when there is problem with the automation, always double check ( restart/create a new partition from unallocated one from kde system partition manager )
+
+### Option: #1 [Install Along Side]
+<img width="1048" height="562" alt="Screenshot_20260810_113955" src="https://github.com/user-attachments/assets/94317b56-9fdf-4a3e-b979-831bba48d2de" />
+This installs the OS into a partition that has more than 5gb storage free so, it partitions the given space to tailor out a new partition while keeping the rest of occupied spaces untouched. ( best when you have plenty of spaces on another OS's partition and for dualbooting )<br>
+
+### Option: #2 [Replace A Partition]
+<img width="1043" height="565" alt="Screenshot_20260810_114028" src="https://github.com/user-attachments/assets/a72f13da-a7f7-4c17-8fa3-e1e07f4f88f7" />
+It replaces and installs the OS into the given partition without any hassle ( best for dualbooting )<br><br>
+## Option: #3 [Wipe Out Entire Disk]
+<img width="877" height="532" alt="image" src="https://github.com/user-attachments/assets/eefa8aa7-c9ac-43e5-8f32-17967f5b6c98" />
+It just wipes out your entire given disk for error.os ( best for using error.os on a daily basis, is it recommended ? no one ever did it before so unsure of what the answer would be. )<br><br><br>
+
+### Option: #4 [Manual Partition]
+Oh! boy we are here at the manual thingy already, 
+<img width="900" height="579" alt="Screenshot_20260810_114107" src="https://github.com/user-attachments/assets/7983c6ed-0b52-4c6a-ba06-fbc0f42229bb" />
+here is what you should estimate
+for /boot you need 500mb of partition
+for swap try to choose the amount of gb as your ram has
+and as for the storage if you are into backing up stuffs select btrfs and if you are into keep it simple ext4 is the thing for "/" 
+and if you want to customize more you could do so. but in the end the headache needs to have it's worth.<br><br><br>
+
+## Step 5: Setting Up User Password
+<img width="684" height="335" alt="Screenshot_20260810_111909" src="https://github.com/user-attachments/assets/e81a2074-4467-414b-a7c9-425888ae183b" />
+This is self explanatory, but still here is the explanation, you would be using or seeing your "username" on terminal and stuff and your display name would be only shown on sddm ( login prompt ) screen lock prompt and kicker menu ( application menu ) and the third field sets a hostname it shows as  [username@hostname] on some terminal configuration, 
+so, <br>
+**first field** -> Display name    ( keep it long and Accurate doesnt much matters )
+**second field** -> username    ( keep it short )
+**third field** -> hostname  ( keep it short and aliased )
+**fourth field** -> password (you would need to frequently type it so keep it on your head)
+**tick ( autologin )** -> sddm autologin ( it autologs in on startup instead of asking for password, good for 1 user devices but not for security enthusiasts)<br>
+
+## Step 6: Conformation
+<img width="1054" height="597" alt="Screenshot_20260810_112002" src="https://github.com/user-attachments/assets/d3be78bc-eccb-4fa1-9979-b6d52187e386" />
+This is the step where you confirm if you did any mistakes if you are okay then click on "NEXT"
+> [!WARNING]
+> THIS ACTION DELETES THE EXISTING ACTUAL DATA ON YOUR DEVICE, THE DEVICE WHERE YOU ARE INSTALLING IT.
+
+## Step 7: The Moment Of Truth
+Now The Real installation starts, it takes 3 to 8 mins could take upto 30 min depending on your device, and if it got stuck while installing ( may happen in VM ) try to increase the amount of ram and redo the process  when it freezes like your cursor doesnt moves. 
 >>>>>>> Coming more.
