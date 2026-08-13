@@ -17,7 +17,7 @@ These are the applications included:
 
 ### error.doc
 
-<img width="512" height="512" src="https://github.com/zynomon/error.doc/tree/main/.deb/install/error.doc.svg" alt="error.doc logo">
+<img width="512" height="512" src="https://github.com/zynomon/error.doc/raw/main/.deb/install/error.doc.svg" alt="error.doc logo">
 error.doc is a documentation viewer qt wrapper for this page  *and also a manpage viewer ( to do ).*
 
 ### Vex
