@@ -231,57 +231,50 @@
     });
   });
   </script>
-    
+<!-- icons from :- https://allsvgicons.com/pack/line-md/ -->    
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var blockquotes = document.querySelectorAll('blockquote');
-    
-    for (var i = 0; i < blockquotes.length; i++) {
-        var blockquote = blockquotes[i];
-        var html = blockquote.innerHTML;
-        var match = html.match(/^\[!([A-Z]+)\]/);
-        
-        if (match) {
-            var type = match[1].toLowerCase();
-            var content = html.replace(/^\[![A-Z]+\]\s*/, '');
-            
-            if (type === 'warning') {
-                blockquote.className = 'warning';
-            } else if (type === 'tip') {
-                blockquote.className = 'tip';
-            } else if (type === 'note') {
-                blockquote.className = 'note';
-            } else if (type === 'important') {
-                blockquote.className = 'important';
-            } else if (type === 'caution') {
-                blockquote.className = 'caution';
-            }
-            
-            var icon = '';
-            var titleText = '';
-            
-            if (type === 'warning') {
-                icon = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;margin-right:0.3rem;"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" d="M12 3l9 17h-18l9 -17Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10v4"><animate attributeName="stroke-width" begin="0.7s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" to="0"/></path><path stroke-dasharray="4" stroke-dashoffset="4" d="M12 17v0.01"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" to="0"/><animate attributeName="stroke-width" begin="1s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/></path></g></svg>';
-                titleText = 'WARNING';
-            } else if (type === 'tip') {
-                icon = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;margin-right:0.3rem;"><g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="currentColor" fill-opacity="0" stroke-dasharray="46" d="M12 17h-3v-2.8c-1.79 -1.04 -3 -2.98 -3 -5.2c0 -3.31 2.69 -6 6 -6c3.31 0 6 2.69 6 6c0 2.22 -1.21 4.16 -3 5.2v2.8Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="46;0"/><animate fill="freeze" attributeName="fill-opacity" begin="0.7s" dur="0.4s" to="1"/></path><path fill="none" stroke-dasharray="6" stroke-dashoffset="6" d="M10 21h4"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.2s" to="0"/></path></g></svg>';
-                titleText = 'TIP';
-            } else if (type === 'note') {
-                icon = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;margin-right:0.3rem;"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="2"><path stroke-dasharray="56" d="M3 21l2 -6l11 -11c1 -1 3 -1 4 0c1 1 1 3 0 4l-11 11l-6 2"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="56;0"/></path><path stroke-dasharray="8" stroke-dashoffset="8" d="M15 5l4 4"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" to="0"/></path></g><path stroke-dasharray="8" stroke-dashoffset="8" d="M6 15l3 3"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.2s" to="0"/></path></g></svg>';
-                titleText = 'NOTE';
-            } else if (type === 'important') {
-                icon = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;margin-right:0.3rem;"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="4" d="M12 3v2"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s" values="4;0"/><animateTransform attributeName="transform" dur="6s" keyTimes="0;0.05;0.15;0.2;1" repeatCount="indefinite" type="rotate" values="0 12 3;3 12 3;-3 12 3;0 12 3;0 12 3"/></path><path stroke-dasharray="30" stroke-dashoffset="30" d="M12 5c-3.31 0 -6 2.69 -6 6l0 6c-1 0 -2 1 -2 2h8M12 5c3.31 0 6 2.69 6 6l0 6c1 0 2 1 2 2h-8"><animateTransform attributeName="transform" dur="6s" keyTimes="0;0.05;0.15;0.2;1" repeatCount="indefinite" type="rotate" values="0 12 3;3 12 3;-3 12 3;0 12 3;0 12 3"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.2s" dur="0.4s" to="0"/></path><path stroke-dasharray="10" stroke-dashoffset="10" d="M10 20c0 1.1 0.9 2 2 2c1.1 0 2 -0.9 2 -2"><animateTransform attributeName="transform" begin="0.2s" dur="6s" keyTimes="0;0.05;0.15;0.2;1" repeatCount="indefinite" type="rotate" values="0 12 8;6 12 8;-6 12 8;0 12 8;0 12 8"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" to="0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M22 6v4"><animate attributeName="stroke-width" begin="0.9s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.9s" dur="0.2s" to="0"/></path><path stroke-dasharray="4" stroke-dashoffset="4" d="M22 14v0.01"><animate attributeName="stroke-width" begin="1.1s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="1.1s" dur="0.2s" to="0"/></path></g></svg>';
-                titleText = 'IMPORTANT';
-            } else if (type === 'caution') {
-                icon = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;margin-right:0.3rem;"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="28" d="M12 10l4 7h-8Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.4s" values="28;0"/></path><path d="M12 10l4 7h-8Z" opacity="0"><animate attributeName="d" begin="0.4s" dur="0.8s" keyTimes="0;0.25;1" repeatCount="indefinite" values="M12 10l4 7h-8Z;M12 4l9.25 16h-18.5Z;M12 4l9.25 16h-18.5Z"/><animate attributeName="opacity" begin="0.4s" dur="0.8s" keyTimes="0;0.1;0.75;1" repeatCount="indefinite" values="0;1;1;0"/></path></g></svg>';
-                titleText = 'CAUTION';
-            }
-            
-            blockquote.innerHTML = '<span class="title">' + icon + ' ' + titleText + '</span><br>' + content;
-        }
+document.addEventListener('DOMContentLoaded', function () {
+  var ICONS = {
+    note: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">check-list-3</title><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-dasharray="24"><path d="M11.5 5c0 -0.83 0.67 -1.5 1.5 -1.5h6c0.83 0 1.5 0.67 1.5 1.5c0 0.83 -0.67 1.5 -1.5 1.5h-6c-0.83 0 -1.5 -0.67 -1.5 -1.5Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="24;0"/></path><path stroke-dashoffset="24" d="M11.5 12c0 -0.83 0.67 -1.5 1.5 -1.5h6c0.83 0 1.5 0.67 1.5 1.5c0 0.83 -0.67 1.5 -1.5 1.5h-6c-0.83 0 -1.5 -0.67 -1.5 -1.5Z"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.4s" dur="0.3s" to="0"/></path><path stroke-dashoffset="24" d="M11.5 19c0 -0.83 0.67 -1.5 1.5 -1.5h6c0.83 0 1.5 0.67 1.5 1.5c0 0.83 -0.67 1.5 -1.5 1.5h-6c-0.83 0 -1.5 -0.67 -1.5 -1.5Z"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.3s" to="0"/></path></g><g stroke-dasharray="12" stroke-dashoffset="12" stroke-width="2"><path d="M3 5l2 2l4 -4"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.2s" dur="0.2s" to="0"/></path><path d="M3 12l2 2l4 -4"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" to="0"/></path><path d="M3 19l2 2l4 -4"><animate fill="freeze" attributeName="stroke-dashoffset" begin="1s" dur="0.2s" to="0"/></path></g></g></svg>',
+    tip: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">lightbulb-filled</title><g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="currentColor" fill-opacity="0" stroke-dasharray="46" d="M12 17h-3v-2.8c-1.79 -1.04 -3 -2.98 -3 -5.2c0 -3.31 2.69 -6 6 -6c3.31 0 6 2.69 6 6c0 2.22 -1.21 4.16 -3 5.2v2.8Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="46;0"/><animate fill="freeze" attributeName="fill-opacity" begin="0.7s" dur="0.4s" to="1"/></path><path fill="none" stroke-dasharray="6" stroke-dashoffset="6" d="M10 21h4"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.2s" to="0"/></path></g></svg>',
+    warning: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">alert-loop</title><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" d="M12 3l9 17h-18l9 -17Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10v4"><animate attributeName="stroke-width" begin="0.7s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" to="0"/></path><path stroke-dasharray="4" stroke-dashoffset="4" d="M12 17v0.01"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" to="0"/><animate attributeName="stroke-width" begin="1s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/></path></g></svg>',
+    important: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">bell-alert-filled-loop</title><g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="none" stroke-dasharray="4" d="M12 3v2"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s" values="4;0"/><animateTransform attributeName="transform" dur="6s" keyTimes="0;0.05;0.15;0.2;1" repeatCount="indefinite" type="rotate" values="0 12 3;3 12 3;-3 12 3;0 12 3;0 12 3"/></path><path fill="currentColor" fill-opacity="0" stroke-dasharray="30" stroke-dashoffset="30" d="M12 5c-3.31 0 -6 2.69 -6 6l0 6c-1 0 -2 1 -2 2h8M12 5c3.31 0 6 2.69 6 6l0 6c1 0 2 1 2 2h-8"><animateTransform attributeName="transform" dur="6s" keyTimes="0;0.05;0.15;0.2;1" repeatCount="indefinite" type="rotate" values="0 12 3;3 12 3;-3 12 3;0 12 3;0 12 3"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.2s" dur="0.4s" to="0"/><animate fill="freeze" attributeName="fill-opacity" begin="1.3s" dur="0.4s" to="1"/></path><g fill="none"><path stroke-dasharray="10" stroke-dashoffset="10" d="M10 20c0 1.1 0.9 2 2 2c1.1 0 2 -0.9 2 -2"><animateTransform attributeName="transform" begin="0.2s" dur="6s" keyTimes="0;0.05;0.15;0.2;1" repeatCount="indefinite" type="rotate" values="0 12 8;6 12 8;-6 12 8;0 12 8;0 12 8"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" to="0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M22 6v4"><animate attributeName="stroke-width" begin="0.9s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.9s" dur="0.2s" to="0"/></path><path stroke-dasharray="4" stroke-dashoffset="4" d="M22 14v0.01"><animate attributeName="stroke-width" begin="1.1s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="1.1s" dur="0.2s" to="0"/></path></g></g></svg>',
+    caution: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">hazard-lights-filled-loop</title><g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="currentColor" fill-opacity="0" stroke-dasharray="28" d="M12 10l4 7h-8Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.4s" values="28;0"/><animate fill="freeze" attributeName="fill-opacity" begin="0.6s" dur="0.4s" to="1"/></path><path fill="none" d="M12 10l4 7h-8Z" opacity="0"><animate attributeName="d" begin="0.4s" dur="0.8s" keyTimes="0;0.25;1" repeatCount="indefinite" values="M12 10l4 7h-8Z;M12 4l9.25 16h-18.5Z;M12 4l9.25 16h-18.5Z"/><animate attributeName="opacity" begin="0.4s" dur="0.8s" keyTimes="0;0.1;0.75;1" repeatCount="indefinite" values="0;1;1;0"/></path></g></svg>',
+    danger: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">brake-alert-filled</title><defs><mask id="SVGG1he6d3K"><g stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="#fff" fill-opacity="0" stroke="#fff" stroke-dasharray="54" d="M12 4c4.42 0 8 3.58 8 8c0 4.42 -3.58 8 -8 8c-4.42 0 -8 -3.58 -8 -8c0 -4.42 3.58 -8 8 -8"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="54;0"/><animate fill="freeze" attributeName="fill-opacity" begin="1.3s" dur="0.4s" to="1"/></path><g fill="none" stroke="#000"><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 8v4"><animate fill="freeze" attributeName="stroke-dashoffset" begin="1.8s" dur="0.2s" to="0"/></path><path stroke-dasharray="4" stroke-dashoffset="4" d="M12 16v0.01"><animate fill="freeze" attributeName="stroke-dashoffset" begin="2s" dur="0.2s" to="0"/></path></g></g></mask></defs><path fill="currentColor" d="M0 0h24v24H0z" mask="url(#SVGG1he6d3K)"/><g fill="none" stroke="currentColor" stroke-dasharray="20" stroke-dashoffset="20" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4.22 4.22c-4.29 4.3 -4.29 11.26 0 15.56"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.3s" to="0"/></path><path d="M19.78 4.22c4.29 4.3 4.29 11.26 0 15.56"><animate fill="freeze" attributeName="stroke-dashoffset" begin="1s" dur="0.3s" to="0"/></path></g></svg>'
+  };
+
+  var blockquotes = document.querySelectorAll('blockquote');
+
+  for (var i = 0; i < blockquotes.length; i++) {
+    var blockquote = blockquotes[i];
+    var firstP = blockquote.querySelector('p');
+    if (!firstP || !firstP.firstChild) continue;
+
+    var node = firstP.firstChild;
+    if (node.nodeType !== Node.TEXT_NODE) continue;
+
+    var match = node.textContent.match(/^\s*\[!([A-Z]+)\]\s*/);
+    if (!match) continue;
+
+    var type = match[1].toLowerCase();
+    if (!ICONS.hasOwnProperty(type)) continue;
+
+    node.textContent = node.textContent.replace(/^\s*\[!([A-Z]+)\]\s*/, '');
+
+    blockquote.classList.add(type);
+
+    var title = document.createElement('span');
+    title.className = 'title';
+    title.innerHTML = ICONS[type] + ' ' + type.toUpperCase();
+
+    if (node.textContent.trim().length > 0 || node.nextSibling) {
+      firstP.insertBefore(document.createElement('br'), node);
     }
+    firstP.insertBefore(title, firstP.firstChild);
+  }
 });
 </script>
+    
 
 </body>
 </html>
