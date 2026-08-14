@@ -44,11 +44,11 @@ Checksum verification ensures that the ISO file is intact and detects if somethi
 **[Click here to skip this boring part](#making-the-iso-boot)**
 
 As for NeoSpace26 (NS26), we have [sums.7z](https://archive.org/download/error.os_Neospace_2026/sums.7z).<br>
-Extract it by using `7z x sums.7z` (in any Windows/macOS/Linux terminal) OR if missing, visit [7z_Website](https://7-zip.org/download.html).
+Extract it by using `7z x sums.7z` (in any Windows/macOS/Linux terminal) or, if that's missing, visit the [7z website](https://7-zip.org/download.html).
 
-Even though the verification tutorial is already given on the NeoSpace 2026 page, let's make it more clear in a way that works with other ISOs.
+Even though the verification tutorial is already given on the NeoSpace 2026 page, let's make it clearer in a way that works with other ISOs.
 
-Since our ISO file name changes on each update, we couldn't just give you a command for a certain version or use wildcards (wildcards could pull in two ISO files). We are referring to your downloaded ISO filename as `x`, and `x.iso`, `x.md5`... are the files derived from it.
+Since our ISO file name changes on each update, we can't just give you a command for a specific version, nor use wildcards (wildcards could pull in two ISO files). We are referring to your downloaded ISO filename as `x`, and `x.iso`, `x.md5`, etc. are the files derived from it.
 
 > [!NOTE]
 > `x` is a placeholder, not the actual filename.
@@ -59,7 +59,7 @@ Since our ISO file name changes on each update, we couldn't just give you a comm
 MD5 produces a 128-bit hash (32 hex characters) for file integrity verification.
 
 > [!WARNING]
-> MD5 is cryptographically broken. Use only for basic integrity checks.
+> MD5 is cryptographically broken. Use it only for basic integrity checks.
 
 **Verify `x.iso` against `x.md5`:**
 
@@ -116,7 +116,7 @@ Get-FileHash x.iso -Algorithm SHA512
 <br>
 
 > [!TIP]
-> The `-c` flag checks the ISO against the hash stored in the `.sha256` or `.sha512` file. It outputs "OK" if matches.
+> The `-c` flag checks the ISO against the hash stored in the `.sha256` or `.sha512` file. It outputs "OK" if it matches.
 
 ### GPG Verifications
 
@@ -153,42 +153,39 @@ There are a few ways to boot error.os:
 2. [In hardware using a Ventoy USB medium](#2-setting-up-with-ventoy)
 3. [Through a VM: VMware/QEMU/VirtualBox](#3-virtualization)
 
-
-> [!tip]
-> Anything outside of that is not mainstream. Options 2 and 3, in experience, come in the same category for error.os since it doesn't try to save anything in the live system.
-> **If you followed any of those 3 JUMP to Next Page [..002](../002/)**
+> [!TIP]
+> Anything outside of that is not mainstream. Options 2 and 3, in our experience, fall into the same category for error.os, since it doesn't try to save anything in the live system.
+> **If you followed any of those three, jump to the next page: [002](../002/).**
 
 ## Prerequisites
 
-Firstly, your device needs to fulfill the requirements of running error.os. You may fall into problems caused by you. Instead of blaming yourself for this matter, move on.
+Firstly, your device needs to meet the requirements for running error.os. If problems come up because of something you missed, don't dwell on it, just move on.
 
 Secondly, you need a bootable medium: a USB drive or a MicroSD card + SD card reader combination. This is called a bootable medium, and throughout this guide, we will refer to it as the "medium."
 
-Thirdly, the device you are currently using to read this guide, or any other, may work.
+Thirdly, keep a second device on hand to read this guide while you install, this one, or any other, works fine.
 
 ## 1. Flashing a Medium
 
-Flashing an ISO into a USB simply means extracting the ISO into a wiped-out (formatted) medium. So, to do this, we will only cover balenaEtcher. Rufus (Windows) and other flashing applications cover this in the same way, so you could choose whatever you feel familiar with.
+Flashing an ISO into a USB simply means extracting the ISO into a wiped-out (formatted) medium. So, to do this, we will only cover balenaEtcher. Rufus (Windows) and other flashing applications work the same way, so you could choose whichever you're most familiar with.
 
 ### Step 1. Install balenaEtcher
 
 For Windows/macOS/Linux, [visit this](https://etcher.balena.io/#download-etcher).<br>
 For Android, [visit this](https://f-droid.org/packages/eu.depau.etchdroid/).<br>
-Download and try to open them.
-Once it starts up,
+Download and open the application. Once it starts up, move on to the next step.
 
 ### Step 2. Insert the Medium
 
-Could be a USB thumb drive or "MicroSD Card + SD Card Reader combo" as mentioned earlier.
-Now, the application should pick up that medium.
+This could be a USB thumb drive or a MicroSD card + SD card reader combo, as mentioned earlier.
+The application should detect the medium automatically.
 
 ### Step 3. Flash
 
 > [!WARNING]
 > This process formats the USB drive and erases all existing data.
 
-Now, select the ISO you just downloaded and let it flash into the medium. Wait for it to flash the `.iso` file. It may take a while since it's extracting 2 GB and formatting your medium.
-
+Now, select the ISO you just downloaded and let it flash into the medium. Wait for it to finish flashing the `.iso` file. It may take a while since it's extracting 2 GB and formatting your medium.
 
 ### Final Step. Change the Boot Order
 
@@ -243,7 +240,7 @@ To download it, visit: [Ventoy](https://www.ventoy.net/en/download.html).
 
 Insert the USB drive and run the Ventoy installer (Ventoy2Disk.exe on Windows, Ventoy2Disk.sh or VentoyGUI on Linux).
 
-As for Linux, run it from the terminal to get information about any issues in stdout.
+On Linux, run it from the terminal so you can see any errors printed to stdout.
 ```bash
 chmod +x ./VentoyGUI.x86_64 && sudo ./VentoyGUI.x86_64 
 ```
@@ -257,13 +254,13 @@ Select the correct USB device from the list and click Install.
 
 After installation, Ventoy creates two partitions: a small system partition and a visible data partition (exFAT by default).
 
-Simply copy the ISO you just downloaded into the visible partition. You can place them in the root directory of that partition or in subfolders.
+Simply copy the ISO you just downloaded into the visible partition. You can place it in the root directory of that partition or in a subfolder.
 
 **3. Boot from the Ventoy Drive**
 
 Insert the USB drive into the target computer and restart.
 
-Enter the boot menu (usually F12, Esc, or F8) and select the USB drive. Usually, it starts with UEFI: on UEFI devices, it's usually the other option in the bootloader menu beside your SSD vendor's name and your currently installed OS's name.
+Enter the boot menu (usually F12, Esc, or F8) and select the USB drive. On UEFI devices, look for an entry that starts with "UEFI:". It usually appears in the boot menu next to your drive vendor's name and your currently installed OS's name.
 
 Ventoy displays a menu listing all ISO files on the drive. Select the desired ISO and press Enter to boot.
 
@@ -272,15 +269,14 @@ Ventoy displays a menu listing all ISO files on the drive. Select the desired IS
 
 ## 3. Virtualization
 
-Since error.os is Debian-based, there are few known issues. On advanced applications like [Oracle VirtualBox](https://www.virtualbox.org/) and [VMware](https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion), they tend to auto-detect that error.os is Debian 64-bit. On some applications like [virt-manager](https://virt-manager.org/download), you have to manually do that.<br>
+Since error.os is Debian-based, there are few known issues. Advanced applications like [Oracle VirtualBox](https://www.virtualbox.org/) and [VMware](https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion) tend to auto-detect error.os as Debian 64-bit. On some applications like [virt-manager](https://virt-manager.org/download), you have to set that manually.<br>
 
-**The specifications to always set in a VM:** Select the live medium/bootable medium as the ISO file, OS as Debian 13 64-bit/amd64/x86_64 or Linux 64/GNU Linux 64, RAM: 1.5GB minimum, Storage: more than 8GB (error.os installations are typically 3GB or close to 4GB).
+**The specifications to always set in a VM:** Select the live medium/bootable medium as the ISO file, OS as Debian 13 64-bit/amd64/x86_64 or Linux 64/GNU/Linux 64, RAM: 1.5GB minimum, Storage: more than 8GB (error.os installations are typically 3GB or close to 4GB).
 
 Alternatively, you could enable display graphics and more; they won't interfere with the system. It also works with UEFI and BIOS.
 
 > [!TIP]
 > You can try installing error.os inside a virtualization layer or emulation environment, where everything is saved in a single image file. This allows you to delete it once you're done.
-
 
 #### Next steps,
 <div style="text-align:center; font-size:3rem;">
