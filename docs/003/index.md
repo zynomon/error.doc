@@ -5,13 +5,46 @@ description: "History and information about GNU/Linux legends"
 embed-thumbnail: https://zynomon.github.io/error.doc/docs/003/thumb.png
 ---
 
-### Linux is an open source kernel made by Linus Torvalds. 
-This is already "being known" for most of you guys, the question is how that kernel operates? Well busybox is the core utility of original linux and there wasn't any init system , users had to configure /etc/rc for init system. After a long time GNOME was founded, they made their own toolkit, own softwares and more. The term GNU/Linux means it's running glibc (GNU C library) at its core using GNU coreutils (a package that contains cat, grep, touch command's binary) ,  it's installed besides busybox in every GNU/Linux OSes. Because of Debian, Arch and many more user-friendly distros use GNU at its core, it's easy to say that other alternatives wouldn't work without recompiling against a custom libc. Same for systemd init system (non-GNU) , it's hard to create an alternative because all of them are just straight up using compatibility layers which makes sense, but this is the common problem of Linux: there is no shell, you have to create one.
+## Table of Contents
+
+- [GNU/Linux: The Basics](#gnu-linux-the-basics)
+- [GNU Coreutils Command Reference](#gnu-coreutils-command-reference)
+  - [rm (remove)](#rm-remove)
+  - [ls (list)](#ls-list)
+  - [cp (copy)](#cp-copy)
+  - [mv (move)](#mv-move)
+  - [cat (concatenate)](#cat-concatenate)
+  - [mkdir (make directory)](#mkdir-make-directory)
+  - [touch](#touch)
+- [File System Hacks and Regex](#file-system-hacks-and-regex)
+  - [Permissions and Ownership](#permissions-and-ownership)
+    - [chmod (change file mode/permissions)](#chmod-change-file-modepermissions)
+    - [chown (change owner)](#chown-change-owner)
+    - [chgrp (change group)](#chgrp-change-group)
+  - [User and Group Management](#user-and-group-management)
+    - [useradd / adduser (create user)](#useradd--adduser-create-user)
+    - [usermod (modify user)](#usermod-modify-user)
+    - [userdel (delete user)](#userdel-delete-user)
+    - [passwd (change password)](#passwd-change-password)
+    - [groupadd / groupdel (manage groups)](#groupadd--groupdel-manage-groups)
+    - [User Information Commands](#user-information-commands)
+    - [su and sudo](#su-and-sudo-switch-user--superuser-do)
+  - [Account and System Information Files](#account-and-system-information-files)
+    - [Important System Files](#important-system-files)
+    - [Managing sudo access](#managing-sudo-access)
+  - [File Ownership in Action](#file-ownership-in-action)
+- [Bash Operators](#bash-operators)
+- [Test Yourself](#test-yourself)
+
+## GNU/Linux: The Basics
+
+Linux is an open source kernel made by Linus Torvalds. This is already common knowledge for most of you, the real question is how that kernel operates. Busybox provides a minimal set of core utilities, and early Linux systems didn't ship with a full init system, users had to configure `/etc/rc` themselves. The GNU Project, started years earlier by Richard Stallman, already had its own toolchain and utilities ready to pair with the Linux kernel.
+
+The term GNU/Linux refers to a system running glibc (the GNU C library) at its core, built with GNU coreutils (the package containing binaries like `cat`, `grep`, and `touch`), installed alongside busybox on most GNU/Linux systems. Because Debian, Arch, and most user-friendly distros build on GNU at their core, other libc alternatives generally can't run those binaries without recompiling against a different libc. The same applies to non-GNU init systems like systemd, building an alternative is hard, since most tooling assumes compatibility with it. This is the recurring theme in Linux: there's no single default shell or toolchain handed to you, you assemble one.
 
 ---
 
-Most GNU apps you should know are:
-Because most of these are pre-installed into any GNU/Linux or there aren't any better alternatives
+Most GNU apps you should know are, most of these come pre-installed on any GNU/Linux system, and for many of them there isn't a better alternative anyway:
 
 ```bash
 # bash (GNU Bash) 
@@ -30,7 +63,7 @@ Because most of these are pre-installed into any GNU/Linux or there aren't any b
 ## gzip (compression classic + bzip2 xz helpers)
 # wget (simple powerful downloader)
 ## nano (the forgiving text editor)
-# gpg (GNU PG verifier)
+# gpg (GNU Privacy Guard, verifies signatures)
 ```
 
 ---
@@ -49,6 +82,9 @@ Because most of these are pre-installed into any GNU/Linux or there aren't any b
 rm -rfv /tmp/*
 ```
 Note: Combining `-f` with `-i` is contradictory - force will override interactive prompts, so the `-i` becomes useless.
+
+> [!WARNING]
+> `rm -rf` does not ask twice. There's no trash bin to recover from once it's run, especially as root. Double-check the path before you press enter.
 
 ### ls (list)
 - `-l` (long): detailed file information
@@ -136,80 +172,74 @@ touch file{1..10}.txt           # create multiple files
 
 ---
 
-<details>
-<summary><strong>File System Hacks and Regex</strong> <sub>(click to expand)</sub></summary>
+<details><summary><strong>File System Hacks and Regex</strong> <sub>(click to expand)</sub></summary>
 
-## Permissions and Ownership
+<h2>Permissions and Ownership</h2>
 
-### chmod (change file mode/permissions)
+<h3>chmod (change file mode/permissions)</h3>
 
-**Understanding Linux Permissions:**
-Every file has three permission sets: Owner (u), Group (g), Others (o)
-Each set has three permissions: Read (r=4), Write (w=2), Execute (x=1)
+<p><strong>Understanding Linux Permissions:</strong><br>
+Every file has three permission sets: Owner (u), Group (g), Others (o)<br>
+Each set has three permissions: Read (r=4), Write (w=2), Execute (x=1)</p>
 
-**Numeric (Octal) Method:**
-```bash
-chmod 755 script.sh             # rwxr-xr-x (owner: all, group: rx, others: rx)
+<p><strong>Numeric (Octal) Method:</strong></p>
+
+<pre>chmod 755 script.sh             # rwxr-xr-x (owner: all, group: rx, others: rx)
 chmod 644 file.txt              # rw-r--r-- (owner: rw, group: r, others: r)
 chmod 700 private.sh            # rwx------ (owner only)
 chmod 666 shared.txt            # rw-rw-rw- (all can read/write)
-chmod 400 secret.key            # r-------- (owner read-only)
-```
+chmod 400 secret.key            # r-------- (owner read-only)</pre>
 
-**Common Permission Numbers:**
-- `777` - rwxrwxrwx (everyone can do everything - dangerous!)
-- `755` - rwxr-xr-x (standard for executables/directories)
-- `644` - rw-r--r-- (standard for regular files)
-- `600` - rw------- (private files, like SSH keys)
-- `400` - r-------- (read-only secrets)
+<p><strong>Common Permission Numbers:</strong></p>
 
-**Symbolic Method:**
-```bash
-chmod u+x script.sh             # add execute for owner (user)
+<ul>
+<li><code>777</code> - rwxrwxrwx (everyone can do everything - dangerous!)</li>
+<li><code>755</code> - rwxr-xr-x (standard for executables/directories)</li>
+<li><code>644</code> - rw-r--r-- (standard for regular files)</li>
+<li><code>600</code> - rw------- (private files, like SSH keys)</li>
+<li><code>400</code> - r-------- (read-only secrets)</li>
+</ul>
+
+<p><strong>Symbolic Method:</strong></p>
+
+<pre>chmod u+x script.sh             # add execute for owner (user)
 chmod g+w file.txt              # add write for group
 chmod o-r private.txt           # remove read for others
 chmod a+x program               # add execute for all (a=all)
 chmod u=rwx,g=rx,o=r file       # set exact permissions
 chmod +x script.sh              # add execute for all
-chmod -R 755 directory/         # recursive permission change
-```
+chmod -R 755 directory/         # recursive permission change</pre>
 
-**Special Permissions:**
-```bash
-chmod 4755 program              # setuid (runs as file owner)
+<p><strong>Special Permissions:</strong></p>
+
+<pre>chmod 4755 program              # setuid (runs as file owner)
 chmod 2755 directory            # setgid (new files inherit group)
 chmod 1777 /tmp                 # sticky bit (only owner can delete)
 chmod u+s binary                # add setuid
 chmod g+s directory             # add setgid
-chmod +t directory              # add sticky bit
-```
+chmod +t directory              # add sticky bit</pre>
 
-### chown (change owner)
+<h3>chown (change owner)</h3>
 
-**Syntax:** `chown [user][:group] file`
+<p><strong>Syntax:</strong> <code>chown [user][:group] file</code></p>
 
-```bash
-chown alice file.txt            # change owner to alice
+<pre>chown alice file.txt            # change owner to alice
 chown alice:developers file.txt # change owner and group
 chown :developers file.txt      # change group only
 chown -R alice:staff /home/alice # recursive ownership change
-chown --from=bob alice file.txt # change only if current owner is bob
-```
+chown --from=bob alice file.txt # change only if current owner is bob</pre>
 
-### chgrp (change group)
+<h3>chgrp (change group)</h3>
 
-```bash
-chgrp developers project.txt    # change group to developers
+<pre>chgrp developers project.txt    # change group to developers
 chgrp -R staff /shared/folder   # recursive group change
-chgrp --reference=file1 file2   # copy group from file1 to file2
-```
+chgrp --reference=file1 file2   # copy group from file1 to file2</pre>
 
-## User and Group Management
+<h2>User and Group Management</h2>
 
-### useradd / adduser (create user)
+<h3>useradd / adduser (create user)</h3>
 
-```bash
-# useradd (low-level)
+<pre># useradd (low-level)
 sudo useradd john               # create basic user
 sudo useradd -m john            # create user with home directory
 sudo useradd -m -s /bin/bash john # specify shell
@@ -218,54 +248,48 @@ sudo useradd -m -u 1500 john    # specify UID
 sudo useradd -m -e 2025-12-31 john # expiration date
 
 # adduser (high-level, interactive - Debian/Ubuntu)
-sudo adduser john               # interactive user creation
-```
+sudo adduser john               # interactive user creation</pre>
 
-### usermod (modify user)
+<blockquote>
+<p>[!TIP] <code>useradd</code> is the low-level tool and doesn't create a home directory or set a shell unless you tell it to. <code>adduser</code> wraps it in an interactive script and handles those defaults for you. On Debian-based systems like error.os, prefer <code>adduser</code> unless you're scripting.</p>
+</blockquote>
 
-```bash
-sudo usermod -aG sudo john      # add user to sudo group (append)
+<h3>usermod (modify user)</h3>
+
+<pre>sudo usermod -aG sudo john      # add user to sudo group (append)
 sudo usermod -aG docker,www-data john # add to multiple groups
 sudo usermod -l newname oldname # rename user
 sudo usermod -s /bin/zsh john   # change shell
 sudo usermod -d /new/home john  # change home directory
 sudo usermod -L john            # lock account
 sudo usermod -U john            # unlock account
-sudo usermod -e 2025-12-31 john # set expiration date
-```
+sudo usermod -e 2025-12-31 john # set expiration date</pre>
 
-### userdel (delete user)
+<h3>userdel (delete user)</h3>
 
-```bash
-sudo userdel john               # delete user (keeps home directory)
+<pre>sudo userdel john               # delete user (keeps home directory)
 sudo userdel -r john            # delete user and home directory
-sudo userdel -f john            # force delete (even if logged in)
-```
+sudo userdel -f john            # force delete (even if logged in)</pre>
 
-### passwd (change password)
+<h3>passwd (change password)</h3>
 
-```bash
-passwd                          # change your own password
+<pre>passwd                          # change your own password
 sudo passwd john                # change another user's password
 sudo passwd -l john             # lock user account
 sudo passwd -u john             # unlock user account
 sudo passwd -d john             # delete password (passwordless login)
-sudo passwd -e john             # expire password (force change on next login)
-```
+sudo passwd -e john             # expire password (force change on next login)</pre>
 
-### groupadd / groupdel (manage groups)
+<h3>groupadd / groupdel (manage groups)</h3>
 
-```bash
-sudo groupadd developers        # create group
+<pre>sudo groupadd developers        # create group
 sudo groupadd -g 1500 developers # create with specific GID
 sudo groupdel developers        # delete group
-sudo groupmod -n newname oldname # rename group
-```
+sudo groupmod -n newname oldname # rename group</pre>
 
-### User Information Commands
+<h3>User Information Commands</h3>
 
-```bash
-whoami                          # show current username
+<pre>whoami                          # show current username
 id                              # show user ID, group IDs
 id john                         # show IDs for specific user
 groups                          # show current user's groups
@@ -274,77 +298,66 @@ who                             # show logged-in users
 w                               # show who's logged in and what they're doing
 last                            # show login history
 lastlog                         # show last login for all users
-finger john                     # detailed user information (if installed)
-```
+finger john                     # detailed user information (if installed)</pre>
 
-### su and sudo (switch user / superuser do)
+<h3>su and sudo (switch user / superuser do)</h3>
 
-```bash
-su                              # switch to root (requires root password)
+<pre>su                              # switch to root (requires root password)
 su john                         # switch to john (requires john's password)
 su - john                       # switch and load john's environment
 sudo command                    # run command as root
 sudo -u john command            # run command as john
 sudo -i                         # interactive root shell
 sudo -s                         # shell as root
-sudo -l                         # list allowed sudo commands
-```
+sudo -l                         # list allowed sudo commands</pre>
 
-## Account and System Information Files
+<h2>Account and System Information Files</h2>
 
-### Important System Files
+<h3>Important System Files</h3>
 
-```bash
-/etc/passwd                     # user account information
+<pre>/etc/passwd                     # user account information
 /etc/shadow                     # encrypted passwords (root only)
 /etc/group                      # group information
 /etc/gshadow                    # secure group information
 /etc/sudoers                    # sudo permissions (edit with visudo)
-/etc/skel/                      # skeleton directory for new users
-```
+/etc/skel/                      # skeleton directory for new users</pre>
 
-**View user info:**
-```bash
-cat /etc/passwd | grep john     # find user entry
+<p><strong>View user info:</strong></p>
+
+<pre>cat /etc/passwd | grep john     # find user entry
 getent passwd john              # get user info (better method)
-getent group developers         # get group info
-```
+getent group developers         # get group info</pre>
 
-**Format of /etc/passwd:**
-```
-username:x:UID:GID:comment:home_directory:shell
-john:x:1001:1001:John Doe:/home/john:/bin/bash
-```
+<p><strong>Format of /etc/passwd:</strong></p>
 
-### Managing sudo access
+<pre>username:x:UID:GID:comment:home_directory:shell
+john:x:1001:1001:John Doe:/home/john:/bin/bash</pre>
 
-```bash
-sudo visudo                     # edit sudoers file safely
+<h3>Managing sudo access</h3>
+
+<pre>sudo visudo                     # edit sudoers file safely
 sudo usermod -aG sudo john      # add to sudo group (Debian/Ubuntu)
-sudo usermod -aG wheel john     # add to wheel group (RHEL/CentOS)
-```
+sudo usermod -aG wheel john     # add to wheel group (RHEL/CentOS)</pre>
 
-**Example /etc/sudoers entries:**
-```
-john ALL=(ALL:ALL) ALL          # john can run any command
+<p><strong>Example /etc/sudoers entries:</strong></p>
+
+<pre>john ALL=(ALL:ALL) ALL          # john can run any command
 %developers ALL=(ALL) NOPASSWD: ALL # group developers, no password
-alice ALL=(ALL) /usr/bin/systemctl  # alice can only run systemctl
-```
+alice ALL=(ALL) /usr/bin/systemctl  # alice can only run systemctl</pre>
 
-## File Ownership in Action
+<h2>File Ownership in Action</h2>
 
-**Check permissions:**
-```bash
-ls -l file.txt
+<p><strong>Check permissions:</strong></p>
+
+<pre>ls -l file.txt
 # -rw-r--r-- 1 alice developers 1024 Jan 23 10:00 file.txt
 # |         |   |     |         
 # |         |   owner group     
-# permissions links
-```
+# permissions links</pre>
 
-**Practical examples:**
-```bash
-# Make a script executable for everyone
+<p><strong>Practical examples:</strong></p>
+
+<pre># Make a script executable for everyone
 chmod +x script.sh
 
 # Secure a private SSH key
@@ -359,42 +372,121 @@ sudo chmod 2775 /shared/project  # setgid + rwxrwxr-x
 # Fix web server permissions
 sudo chown -R www-data:www-data /var/www/html
 sudo find /var/www/html -type d -exec chmod 755 {} \;
-sudo find /var/www/html -type f -exec chmod 644 {} \;
-```
+sudo find /var/www/html -type f -exec chmod 644 {} \;</pre>
 
 </details>
 
-## Bash operators
-bash supports tons of cool features, 
-first is pipe
+## Bash Operators
 
-  ```bash
-<cmd1> || <cmd2>
+Bash chains commands together in a few different ways, and mixing these up is one of the most common daily-use mistakes.
+
+### | (pipe)
+
+```bash
+cmd1 | cmd2
+```
+Sends cmd1's output directly into cmd2's input.
+
+```bash
+cat file.txt | grep "error"
 ```
 
-it makes cmd1's output as the cmd2's last argument 
+### && (AND)
 
-
-### ; and &&
-
-when you are getting lazy to wait for a command to run you can just
-
-<cmd1> && <cmd2>
-it means execute cmd1 then cmd2 ( if cmd1 finished executing) 
-examples would be
+```bash
+cmd1 && cmd2
+```
+Runs cmd2 only if cmd1 succeeds (exits with status 0). Useful for chaining steps that depend on each other.
 
 ```bash
 sudo apt update && sudo apt install pipx
 ```
 
+### || (OR)
 
-<cmd1> ; <cmd2>
-it means execute cmd1 or cmd2 ( if cmd1 fails try with cmd2) 
-you know where it's useful? 
-yes of course it's where you don't know if a command exists or not and you dont wanttot wait for bash to give you the input access
-so you can just
+```bash
+cmd1 || cmd2
+```
+Runs cmd2 only if cmd1 fails. Useful as a fallback.
+
+```bash
+apt install alien || apt install human
+```
+(Runs the second install only if the first one fails.)
+
+### ; (sequence)
+
+```bash
+cmd1 ; cmd2
+```
+Runs cmd1, then cmd2, regardless of whether cmd1 succeeded or failed. Useful when you don't care about the outcome of the first command.
 
 ```bash
 apt search alien ; apt search human
 ```
-it meand check for alien in aptrepository OR try checking human in apt repository. simple as that. 
+(Checks for both, regardless of whether the first search finds anything.)
+
+> [!NOTE]
+> `&&`, `||`, and `;` all chain commands, but only `&&` and `||` care whether the first command succeeded. `;` doesn't check at all.
+
+## Test Yourself
+
+Whether you're coming from Windows, macOS, or another Linux distro, here's a quick self-test to make sure the essentials above actually stuck. Try to answer before expanding each one.
+
+<details>
+<summary>What does <code>chmod 755 script.sh</code> actually set?</summary>
+Owner gets read, write, and execute (7). Group and others get read and execute (5 each), no write. Common for scripts and executables.
+</details>
+
+<details>
+<summary>What's the difference between <code>useradd</code> and <code>adduser</code>?</summary>
+<code>useradd</code> is the low-level tool and won't create a home directory or set a shell unless you pass flags for it. <code>adduser</code> is the interactive, Debian-friendly wrapper that handles those defaults automatically.
+</details>
+
+<details>
+<summary>What happens if you run <code>cmd1 ; cmd2</code> and cmd1 fails?</summary>
+cmd2 runs anyway. <code>;</code> doesn't check the exit status of the first command, it just runs both in sequence.
+</details>
+
+<details>
+<summary>What's the safest way to preview an <code>rm -rf</code> before actually running it?</summary>
+Run the same command with <code>ls</code> instead of <code>rm</code> first, to see exactly what would be affected. Or add <code>-i</code> for interactive prompts, though combining <code>-i</code> with <code>-f</code> cancels the prompt out.
+</details>
+
+<details>
+<summary>Where does Linux store encrypted user passwords?</summary>
+<code>/etc/shadow</code>, readable only by root. <code>/etc/passwd</code> stores account info but not the password hash itself.
+</details>
+
+<details>
+<summary>What does <code>sudo -i</code> do differently from <code>sudo -s</code>?</summary>
+<code>sudo -i</code> starts an interactive root login shell, loading root's own environment and profile. <code>sudo -s</code> starts a shell as root but keeps your current environment.
+</details>
+
+<details>
+<summary>You want to update packages and only install something new if the update succeeds. Which operator do you use?</summary>
+<code>&&</code>. For example: <code>sudo apt update && sudo apt install pipx</code>.
+</details>
+
+<details>
+<summary>What does the sticky bit (<code>chmod 1777 /tmp</code>) actually do?</summary>
+It lets anyone create files in the directory, but only the file's owner (or root) can delete or rename it, even though everyone has write access to the directory itself.
+</details>
+
+<hr>
+
+> [!TIP] 
+> For further study on this matter there are more easy to understand articles and youtube videos out there. and for daily basic usage these were enough.
+
+#### Next steps,
+<div style="text-align:center; font-size:3rem;">
+003 -> <a href="./../004">004</a>
+</div>
+
+## Related pages
+
+- [007 - Programming on Linux](./../007)
+
+- [009 - Troubleshooting in linux](./../009)
+
+- [011 - Advanced easy guide to linux](./../011)
