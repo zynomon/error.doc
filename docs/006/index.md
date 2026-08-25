@@ -86,8 +86,7 @@ Some emulators are better used on their own rather than as a libretro core, usua
 > Not all emulation is legal, 
 
 
-<
-  hr>
+<hr>
 
 #### Next steps,
 <div style="text-align:center; font-size:3rem;">
