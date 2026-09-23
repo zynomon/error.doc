@@ -5,6 +5,8 @@ description: "Step-by-step installation and setup instructions"
 embed-thumbnail: https://zynomon.github.io/error.doc/docs/002/thumb.png
 ---
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/KDjeGcVLpzA?si=QBB5YNfNKbZTlNex" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Table of Contents
 
 - [Booting Up](#booting-up)
