@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QButtonGroup>
 #include <QMainWindow>
 #include <QSplitter>
 #include <QTreeWidget>
@@ -8,6 +9,7 @@
 #include <QHBoxLayout>
 #include <QFormLayout>
 #include <QGridLayout>
+#include <QFileDialog>
 #include <QTabWidget>
 #include <QBuffer>
 #include <QPushButton>
@@ -59,9 +61,11 @@
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QProgressBar>
+#include <QMouseEvent>
 #include <QStyle>
 #include <QLineEdit>
 #include <QPushButton>
+#include <tan>
 
 static const QRegularExpression TITLE_REGEX("<title>([^<]+)</title>");
 static const QRegularExpression MANPAGE_REGEX("^([^\\s]+)\\s+\\(([0-9]+)\\)\\s+-\\s+(.+)$");
@@ -112,10 +116,6 @@ public:
 
     bool showTabAlways() const {
         return m_settings.value("ui/showTabAlways", false).toBool();
-    }
-
-    QString terminal() const {
-        return m_settings.value("system/terminal", "konsole").toString();
     }
 
     QString ttsEngine() const {
@@ -172,11 +172,6 @@ public:
         emit settingsChanged();
     }
 
-    void setTerminal(const QString &v) {
-        m_settings.setValue("system/terminal", v);
-        emit settingsChanged();
-    }
-
     void setTtsEngine(const QString &v) {
         m_settings.setValue("tts/engine", v);
         emit settingsChanged();
@@ -198,6 +193,20 @@ public:
         emit settingsChanged();
     }
 
+    QColor paletteColor(int digit) const {
+        static const QColor def[10] = {
+            QColor("#000000"), QColor("#ffffff"), QColor("#ffff00"), QColor("#0000ff"),
+            QColor("#ff00ff"), QColor("#00ff00"), QColor("#ff0000"), QColor("#333333"),
+            QColor("#cccccc"), QColor("#008080")
+        };
+        return m_settings.value(QString("palette/%1").arg(digit),
+                                def[qBound(0, digit, 9)].name()).value<QColor>();
+    }
+    void setPaletteColor(int digit, const QColor &c) {
+        m_settings.setValue(QString("palette/%1").arg(digit), c.name());
+        emit settingsChanged();
+    }
+
     void reset() {
         m_settings.clear();
         emit settingsChanged();
@@ -210,40 +219,23 @@ private:
     Settings() : m_settings("error.os", "doc") {}
     QSettings m_settings;
 };
-
 class ManpageLoaderWorker : public QObject {
     Q_OBJECT
 
-public:
-    explicit ManpageLoaderWorker(QObject *parent = nullptr) : QObject(parent) {}
-
 public slots:
     void loadManpages() {
-        QProcess *process = new QProcess(this);
-
-        connect(process, &QProcess::finished, this, [this, process](int exitCode) {
-            if (exitCode == 0) {
-                QString output = process->readAllStandardOutput();
-                emit manpagesLoaded(output);
-            } else {
-                emit manpagesLoaded("");
-            }
-            process->deleteLater();
-        });
-
-        connect(process, &QProcess::errorOccurred, this, [this, process](QProcess::ProcessError error) {
-            qWarning() << "Manpage process error:" << error;
-            emit manpagesLoaded("");
-            process->deleteLater();
-        });
-
-        process->start("man", QStringList() << "-k" << ".");
+        QProcess process;
+        process.start("man", QStringList() << "-k" << ".");
+        QString output;
+        if (process.waitForFinished(-1) && process.exitCode() == 0) {
+            output = QString::fromUtf8(process.readAllStandardOutput());
+        }
+        emit manpagesLoaded(output);
     }
 
 signals:
     void manpagesLoaded(const QString &output);
 };
-
 class NotFoundPage {
 public:
     static QString generate(const QString &path) {
@@ -258,8 +250,6 @@ public:
                    ).arg(path.toHtmlEscaped());
     }
 };
-
-
 class CustomTagProcessor {
 public:
     static QString processHtml(const QString &html, QObject *parent = nullptr) {
@@ -379,8 +369,6 @@ private:
         return QString::number(bytes / (1024 * 1024)) + " MB";
     }
 };
-
-
 class FindBar : public QWidget {
     Q_OBJECT
 
@@ -395,7 +383,6 @@ public:
 
         m_findEdit = new QLineEdit(this);
         m_findEdit->setPlaceholderText("Find...");
-
         m_nextBtn = new QPushButton("Next", this);
         m_prevBtn = new QPushButton("Previous", this);
         m_closeBtn = new QPushButton("×", this);
@@ -463,8 +450,6 @@ private:
     QLineEdit *m_findEdit;
     QPushButton *m_nextBtn, *m_prevBtn, *m_closeBtn;
 };
-
-
 class DocumentUrl : public QObject {
     Q_OBJECT
 
@@ -525,14 +510,96 @@ private:
     QString m_path;
     QStringList m_pathParts;
 };
-
-
 struct Bookmark {
     QString id, title, url;
     QDateTime created;
 };
+struct Highlight {
+    QString url;
+    QString color;
+    QString argStart;
+    QString argEnd;
+    int     offset = -1;
+};
+class HighlightStore : public QObject {
+    Q_OBJECT
+public:
+    explicit HighlightStore(QObject *parent = nullptr) : QObject(parent) { load(); }
 
+    void add(const Highlight &h) {
+        m_items.append(h);
+        save();
+        emit changed(h.url);
+    }
 
+    QList<Highlight> forUrl(const QString &url) const {
+        QList<Highlight> out;
+        for (const Highlight &h : m_items)
+            if (h.url == url) out.append(h);
+        return out;
+    }
+
+signals:
+    void changed(const QString &url);
+
+private:
+    QList<Highlight> m_items;
+
+    static QString escapePipes(const QString &s) {
+        QString r = s;
+        r.replace('|', QChar(0x2502));
+        return r;
+    }
+    static QString unescapePipes(const QString &s) {
+        QString r = s;
+        r.replace(QChar(0x2502), '|');
+        return r;
+    }
+
+    QString filePath() const {
+        return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
+        + "/highlights.txt";
+    }
+
+    void load() {
+        QFile f(filePath());
+        if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+            return;
+        const QString text = QString::fromUtf8(f.readAll());
+        f.close();
+
+        static const QRegularExpression rec(
+            QStringLiteral(R"(:\[1\|([^|]*)\|1\]\[2\|(\d\d)\|2\]\[3\|([^|]*)\|3\]\[4\|([^|]*)\|4\](?:\[5\|(-?\d+)\|5\])?)"));
+
+        auto it = rec.globalMatch(text);
+        while (it.hasNext()) {
+            const QRegularExpressionMatch m = it.next();
+            Highlight h;
+            h.url      = unescapePipes(m.captured(1));
+            h.color    = m.captured(2);
+            h.argStart = unescapePipes(m.captured(3));
+            h.argEnd   = unescapePipes(m.captured(4));
+            h.offset   = m.captured(5).isEmpty() ? -1 : m.captured(5).toInt();
+            if (!h.url.isEmpty() && !h.argStart.isEmpty() && !h.argEnd.isEmpty())
+                m_items.append(h);
+        }
+    }
+
+    void save() {
+        QString out;
+        for (const Highlight &h : m_items) {
+            out += QStringLiteral(":[1|%1|1][2|%2|2][3|%3|3][4|%4|4][5|%5|5]\n")
+            .arg(escapePipes(h.url), h.color,
+                 escapePipes(h.argStart), escapePipes(h.argEnd),
+                 QString::number(h.offset));
+        }
+        QDir().mkpath(QFileInfo(filePath()).absolutePath());
+        QFile f(filePath());
+        if (!f.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
+            return;
+        f.write(out.toUtf8());
+    }
+};
 class BookmarkStore : public QObject {
     Q_OBJECT
 
@@ -594,84 +661,173 @@ private:
         settings.endArray();
     }
 };
-
-
 class HighlightDialog : public QDialog {
     Q_OBJECT
-
 public:
     explicit HighlightDialog(QWidget *parent = nullptr) : QDialog(parent) {
         setWindowTitle("Highlight Text");
-        setMinimumWidth(400);
+        setMinimumWidth(420);
 
-        auto *layout = new QVBoxLayout(this);
+        auto *root = new QVBoxLayout(this);
 
-        auto *fgLayout = new QHBoxLayout();
-        m_fgBtn = new QPushButton("FG Color", this);
-        m_fgEdit = new QLineEdit("#000000", this);
-        m_fgEdit->setMaxLength(7);
-        fgLayout->addWidget(new QLabel("Foreground:", this));
-        fgLayout->addWidget(m_fgBtn);
-        fgLayout->addWidget(m_fgEdit);
+        auto buildRow = [this, root](const QString &label, bool isBg,
+                                     QVector<QToolButton*> &out) {
+            auto *group = new QButtonGroup(this);   // one group per row
+            group->setExclusive(true);
 
-        auto *bgLayout = new QHBoxLayout();
-        m_bgBtn = new QPushButton("BG Color", this);
-        m_bgEdit = new QLineEdit("#ffff00", this);
-        m_bgEdit->setMaxLength(7);
-        bgLayout->addWidget(new QLabel("Background:", this));
-        bgLayout->addWidget(m_bgBtn);
-        bgLayout->addWidget(m_bgEdit);
+            auto *row = new QHBoxLayout();
+            row->addWidget(new QLabel(label, this));
+            for (int i = 0; i < 10; ++i) {
+                auto *b = new QToolButton(this);
+                b->setCheckable(true);
+                b->setFixedSize(28, 28);
+                b->setToolTip(QString::number(i));
+                group->addButton(b);
+                connect(b, &QToolButton::clicked, this, [this, i, isBg]() {
+                    if (isBg) m_bg = i; else m_fg = i;
+                    updatePreview();
+                });
+                row->addWidget(b);
+                out.append(b);
+            }
+            row->addStretch();
+            root->addLayout(row);
+        };
+
+        buildRow(QStringLiteral("Background:"), true,  m_bgButtons);
+        buildRow(QStringLiteral("Foreground:"), false, m_fgButtons);
+
+        m_preview = new QLabel(QStringLiteral("The quick brown fox jumps over the lazy dog."), this);
+        m_preview->setMargin(8);
+        m_preview->setAlignment(Qt::AlignCenter);
 
         auto *buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+        root->addWidget(m_preview);
+        root->addWidget(buttons);
 
-        layout->addLayout(fgLayout);
-        layout->addLayout(bgLayout);
-        layout->addWidget(buttons);
-
-        connect(m_fgBtn, &QPushButton::clicked, this, &HighlightDialog::pickFgColor);
-        connect(m_bgBtn, &QPushButton::clicked, this, &HighlightDialog::pickBgColor);
-        connect(m_fgEdit, &QLineEdit::textChanged, this, &HighlightDialog::updateFgPreview);
-        connect(m_bgEdit, &QLineEdit::textChanged, this, &HighlightDialog::updateBgPreview);
         connect(buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
         connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
-        updateFgPreview();
-        updateBgPreview();
+        m_bgButtons[m_bg]->setChecked(true);
+        m_fgButtons[m_fg]->setChecked(true);
+        updatePreview();
     }
 
-    QColor fgColor() const { return QColor(m_fgEdit->text()); }
-    QColor bgColor() const { return QColor(m_bgEdit->text()); }
+    QColor fgColor() const { return slot(m_fg); }
+    QColor bgColor() const { return slot(m_bg); }
 
-private slots:
-    void pickFgColor() {
-        QColor color = QColorDialog::getColor(fgColor(), this);
-        if (color.isValid()) {
-            m_fgEdit->setText(color.name());
-        }
+    // Palette: digit 0-9 -> color. Digits are what get saved to disk.
+    static QColor slot(int d) {
+        return Settings::instance().paletteColor(d);
     }
 
-    void pickBgColor() {
-        QColor color = QColorDialog::getColor(bgColor(), this);
-        if (color.isValid()) {
-            m_bgEdit->setText(color.name());
-        }
-    }
-
-    void updateFgPreview() {
-        QString style = QString("background-color: %1; color: white;").arg(m_fgEdit->text());
-        m_fgBtn->setStyleSheet(style);
-    }
-
-    void updateBgPreview() {
-        QString style = QString("background-color: %1; color: black;").arg(m_bgEdit->text());
-        m_bgBtn->setStyleSheet(style);
+    static int toDigit(const QColor &c) {
+        for (int i = 0; i < 10; ++i)
+            if (slot(i) == c)
+                return i;
+        return 0;
     }
 
 private:
-    QPushButton *m_fgBtn, *m_bgBtn;
-    QLineEdit *m_fgEdit, *m_bgEdit;
+    void updatePreview() {
+        for (int i = 0; i < 10; ++i) {
+            const QString css = QStringLiteral(
+                                    "QToolButton{background:%1;border:1px solid #888;}"
+                                    "QToolButton:checked{border:3px solid #000;}")
+                                    .arg(slot(i).name());
+            m_bgButtons[i]->setStyleSheet(css);
+            m_fgButtons[i]->setStyleSheet(css);
+        }
+        m_preview->setStyleSheet(QStringLiteral(
+                                     "background:%1;color:%2;border:1px solid #888;font-weight:bold;")
+                                     .arg(slot(m_bg).name(), slot(m_fg).name()));
+    }
+
+    int m_bg = 2;   // yellow background
+    int m_fg = 0;   // black text
+    QVector<QToolButton*> m_bgButtons;
+    QVector<QToolButton*> m_fgButtons;
+    QLabel *m_preview = nullptr;
 };
 
+class HighlightApplier {
+public:
+    // Re-apply saved highlights to a freshly loaded page.
+    static void apply(QTextBrowser *browser, const QList<Highlight> &items) {
+        if (!browser || items.isEmpty())
+            return;
+
+        const QString plain = browser->toPlainText();
+
+        for (const Highlight &h : items) {
+            if (h.color.size() != 2)
+                continue;
+            const int bg = h.color[0].digitValue();
+            const int fg = h.color[1].digitValue();
+            if (bg < 0 || fg < 0)
+                continue;
+
+            // 1. Start: trust the saved offset if the text still matches there,
+            //    otherwise search for the start anchor.
+            int p = -1;
+            if (h.offset >= 0 && plain.mid(h.offset, h.argStart.size()) == h.argStart)
+                p = h.offset;
+            else
+                p = plain.indexOf(h.argStart);
+            if (p < 0)
+                continue;
+
+            // 2. End: the end anchor must END at or after the end of the start
+            //    anchor. This also covers short selections (argStart == argEnd).
+            const int minEnd = p + h.argStart.size();
+            int q = plain.indexOf(h.argEnd, p);
+            while (q >= 0 && q + h.argEnd.size() < minEnd)
+                q = plain.indexOf(h.argEnd, q + 1);
+            if (q < 0)
+                continue;
+
+            const int e = q + h.argEnd.size();
+
+            QTextCursor c(browser->document());
+            c.setPosition(p);
+            c.setPosition(e, QTextCursor::KeepAnchor);
+
+            QTextCharFormat fmt;
+            fmt.setBackground(HighlightDialog::slot(bg));
+            fmt.setForeground(HighlightDialog::slot(fg));
+            fmt.setFontWeight(QFont::Bold);
+            c.mergeCharFormat(fmt);
+        }
+    }
+
+    // Save the browser's current selection as a highlight record.
+    static void record(QTextBrowser *browser, HighlightStore *store,
+                       const QString &url, const QColor &fg, const QColor &bg) {
+        if (!browser || !store || url.isEmpty())
+            return;
+
+        const QTextCursor cur = browser->textCursor();
+        if (!cur.hasSelection())
+            return;
+
+        const int s = cur.selectionStart();
+        const int e = cur.selectionEnd();
+        const QString plain = browser->toPlainText();
+        if (s < 0 || e <= s || e > plain.size())
+            return;
+
+        const QString sel = plain.mid(s, e - s);
+
+        Highlight h;
+        h.url      = url;
+        h.color    = QString::number(HighlightDialog::toDigit(bg))
+                  + QString::number(HighlightDialog::toDigit(fg));
+        h.argStart = sel.left(32);
+        h.argEnd   = sel.right(32);
+        h.offset   = s;
+        store->add(h);
+    }
+};
 
 class BookmarkDialog : public QDialog {
     Q_OBJECT
@@ -882,13 +1038,12 @@ private:
 
     QTextToSpeech *m_speech;
 };
-
-
 class ErrorDocEngine : public ContentEngine {
     Q_OBJECT
 
 public:
-    explicit ErrorDocEngine(QWidget *parent = nullptr) : ContentEngine(parent) {
+    explicit ErrorDocEngine(HighlightStore *store, QWidget *parent = nullptr)
+        : ContentEngine(parent), m_store(store) {
         auto *layout = new QVBoxLayout(this);
         layout->setContentsMargins(0, 0, 0, 0);
 
@@ -910,6 +1065,9 @@ protected:
 
     void load(const DocumentUrl &url) override {
         if (!url.isErr()) return;
+        m_currentUrl = url.url();
+        m_bashCommands.clear();
+        m_bashCounter = 0;
 
         QString path = url.path();
         if (path.startsWith("/")) path = path.mid(1);
@@ -923,12 +1081,7 @@ protected:
         if (file.open(QIODevice::ReadOnly)) {
             QString html = QString::fromUtf8(file.readAll());
 
-            QRegularExpressionMatch pageMatch = PAGE_ICON_TAG_REGEX.match(html);
-            if (pageMatch.hasMatch()) {
-                QString iconName = pageMatch.captured(1);
-                emit pageIconFound(iconName);
-                html.remove(PAGE_ICON_TAG_REGEX);
-            }
+            html.remove(PAGE_ICON_TAG_REGEX);
 
             html.replace(ICON_TAG_REGEX, "<img src=\"icon://\\1\">");
 
@@ -968,12 +1121,14 @@ protected:
             while (bashIt.hasNext()) {
                 QRegularExpressionMatch match = bashIt.next();
                 QString code = match.captured(1);
+                QString id = QString::number(m_bashCounter++);
+                m_bashCommands.insert(id, code);
                 QString replacement = QString(
                                           "<div class='bash-widget'>"
                                           "<pre class='bash-code'>%1</pre>"
                                           "<a href='bash://%2' class='bash-button'>▶ Run in Terminal</a>"
                                           "</div>"
-                                          ).arg(code.toHtmlEscaped(), code);
+                                          ).arg(code.toHtmlEscaped(), id);
                 html.replace(match.captured(0), replacement);
             }
 
@@ -1065,6 +1220,9 @@ protected:
         }
 
         m_findBar->hide();
+
+        if (m_store)
+            HighlightApplier::apply(m_browser, m_store->forUrl(m_currentUrl));
     }
     QString selectedText() const override { return m_browser->textCursor().selectedText(); }
     QString allText() const override { return m_browser->toPlainText(); }
@@ -1075,12 +1233,15 @@ protected:
 
     void highlightSelection(const QColor &fg, const QColor &bg) override {
         QTextCursor cursor = m_browser->textCursor();
-        if (cursor.hasSelection()) {
-            QTextCharFormat fmt;
-            fmt.setForeground(fg);
-            fmt.setBackground(bg);
-            cursor.mergeCharFormat(fmt);
-        }
+        if (!cursor.hasSelection())
+            return;
+
+        QTextCharFormat fmt;
+        fmt.setForeground(fg);
+        fmt.setBackground(bg);
+        cursor.mergeCharFormat(fmt);
+
+        HighlightApplier::record(m_browser, m_store, m_currentUrl, fg, bg);
     }
 
     void speakSelected() override {
@@ -1093,35 +1254,13 @@ protected:
 signals:
     void speakText(const QString &text);
     void requestHighlight();
-    void pageIconFound(const QString &iconName);
 
 private slots:
     void onLinkClicked(const QUrl &link) {
         if (link.scheme() == "bash") {
-            QString code = QUrl::fromPercentEncoding(link.path().toUtf8());
-            QString terminal = Settings::instance().terminal();
-
-            QString fullCmd = QString(
-                                  "bash -c '"
-                                  "echo \"Command to execute: %1\"; "
-                                  "echo; "
-                                  "read -p \"Do you want to execute this command? (y/N): \" confirm; "
-                                  "if [[ \"$confirm\" == \"y\" || \"$confirm\" == \"Y\" ]]; then "
-                                  "    echo; "
-                                  "    echo \"Executing: %1\"; "
-                                  "    echo; "
-                                  "    %1; "
-                                  "    echo; "
-                                  "else "
-                                  "    echo; "
-                                  "    echo \"Execution cancelled.\"; "
-                                  "fi; "
-                                  "echo; "
-                                  "echo \"Press Enter to close\"; "
-                                  "read'"
-                                  ).arg(code);
-
-            QProcess::startDetached(terminal, QStringList() << "-e" << fullCmd);
+            QString code = m_bashCommands.value(link.host());
+            if (!code.isEmpty())
+                TAN::tanrun(code.toStdString());
 
         } else if (link.toString().startsWith(":/")) {
             emit navigationRequested(link.toString());
@@ -1150,12 +1289,17 @@ private:
 
     QTextBrowser *m_browser;
     FindBar *m_findBar;
+    HighlightStore *m_store = nullptr;
+    QString m_currentUrl;
+    QHash<QString, QString> m_bashCommands;
+    int m_bashCounter = 0;
 };
 class ManpageEngine : public ContentEngine {
     Q_OBJECT
 
 public:
-    explicit ManpageEngine(QWidget *parent = nullptr) : ContentEngine(parent) {
+    explicit ManpageEngine(HighlightStore *store, QWidget *parent = nullptr)
+        : ContentEngine(parent), m_store(store) {
         auto *mainLayout = new QVBoxLayout(this);
         mainLayout->setContentsMargins(0, 0, 0, 0);
         mainLayout->setSpacing(0);
@@ -1235,6 +1379,7 @@ public:
 
     void load(const DocumentUrl &url) override {
         if (!url.isMan()) return;
+        m_currentUrl = url.url();
 
         QStringList parts = url.pathParts();
         if (parts.size() < 2) {
@@ -1259,12 +1404,15 @@ public:
 
     void highlightSelection(const QColor &fg, const QColor &bg) override {
         QTextCursor cursor = m_browser->textCursor();
-        if (cursor.hasSelection()) {
-            QTextCharFormat fmt;
-            fmt.setForeground(fg);
-            fmt.setBackground(bg);
-            cursor.mergeCharFormat(fmt);
-        }
+        if (!cursor.hasSelection())
+            return;
+
+        QTextCharFormat fmt;
+        fmt.setForeground(fg);
+        fmt.setBackground(bg);
+        cursor.mergeCharFormat(fmt);
+
+        HighlightApplier::record(m_browser, m_store, m_currentUrl, fg, bg);
     }
 
     void speakSelected() override {
@@ -1330,6 +1478,8 @@ private:
                     if (exitCode == 0) {
                         QString content = process->readAllStandardOutput();
                         m_browser->setHtml(formatManpage(content));
+                        if (m_store)
+                            HighlightApplier::apply(m_browser, m_store->forUrl(m_currentUrl));
 
                         QString desc = extractDescription(content);
                         m_descLabel->setText(desc);
@@ -1403,6 +1553,8 @@ private:
     QLabel *m_iconLabel, *m_titleLabel, *m_dateLabel, *m_pathLabel, *m_descLabel;
     QTextBrowser *m_browser;
     FindBar *m_findBar;
+    HighlightStore *m_store = nullptr;
+    QString m_currentUrl;
 };
 
 class SettingsPage : public QScrollArea {
@@ -1416,6 +1568,25 @@ public:
         auto *content = new QWidget();
         auto *layout = new QVBoxLayout(content);
         layout->setSpacing(20);
+
+        m_ttsWarningWidget = new QWidget(this);
+        m_ttsWarningWidget->setObjectName("ttsWarning");
+        m_ttsWarningWidget->setStyleSheet(
+            "QWidget#ttsWarning { background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; }");
+        auto *warnLayout = new QHBoxLayout(m_ttsWarningWidget);
+        auto *warnIcon = new QLabel(this);
+        warnIcon->setPixmap(QIcon::fromTheme("dialog-warning").pixmap(24, 24));
+        warnIcon->setFixedSize(28, 28);
+        m_ttsWarningLabel = new QLabel(this);
+        m_ttsWarningLabel->setWordWrap(true);
+        m_ttsWarningLabel->setStyleSheet("color: #856404;");
+        m_ttsWarningLabel->setText("No text-to-speech backend was found on this system. Speech features will not work until a backend is installed.");
+        m_ttsInstallBtn = new QPushButton(QIcon::fromTheme("system-software-install"), "Install Backends...", this);
+        warnLayout->addWidget(warnIcon);
+        warnLayout->addWidget(m_ttsWarningLabel, 1);
+        warnLayout->addWidget(m_ttsInstallBtn);
+        m_ttsWarningWidget->hide();
+        layout->addWidget(m_ttsWarningWidget);
 
         auto *shortcutGroup = new QGroupBox("Keyboard Shortcuts", this);
         auto *shortcutLayout = new QFormLayout(shortcutGroup);
@@ -1449,15 +1620,6 @@ public:
 
         m_showTabAlways = new QCheckBox("Always show tab bar (even with single tab)", this);
         uiLayout->addRow(m_showTabAlways);
-
-        auto *termGroup = new QGroupBox("Terminal", this);
-        auto *termLayout = new QFormLayout(termGroup);
-
-        m_terminal = new QComboBox(this);
-        m_terminal->addItems(QStringList() << "konsole" << "xterm" << "gnome-terminal" << "xfce4-terminal" << "kitty" << "alacritty");
-        m_terminal->setEditable(true);
-        m_terminal->setInsertPolicy(QComboBox::NoInsert);
-        termLayout->addRow("Terminal Emulator:", m_terminal);
 
         auto *ttsGroup = new QGroupBox("Text-to-Speech", this);
         auto *ttsLayout = new QFormLayout(ttsGroup);
@@ -1522,9 +1684,31 @@ public:
         btnLayout->addWidget(cancelBtn);
         btnLayout->addStretch();
 
+        auto *paletteGroup = new QGroupBox("Highlight Palette", this);
+        auto *paletteGrid = new QGridLayout(paletteGroup);
+        m_paletteButtons.resize(10);
+        for (int i = 0; i < 10; ++i) {
+            auto *lbl = new QLabel(QString::number(i), paletteGroup);
+            auto *btn = new QPushButton(paletteGroup);
+            btn->setFixedSize(40, 26);
+            btn->setToolTip(QString("Highlight color slot %1").arg(i));
+            connect(btn, &QPushButton::clicked, this, [this, i]() {
+                QColor c = QColorDialog::getColor(
+                    Settings::instance().paletteColor(i), this,
+                    QString("Palette slot %1").arg(i));
+                if (c.isValid()) {
+                    Settings::instance().setPaletteColor(i, c);
+                    refreshPaletteButtons();
+                }
+            });
+            m_paletteButtons[i] = btn;
+            paletteGrid->addWidget(lbl, i, 0);
+            paletteGrid->addWidget(btn, i, 1);
+        }
+        layout->addWidget(paletteGroup);
+
         layout->addWidget(shortcutGroup);
         layout->addWidget(uiGroup);
-        layout->addWidget(termGroup);
         layout->addWidget(ttsGroup);
         layout->addWidget(testGroup);
         layout->addLayout(btnLayout);
@@ -1546,8 +1730,11 @@ public:
         connect(m_testSpeakBtn, &QPushButton::clicked, this, &SettingsPage::testSpeak);
         connect(m_testTextEdit, &QLineEdit::returnPressed, this, &SettingsPage::testSpeak);
 
+        connect(m_ttsInstallBtn, &QPushButton::clicked, this, &SettingsPage::runTtsInstallScript);
+
         loadSettings();
         QTimer::singleShot(100, this, &SettingsPage::populateVoices);
+        QTimer::singleShot(300, this, &SettingsPage::checkTtsBackends);
     }
 
     ~SettingsPage() {
@@ -1561,6 +1748,15 @@ signals:
     void settingsChanged();
 
 private slots:
+    void refreshPaletteButtons() {
+        for (int i = 0; i < m_paletteButtons.size(); ++i) {
+            QColor c = Settings::instance().paletteColor(i);
+            m_paletteButtons[i]->setStyleSheet(QString(
+                                                   "QPushButton { background: %1; border: 1px solid #666; }"
+                                                   "QPushButton:hover { border: 1px solid #000; }").arg(c.name()));
+        }
+    }
+
     void saveSettings() {
         auto &s = Settings::instance();
 
@@ -1574,7 +1770,6 @@ private slots:
         s.setShortcutRefresh(m_refreshShortcut->keySequence().toString());
 
         s.setShowTabAlways(m_showTabAlways->isChecked());
-        s.setTerminal(m_terminal->currentText());
 
         QString engine = m_ttsEngine->currentText();
         if (engine == "Default") engine = "";
@@ -1609,13 +1804,11 @@ private slots:
     }
 
     void updateRateLabel(int value) {
-        double rate = value / 10.0;
-        m_ttsRateLabel->setText(QString("%1").arg(rate, 0, 'f', 1));
+        m_ttsRateLabel->setText(QString("%1").arg(value / 10.0, 0, 'f', 1));
     }
 
     void updatePitchLabel(int value) {
-        double pitch = value / 10.0;
-        m_ttsPitchLabel->setText(QString("%1").arg(pitch, 0, 'f', 1));
+        m_ttsPitchLabel->setText(QString("%1").arg(value / 10.0, 0, 'f', 1));
     }
 
     void updateVolumeLabel(int value) {
@@ -1636,13 +1829,24 @@ private slots:
             testSpeech->setEngine(engine);
         }
 
+        if (testSpeech->state() == QTextToSpeech::Error) {
+            QMessageBox::warning(this, "Text-to-Speech Error",
+                                 "No working text-to-speech backend was found.\n\n"
+                                 "Would you like to install espeak-ng and related backends now?",
+                                 QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes
+                ? runTtsInstallScript()
+                : (void)0;
+            testSpeech->deleteLater();
+            return;
+        }
+
         testSpeech->setRate(m_ttsRate->value() / 10.0);
         testSpeech->setPitch(m_ttsPitch->value() / 10.0);
         testSpeech->setVolume(m_ttsVolume->value() / 100.0);
 
         QString voiceName = m_ttsVoice->currentText();
         if (!voiceName.isEmpty() && voiceName != "Default") {
-            QList<QVoice> voices = testSpeech->availableVoices();
+            const QList<QVoice> voices = testSpeech->availableVoices();
             for (const QVoice &voice : voices) {
                 if (voice.name() == voiceName) {
                     testSpeech->setVoice(voice);
@@ -1672,7 +1876,6 @@ private slots:
             m_skipVoiceTest = false;
             return;
         }
-        // Don't auto-speak - user can use Test button
     }
 
     void populateVoices() {
@@ -1689,7 +1892,7 @@ private slots:
             m_testSpeech->setEngine(engine);
         }
 
-        QList<QVoice> voices = m_testSpeech->availableVoices();
+        const QList<QVoice> voices = m_testSpeech->availableVoices();
         for (const QVoice &voice : std::as_const(voices)) {
             m_ttsVoice->addItem(voice.name(), voice.name());
         }
@@ -1725,13 +1928,9 @@ private slots:
 
         m_showTabAlways->setChecked(s.showTabAlways());
 
-        int idx = m_terminal->findText(s.terminal());
-        if (idx >= 0) m_terminal->setCurrentIndex(idx);
-        else m_terminal->setEditText(s.terminal());
-
         QString engine = s.ttsEngine();
         if (engine.isEmpty()) engine = "Default";
-        idx = m_ttsEngine->findText(engine);
+        int idx = m_ttsEngine->findText(engine);
         if (idx >= 0) m_ttsEngine->setCurrentIndex(idx);
 
         m_ttsRate->setValue(s.ttsRate() * 10);
@@ -1742,7 +1941,48 @@ private slots:
         updatePitchLabel(m_ttsPitch->value());
         updateVolumeLabel(m_ttsVolume->value());
 
+        refreshPaletteButtons();
         QTimer::singleShot(200, this, &SettingsPage::populateVoices);
+    }
+
+    void checkTtsBackends() {
+        bool hasBackend = !QTextToSpeech::availableEngines().isEmpty();
+
+        if (!hasBackend) {
+            const QStringList candidates = { "espeak-ng", "espeak", "speech-dispatcher", "spd-say" };
+            for (const QString &bin : candidates) {
+                if (!QStandardPaths::findExecutable(bin).isEmpty()) {
+                    hasBackend = true;
+                    break;
+                }
+            }
+        }
+
+        m_ttsWarningWidget->setVisible(!hasBackend);
+
+        if (!hasBackend) {
+            int answer = QMessageBox::question(
+                this, "Text-to-Speech Backend Missing",
+                "No text-to-speech backend was found on this system.\n\n"
+                "Would you like to install espeak-ng and related backends now?\n"
+                "This will open a terminal and run apt as root.",
+                QMessageBox::Yes | QMessageBox::No);
+
+            if (answer == QMessageBox::Yes) {
+                runTtsInstallScript();
+            }
+        }
+    }
+
+    void runTtsInstallScript() {
+        const QString cmd =
+            "apt-get update && apt-get install -y espeak-ng espeak-ng-data "
+            "speech-dispatcher libspeechd2 speech-dispatcher-espeak-ng";
+
+        if (!TAN::tanrunsu(cmd.toStdString())) {
+            QMessageBox::warning(this, "Launch Failed",
+                                 "Could not launch a terminal to run the install command.");
+        }
     }
 
 private:
@@ -1756,8 +1996,7 @@ private:
     QKeySequenceEdit *m_refreshShortcut;
 
     QCheckBox *m_showTabAlways;
-
-    QComboBox *m_terminal;
+    QVector<QPushButton*> m_paletteButtons;
 
     QComboBox *m_ttsEngine;
     QSlider *m_ttsRate;
@@ -1767,6 +2006,10 @@ private:
     QLabel *m_ttsPitchLabel;
     QLabel *m_ttsVolumeLabel;
     QComboBox *m_ttsVoice;
+
+    QWidget *m_ttsWarningWidget;
+    QLabel *m_ttsWarningLabel;
+    QPushButton *m_ttsInstallBtn;
 
     QLineEdit *m_testTextEdit;
     QPushButton *m_testSpeakBtn;
@@ -1893,9 +2136,9 @@ public:
         titleLabel->setAlignment(Qt::AlignCenter);
 
         auto *infoLabel = new QLabel(
-            "<p><b>Version:</b> 1.4</p>"
+            "<p><b>Version:</b> 2.0</p>"
             "<h3>About</h3>"
-           "This documentation takes a time on startup is the main disatvantage except that using this is easy"
+            "This documentation takes a time on startup is the main disatvantage except that using this is easy make sure to have installed \"man\""
             "</ul>",
             this
             );
@@ -1905,8 +2148,6 @@ public:
         layout->addStretch();
     }
 };
-
-
 class DocEngine : public ContentEngine {
     Q_OBJECT
 
@@ -1973,12 +2214,12 @@ class ContentArea : public QStackedWidget {
     Q_OBJECT
 
 public:
-    ContentArea(BookmarkStore *store, QWidget *parent = nullptr)
-        : QStackedWidget(parent), m_store(store)
+    ContentArea(BookmarkStore *store, HighlightStore *highlightStore, QWidget *parent = nullptr)
+        : QStackedWidget(parent), m_store(store), m_highlightStore(highlightStore)
     {
         m_welcomeEngine = new WelcomeEngine(this);
-        m_errEngine = new ErrorDocEngine(this);
-        m_manEngine = new ManpageEngine(this);
+        m_errEngine = new ErrorDocEngine(m_highlightStore, this);
+        m_manEngine = new ManpageEngine(m_highlightStore, this);
         m_docEngine = new DocEngine(store, this);
 
         addWidget(m_welcomeEngine);
@@ -2003,8 +2244,6 @@ public:
                 this, &ContentArea::highlightRequested);
         connect(m_manEngine, &ManpageEngine::iconChanged,
                 this, &ContentArea::iconChanged);
-        connect(m_errEngine, &ErrorDocEngine::pageIconFound,
-                this, &ContentArea::pageIconFound);
         connect(m_docEngine, &DocEngine::navigationRequested,
                 this, &ContentArea::navigateRequested);
         connect(m_docEngine, &DocEngine::settingsChanged,
@@ -2076,7 +2315,6 @@ signals:
     void urlChanged(const QString &url);
 
 
-    void pageIconFound(const QString &iconName);
     void titleChanged(const QString &title);
     void highlightRequested();
     void iconChanged(const QString &iconName);
@@ -2118,6 +2356,7 @@ private:
     }
 
     BookmarkStore *m_store;
+    HighlightStore *m_highlightStore = nullptr;
     DocumentUrl *m_currentUrl;
     WelcomeEngine *m_welcomeEngine;
     ErrorDocEngine *m_errEngine;
@@ -2130,22 +2369,18 @@ class TabContent : public QWidget {
     Q_OBJECT
 
 public:
-    TabContent(BookmarkStore *store, QWidget *parent = nullptr)
+    TabContent(BookmarkStore *store, HighlightStore *highlightStore, QWidget *parent = nullptr)
         : QWidget(parent)
     {
         auto *layout = new QVBoxLayout(this);
         layout->setContentsMargins(0, 0, 0, 0);
 
-        m_contentArea = new ContentArea(store, this);
+        m_contentArea = new ContentArea(store, highlightStore, this);
         layout->addWidget(m_contentArea);
-        connect(m_contentArea, &ContentArea::pageIconFound,
-                this, &TabContent::pageIconFound);
     }
 
     ContentArea* contentArea() { return m_contentArea; }
 
-signals:
-    void pageIconFound(const QString &iconName);
 private:
     ContentArea *m_contentArea;
 };
@@ -2189,21 +2424,6 @@ public:
         filterTree(text);
     }
 
-    void updatePageIcon(const QString &url, const QString &iconName) {
-        QTreeWidgetItemIterator it(this);
-        while (*it) {
-            QTreeWidgetItem *item = *it;
-            if (item->data(0, Qt::UserRole).toString() == url) {
-                QIcon icon = QIcon::fromTheme(iconName);
-                if (!icon.isNull()) {
-                    item->setIcon(0, icon);
-                }
-                break;
-            }
-            ++it;
-        }
-    }
-
     void initializeManpages() {
         if (m_manpagesInitialized) return;
         m_manpagesInitialized = true;
@@ -2218,20 +2438,28 @@ public:
         if (!manItem) return;
 
         auto *loadingItem = new QTreeWidgetItem(manItem);
-        loadingItem->setText(0, "Loading manpages...  ");
+        loadingItem->setText(0, "Loading manpages");
         manItem->setExpanded(true);
 
-        auto *worker = new ManpageLoaderWorker(this);
+        auto *thread = new QThread(this);
+        auto *worker = new ManpageLoaderWorker();
+        worker->moveToThread(thread);
+
+        connect(thread, &QThread::started, worker, &ManpageLoaderWorker::loadManpages);
         connect(worker, &ManpageLoaderWorker::manpagesLoaded, this,
-                [this, manItem, loadingItem, worker](const QString &output) {
+                [this, manItem, loadingItem](const QString &output) {
                     if (!output.isEmpty()) {
                         parseManpages(output, manItem);
                     }
                     delete loadingItem;
-                    worker->deleteLater();
                     emit manpagesLoaded();
                 });
-        worker->loadManpages();
+        connect(worker, &ManpageLoaderWorker::manpagesLoaded, thread, &QThread::quit);
+        connect(thread, &QThread::finished, worker, &QObject::deleteLater);
+        connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+
+        emit manpagesProgress(QStringLiteral("Loading manpages"));
+        thread->start();
     }
 
 signals:
@@ -2239,6 +2467,7 @@ signals:
     void navigationRequestedNewTab(const QString &url);
     void bookmarkRequested(const QString &url, const QString &title);
     void manpagesLoaded();
+    void manpagesProgress(const QString &text);
 
 private slots:
     void onItemActivated(QTreeWidgetItem *item) {
@@ -2406,7 +2635,20 @@ private:
             auto *item = new QTreeWidgetItem(parent);
             QString displayName = info.baseName();
             item->setText(0, displayName);
-            item->setIcon(0, QIcon::fromTheme("documentation"));
+
+            QIcon icon = QIcon::fromTheme("documentation");
+            QFile f(file);
+            if (f.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                const QByteArray head = f.read(1024);
+                const QRegularExpressionMatch m =
+                    PAGE_ICON_TAG_REGEX.match(QString::fromUtf8(head));
+                if (m.hasMatch()) {
+                    QIcon themed = QIcon::fromTheme(m.captured(1));
+                    if (!themed.isNull())
+                        icon = themed;
+                }
+            }
+            item->setIcon(0, icon);
 
             QString urlPath = file;
             // Remove the ":/" prefix
@@ -2421,7 +2663,7 @@ private:
         }
     }
 
-  void parseManpages(const QString &output, QTreeWidgetItem *parent) {
+    void parseManpages(const QString &output, QTreeWidgetItem *parent) {
         QStringList lines = output.split('\n', Qt::SkipEmptyParts);
         QHash<QString, QTreeWidgetItem*> sections;
 
@@ -2475,35 +2717,97 @@ private:
     QString m_currentUrl;
     QLineEdit *m_searchEdit;
 };
+class LoadingSplash : public QDialog {
+    Q_OBJECT
+
+public:
+    explicit LoadingSplash(QWidget *parent = nullptr)
+        : QDialog(parent, Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint)
+    {
+        setAttribute(Qt::WA_TranslucentBackground);
+        setFixedSize(300, 180);
+
+        auto *layout = new QVBoxLayout(this);
+        layout->setAlignment(Qt::AlignCenter);
+
+        auto *iconLabel = new QLabel(this);
+        iconLabel->setPixmap(QIcon::fromTheme("error.doc", QIcon::fromTheme("help-browser")).pixmap(64, 64));
+        iconLabel->setAlignment(Qt::AlignCenter);
+
+        m_label = new QLabel(this);
+        m_label->setAlignment(Qt::AlignCenter);
+
+        layout->addWidget(iconLabel);
+        layout->addWidget(m_label);
+
+        connect(&m_dotTimer, &QTimer::timeout, this, &LoadingSplash::advanceDots);
+        m_dotTimer.start(1000);
+    }
+
+    void setBaseText(const QString &text) {
+        m_baseText = text;
+        m_dotCount = 3;
+        m_dotDirection = -1;
+        updateLabel();
+    }
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override {
+        if (event->button() == Qt::LeftButton) {
+            m_dragPos = event->globalPosition().toPoint() - frameGeometry().topLeft();
+            event->accept();
+        }
+    }
+
+    void mouseMoveEvent(QMouseEvent *event) override {
+        if (event->buttons() & Qt::LeftButton) {
+            move(event->globalPosition().toPoint() - m_dragPos);
+            event->accept();
+        }
+    }
+
+private slots:
+    void advanceDots() {
+        m_dotCount += m_dotDirection;
+        if (m_dotCount >= 3) {
+            m_dotCount = 3;
+            m_dotDirection = -1;
+        } else if (m_dotCount <= 1) {
+            m_dotCount = 1;
+            m_dotDirection = 1;
+        }
+        updateLabel();
+    }
+
+private:
+    void updateLabel() {
+        m_label->setText(m_baseText + QString(".").repeated(m_dotCount));
+    }
+
+    QLabel *m_label;
+    QString m_baseText;
+    int m_dotCount = 3;
+    int m_dotDirection = -1;
+    QTimer m_dotTimer;
+    QPoint m_dragPos;
+};
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
     MainWindow() {
         setWindowTitle("error.doc");
-        setWindowIcon(QIcon::fromTheme("error.doc", QIcon::fromTheme("help-browser")));
         resize(1200, 800);
 
-        QDialog *splash = new QDialog(nullptr, Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-        splash->setAttribute(Qt::WA_TranslucentBackground);
-        splash->setFixedSize(300, 180);
-        QVBoxLayout *splashLayout = new QVBoxLayout(splash);
-        splashLayout->setAlignment(Qt::AlignCenter);
+        m_splash = new LoadingSplash(nullptr);
+        m_splash->setBaseText("Loading");
 
-        QLabel *iconLabel = new QLabel(splash);
-        iconLabel->setPixmap(QIcon::fromTheme("error.doc", QIcon::fromTheme("help-browser")).pixmap(64, 64));
-        iconLabel->setAlignment(Qt::AlignCenter);
-
-        QLabel *textLabel = new QLabel("Loading...\nit may take a while, be patient\nJust a minuite or so", splash);
-        textLabel->setAlignment(Qt::AlignCenter);
-
-        splashLayout->addWidget(iconLabel);
-        splashLayout->addWidget(textLabel);
-
-        splash->show();
+        m_splash->show();
         QApplication::processEvents();
 
         m_bookmarkStore = new BookmarkStore(this);
+        m_highlightStore = new HighlightStore(this);
         m_ttsManager = &TTSManager::instance();
 
         m_recentUrls.clear();
@@ -2562,17 +2866,28 @@ public:
                 this, &MainWindow::navigateCurrentTab);
         connect(m_navTree, &NavigationTree::bookmarkRequested,
                 this, &MainWindow::addBookmark);
+        connect(m_navTree, &NavigationTree::manpagesProgress,
+                this, [this](const QString &text) {
+                    if (m_splash)
+                        m_splash->setBaseText(text);
+                });
         connect(m_navTree, &NavigationTree::manpagesLoaded,
-                this, [this, splash]() {
+                this, [this]() {
+                    setWindowIcon(QIcon::fromTheme("error.doc",
+                                                   QIcon::fromTheme("help-browser")));
                     show();
-                    splash->accept();
-                    splash->deleteLater();
+                    if (m_splash) {
+                        m_splash->accept();
+                        m_splash->deleteLater();
+                        m_splash = nullptr;
+                    }
                 });
 
         connect(m_bookmarkStore, &BookmarkStore::changed, this, &MainWindow::onBookmarksChanged);
         connect(&Settings::instance(), &Settings::settingsChanged,
                 this, &MainWindow::reloadShortcuts);
 
+        m_splash->setBaseText(QStringLiteral("Loading Doc components"));
         m_navTree->initializeManpages();
     }
 private slots:
@@ -2594,7 +2909,7 @@ private slots:
     }
 
     void addNewTab(const QString &url = ":/") {
-        auto *tab = new TabContent(m_bookmarkStore, this);
+        auto *tab = new TabContent(m_bookmarkStore, m_highlightStore, this);
 
         QString title;
         QTreeWidgetItemIterator it(m_navTree);
@@ -2657,18 +2972,6 @@ private slots:
                 if (!icon.isNull()) {
                     m_tabWidget->setTabIcon(index, icon);
                 }
-            }
-        });
-
-        connect(tab, &TabContent::pageIconFound, this, [this, index](const QString &iconName) {
-            QIcon icon = QIcon::fromTheme(iconName);
-            if (!icon.isNull()) {
-                m_tabWidget->setTabIcon(index, icon);
-            }
-
-            if (TabContent *currentTab = this->currentTab()) {
-                QString currentUrl = currentTab->contentArea()->currentUrl()->url();
-                m_navTree->updatePageIcon(currentUrl, iconName);
             }
         });
 
@@ -3066,6 +3369,7 @@ private:
     }
 
     BookmarkStore *m_bookmarkStore = nullptr;
+    HighlightStore *m_highlightStore = nullptr;
     NavigationTree *m_navTree = nullptr;
     QTabWidget *m_tabWidget = nullptr;
     QToolBar *m_toolbar = nullptr;
@@ -3075,6 +3379,7 @@ private:
     QToolButton *m_backBtn = nullptr;
     QMenu *m_backMenu = nullptr;
     TTSManager *m_ttsManager = nullptr;
+    LoadingSplash *m_splash = nullptr;
     QCompleter *m_completer = nullptr;
     QList<QShortcut*> m_shortcuts;
 
@@ -3088,7 +3393,6 @@ int main(int argc, char *argv[]) {
     QApplication::setOrganizationName("error.os");
 
     MainWindow window;
-    window.show();
 
     return app.exec();
 }
