@@ -1,39 +1,27 @@
-/* -------------------------------------------------------------------------------------------
-
-                             Zynomon Aelius - 2026
-                                apache 2.0
-
-                            project : style.css for jekyll theme;
-                            version : {Unknown - Not specified};
-                            contributor : @zynomon;
-
--------------------------------------------------------------------------------------------- */
 
 :root {
-    --bg: #0d0f12;
-    --fg: #fff7f1;
-    --accent: #4169e1;
-    --accent-bright: #5b7fe6;
-    --panel: rgba(0, 0, 0, 0.7);
-    --panel-hover: rgba(0, 0, 0, 0.85);
-    --glass-border: rgba(43, 0, 211, 0.25);
-    --terminal-bg: #0a0e0f;
-    --terminal-green: #00ff41;
-    --terminal-border: #1a3a3a;
-    --fg-primary: var(--fg);
-    --fg-secondary: #777777;
-    --fg-dim: #676767;
-    --accent-primary: var(--accent);
-    --glass-bg: var(--panel);
-    --glass-hover: rgba(255, 255, 255, 0.15);
-    --info: #00bfff;
-    --success: var(--terminal-green);
-    --warning: #ffa500;
-    --error: #ff4444;
-    --dl-label: var(--accent-primary);
-    --dl-text: var(--fg-primary);
+    color-scheme: dark;
+    --bg: light-dark(#fcfcfc, #0f0f0f);
+    --fg: light-dark(#1a1a1a, #f0f0f0);
+    --dim: light-dark(#555555, #9a9a9a);
+    --accent: light-dark(#000000, #ffffff);
+    --link: light-dark(#2a33d6, #8f96ff);
+    --panel: light-dark(rgba(255, 255, 255, 0.78), var(--sh));
+    --sunk: light-dark(#f1f3f5, #141414);
+    --raise: light-dark(#dde2e7, #2a2a2a);
+    --glass-border: light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.14));
+    --tint: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.07));
+    --glass-hover: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.15));
+    --veil: light-dark(rgba(255, 255, 255, 0.4), var(--sh));
+    --sh: light-dark(rgba(0, 0, 0, 0.22), var(--sh));
+    --hl: light-dark(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.08));
+    --gl: light-dark(var(--sh), rgba(255, 255, 255, 0.35));
 
-    /* heading and other scalings */
+    --info: light-dark(#0072a8, #00bfff);
+    --success: light-dark(#0a7d2c, #00ff41);
+    --warning: light-dark(#b36b00, #ffa500);
+    --error: light-dark(#c62828, #ff4444);
+
     --step-up-6: 4rem;
     --step-up-5: 3rem;
     --step-up-4: 2.25rem;
@@ -41,29 +29,25 @@
     --step-up-2: 1.4rem;
     --step-up-1: 1.15rem;
 
-    /* Spacing & Layout */
     --container-max-width: 1200px;
     --container-padding: 1.5rem;
     --main-inset: 2rem;
     --dl-gap: 0.75rem;
 
-    /* Borders */
     --border-radius-sm: 0.35rem;
     --border-radius-md: 0.75rem;
     --border-radius-lg: 1rem;
     --border-radius-xl: 1.25rem;
 
-    /* Shadows & Spicy Effects */
-    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
-    --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.6);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.7);
-    --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.8);
-    --glow-sm: 0 0 10px rgba(65, 105, 225, 0.6);
-    --glow-md: 0 0 20px rgba(65, 105, 225, 0.6);
+    --shadow: 0 6px 18px var(--sh);
+    --shadow-lg: 0 12px 32px var(--sh);
+    --glow: 0 0 14px var(--gl);
 }
 
-/* --------------------------------------------------------------------------
-     BASE */
+[data-theme="light"] {
+    color-scheme: light;
+}
+
 
 * {
     box-sizing: border-box;
@@ -89,7 +73,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
     line-height: 1.7;
-    color: var(--fg-primary);
+    color: var(--fg);
 }
 
 input,
@@ -97,10 +81,7 @@ textarea {
     caret-color: transparent;
 }
 
-/*  --------------------------------------------------------------------------
-    TYPOGRAPHY*/
 
-/* Headings - h1 = # , h2 = ##  and so on.. to 6 */
 h1,
 h2,
 h3,
@@ -116,96 +97,95 @@ h6 {
 h1 {
     font-size: var(--step-up-6);
     margin: 3rem 0 1.5rem 0;
-    color: var(--accent-bright);
+    color: var(--accent);
 }
 
 h2 {
     font-size: var(--step-up-5);
     margin: 2.5rem 0 1.25rem 0;
-    color: var(--accent-bright);
+    color: var(--accent);
     line-height: 1.4;
 }
 
 h3 {
     font-size: var(--step-up-4);
     margin: 2rem 0 1rem 0;
-    color: var(--fg-primary);
+    color: var(--fg);
     line-height: 1.4;
 }
 
 h4 {
     font-size: var(--step-up-3);
     margin: 1.75rem 0 0.875rem 0;
-    color: var(--fg-primary);
+    color: var(--fg);
     line-height: 1.5;
 }
 
 h5 {
     font-size: var(--step-up-2);
     margin: 1.5rem 0 0.75rem 0;
-    color: var(--fg-primary);
+    color: var(--fg);
 }
 
 h6 {
     font-size: var(--step-up-1);
     margin: 1.25rem 0 0.625rem 0;
-    color: var(--fg-primary);
+    color: var(--fg);
 }
 
-/* normal Txt elements */
 p {
     margin: 1.25rem 0;
     line-height: 1.8;
-    color: var(--fg-primary);
+    color: var(--fg);
 }
 
 a {
-    color: var(--accent-bright);
+    color: var(--link);
     text-decoration: none;
     border-bottom: 1px solid transparent;
     transition: all 0.3s ease;
 }
 
 a:hover {
-    color: var(--accent-bright);
-    text-shadow: 0 0 8px rgba(65, 105, 225, 0.6);
-    border-bottom: 1px solid var(--accent-bright);
+    color: var(--link);
+    text-shadow: 0 0 8px var(--gl);
+    border-bottom: 1px solid var(--link);
 }
 
 strong,
 b {
     font-weight: 700;
-    color: var(--accent-bright);
+    color: var(--accent);
 }
 
 em,
 i {
     font-style: italic;
-    color: var(--fg-secondary);
+    color: var(--dim);
 }
 
 u {
     text-decoration: underline;
-    text-decoration-color: var(--accent-primary);
+    text-decoration-color: var(--accent);
 }
 
 del,
 s {
     text-decoration: line-through;
     opacity: 0.6;
-    color: var(--fg-dim);
+    color: var(--dim);
 }
 
 ins {
     text-decoration: none;
-    background: rgba(0, 255, 65, 0.2);
+    background: color-mix(in srgb, var(--success) 20%, transparent);
     color: var(--success);
     padding: 0.1em 0.3em;
     border-radius: 0.25rem;
 }
 
 mark {
-    background: rgba(255, 165, 0, 0.3);
+    background: color-mix(in srgb, var(--warning) 30%, transparent);
     color: var(--warning);
     padding: 0.2em 0.4em;
     border-radius: 0.25rem;
@@ -213,7 +193,7 @@ mark {
 
 small {
     font-size: 0.875em;
-    color: var(--fg-dim);
+    color: var(--dim);
 }
 
 sub {
@@ -228,22 +208,22 @@ sup {
 
 abbr[title] {
     text-decoration: underline dotted;
-    text-decoration-color: var(--accent-primary);
+    text-decoration-color: var(--accent);
     cursor: help;
 }
 
 kbd {
     font-family: "Nimbus Mono PS", "Courier New", monospace;
     font-size: 0.9em;
-    background: linear-gradient(to bottom, #3a3c40 0%, #2a2c30 100%);
-    color: var(--fg-primary);
+    background: linear-gradient(to bottom, var(--raise), var(--sunk));
+    color: var(--fg);
     padding: 0.25em 0.6em;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--glass-border);
     border-radius: 0.35rem;
     box-shadow:
-        0 2px 0 rgba(0, 0, 0, 0.3),
-        0 3px 1px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 2px 0 var(--sh),
+        0 3px 1px var(--sh),
+        inset 0 1px 0 var(--hl);
     display: inline-block;
     line-height: 1;
     white-space: nowrap;
@@ -252,43 +232,40 @@ kbd {
 samp {
     font-family: "Nimbus Mono PS", "Courier New", monospace;
     font-size: 0.9em;
-    background: var(--terminal-bg);
-    color: var(--terminal-green);
+    background: var(--sunk);
+    color: var(--success);
     padding: 0.25em 0.5em;
-    border: 1px solid var(--terminal-border);
+    border: 1px solid var(--glass-border);
     border-radius: 0.35rem;
 }
-/*  --------------------------------------------------------------------------
-    CODE & PRE-FORMATTED TEXT */
 
 code {
-    background: linear-gradient(to bottom, #2a2c30 0%, #1a1c20 100%);
-    color: var(--accent-bright);
+    background: linear-gradient(to bottom, var(--raise), var(--sunk));
+    color: var(--accent);
     padding: 0.2rem 0.6rem;
     border-radius: 0.4rem;
-    border: 1px solid #333;
+    border: 1px solid var(--glass-border);
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.1),
-        0 2px 4px rgba(0, 0, 0, 0.4);
+        inset 0 1px 0 var(--hl),
+        0 2px 4px var(--sh);
     font-size: 0.9em;
     font-family: "Nimbus Mono PS", "Nimbus Mono", monospace;
 }
 
-/* Code Block Container */
 .code-block-wrapper {
     position: relative;
     margin: 1.5rem 0;
 }
 
 .code-block-wrapper pre {
-    background: linear-gradient(to bottom, #1e2126 0%, #15171a 100%);
+    background: var(--sunk);
     color: var(--fg);
     padding: 1.5rem;
     border-radius: 0.75rem;
-    border: 1px solid #2a2d35;
+    border: 1px solid var(--glass-border);
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.05),
-        0 4px 12px rgba(0, 0, 0, 0.6);
+        inset 0 1px 0 var(--hl),
+        0 4px 12px var(--sh);
     overflow-x: auto;
     position: relative;
     margin: 0;
@@ -305,7 +282,6 @@ pre code {
     line-height: 1.6;
 }
 
-/* syntax highlighter  */
 
 code .c,
 code .ch,
@@ -321,7 +297,7 @@ pre .cp,
 pre .cpf,
 pre .c1,
 pre .cs {
-    color: #6a9955;
+    color: light-dark(#4d7a3a, #6a9955);
     font-style: italic;
 }
 
@@ -371,7 +347,7 @@ pre .kp,
 pre .kr,
 pre .kt,
 pre .vi {
-    color: var(--accent-primary);
+    color: var(--accent);
 }
 
 code .s,
@@ -402,7 +378,7 @@ pre .sx,
 pre .sr,
 pre .s1,
 pre .ss {
-    color: var(--terminal-border);
+    color: var(--success);
 }
 
 code .m,
@@ -432,77 +408,16 @@ pre .ow {
 
 code .p,
 pre .p {
-    color: var(--fg-secondary);
+    color: var(--dim);
 }
 
-/* Terminal-style Code Blocks ( doesn't gonna work now )  - beta
-.code-block-wrapper pre.language-bash,
-.code-block-wrapper pre.language-shell,
-.code-block-wrapper pre.language-terminal,
-pre.language-bash,
-pre.language-shell,
-pre.language-terminal {
-    background: var(--terminal-bg);
-    border: 2px solid var(--terminal-border);
-    border-radius: 0.5rem;
-    box-shadow:
-        0 0 20px rgba(0, 255, 65, 0.1),
-        inset 0 0 40px rgba(0, 255, 65, 0.03),
-        0 8px 20px rgba(0, 0, 0, 0.8);
-    padding: 1rem 1.5rem;
-    padding-top: 3rem;
-}
-
-.code-block-wrapper pre.language-bash::before,
-.code-block-wrapper pre.language-shell::before,
-.code-block-wrapper pre.language-terminal::before,
-pre.language-bash::before,
-pre.language-shell::before,
-pre.language-terminal::before {
-    content: "● ● ● term";
-    display: block;
-    color: #555;
-    font-size: 1rem;
-    position: absolute;
-    top: 1rem;
-    left: 1.5rem;
-    letter-spacing: 0.5rem;
-}
-
-.code-block-wrapper pre.language-bash code,
-.code-block-wrapper pre.language-shell code,
-.code-block-wrapper pre.language-terminal code,
-pre.language-bash code,
-pre.language-shell code,
-pre.language-terminal code {
-    color: var(--terminal-green);
-    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
-    font-family: "Fira Code", "Consolas", monospace;
-    font-weight: 500;
-    background: transparent;
-}
-
-.code-block-wrapper pre.language-bash code::before,
-.code-block-wrapper pre.language-shell code::before,
-.code-block-wrapper pre.language-terminal code::before,
-pre.language-bash code::before,
-pre.language-shell code::before,
-pre.language-terminal code::before {
-    content: "$ ";
-    color: var(--terminal-green);
-    font-weight: bold;
-    opacity: 0.8;
-}
-*/
-
-/* Copy Button inside code blocks-*/
 .copy-button {
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
-    background: rgba(65, 105, 225, 0.15);
-    border: 1px solid rgba(65, 105, 225, 0.4);
-    color: var(--accent-bright);
+    background: var(--tint);
+    border: 1px solid var(--glass-border);
+    color: var(--accent);
     padding: 0.5rem;
     border-radius: 0.5rem;
     font-size: 0.85rem;
@@ -527,10 +442,10 @@ pre.language-terminal code::before {
 }
 
 .copy-button:hover {
-    background: rgba(65, 105, 225, 0.3);
-    border-color: var(--accent-bright);
+    background: var(--glass-hover);
+    border-color: var(--accent);
     transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
+    box-shadow: 0 4px 12px var(--gl);
 }
 
 .copy-button:active {
@@ -538,9 +453,9 @@ pre.language-terminal code::before {
 }
 
 .copy-button.copied {
-    background: rgba(0, 255, 65, 0.2);
-    border-color: var(--terminal-green);
-    color: var(--terminal-green);
+    background: color-mix(in srgb, var(--success) 20%, transparent);
+    border-color: var(--success);
+    color: var(--success);
 }
 
 .copy-button svg {
@@ -548,13 +463,12 @@ pre.language-terminal code::before {
     height: 18px;
 }
 
-/* Scrollbar for Code Blocks  not really needed but still..... */
 pre::-webkit-scrollbar {
     height: 8px;
 }
 
 pre::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--tint);
     border-radius: 4px;
 }
 
@@ -564,11 +478,9 @@ pre::-webkit-scrollbar-thumb {
 }
 
 pre::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-bright);
+    background: var(--accent);
 }
 
-/*  --------------------------------------------------------------------------
-    ul and ol and dl = variants of lists */
 
 ul,
 ol {
@@ -581,10 +493,9 @@ ol {
 li {
     margin: 0.75rem 0;
     padding: 0;
-    color: var(--fg-primary);
+    color: var(--fg);
 }
 
-/* Unordered Lists (  ul ) */
 ul {
     list-style: none;
 }
@@ -599,23 +510,21 @@ ul > li::before {
     position: absolute;
     left: 0;
     top: 0.15em;
-    color: var(--accent-primary);
+    color: var(--accent);
     font-size: 1.1em;
     line-height: 1;
 }
 
-/* Ordered Lists ( ol ) */
 ol {
     list-style-type: decimal;
 }
 
 ol > li::marker {
     font-family: "OCR A Std", "OCR A", monospace;
-    color: var(--accent-bright);
+    color: var(--accent);
     font-weight: 600;
 }
 
-/* Nested Lists why this is not ( nl )  _  :) get it */
 ul ul,
 ol ol {
     padding-left: 2rem;
@@ -629,7 +538,6 @@ ol ol ol {
     list-style-type: lower-roman;
 }
 
-/* Task Lists - part of ul */
 ul.task-list,
 .task-list {
     list-style: none;
@@ -653,10 +561,9 @@ ul.task-list li::before {
 
 ul.task-list li:has(input[type="checkbox"]:checked)::before {
     content: "🗹";
-    color: var(--accent-primary);
+    color: var(--accent);
 }
 
-/* definition list  ( dl ) */
 dl {
     margin: 1.5rem 0;
     padding: 0;
@@ -669,7 +576,7 @@ dt {
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--dl-label);
+    color: var(--accent);
     background: none;
     padding: 0;
     margin: 0;
@@ -688,7 +595,7 @@ dd {
     display: inline;
     font-size: 1.1rem;
     line-height: 1.8;
-    color: var(--dl-text);
+    color: var(--fg);
     background: none;
     border: none;
     padding: 0;
@@ -701,30 +608,22 @@ dd::after {
     margin-bottom: 0.6rem;
 }
 
-/*  --------------------------------------------------------------------------
-    Tables */
 
 table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0 4px;
     margin: 2rem 0;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--tint);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid var(--glass-border);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px var(--sh);
 }
 
 thead {
-    background: linear-gradient(
-        135deg,
-        rgba(65, 105, 225, 0.4) 0%,
-        rgba(65, 105, 225, 0.25) 50%,
-        rgba(65, 105, 225, 0.15) 100%
-    );
-    backdrop-filter: blur(10px);
+    background: var(--tint);
 }
 
 th {
@@ -732,18 +631,18 @@ th {
     padding: 1.25rem 1.75rem;
     text-align: left;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--fg);
     text-transform: uppercase;
     font-size: 0.9rem;
     letter-spacing: 1px;
-    background: rgba(65, 105, 225, 0.15);
+    background: var(--tint);
     backdrop-filter: blur(12px) saturate(140%);
     -webkit-backdrop-filter: blur(12px) saturate(140%);
-    border-right: 1px solid rgba(255, 255, 255, 0.12);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--glass-border);
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.1),
-        0 4px 12px rgba(0, 0, 0, 0.4);
+        inset 0 1px 0 var(--hl),
+        0 4px 12px var(--sh);
 }
 
 th:last-child {
@@ -752,10 +651,10 @@ th:last-child {
 
 td {
     padding: 1.25rem 1.75rem;
-    color: var(--fg-primary);
-    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--fg);
+    border-right: 1px solid var(--glass-border);
     font-size: 0.95rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--sunk);
 }
 
 td:last-child {
@@ -764,15 +663,14 @@ td:last-child {
 
 tbody tr {
     transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--glass-border);
 }
 
 tbody tr:hover {
-    background: rgba(65, 105, 225, 0.15);
-    border-color: rgba(65, 105, 225, 0.3);
+    background: var(--tint);
+    border-color: var(--glass-border);
 }
 
-/*  Aligning */
 th[align="center"],
 td[align="center"] {
     text-align: center;
@@ -783,37 +681,35 @@ td[align="right"] {
     text-align: right;
 }
 
-/*  --------------------------------------------------------------------------
-    BLOCKQUOTES */
 blockquote {
     border-left: 4px solid var(--accent);
     padding-left: 1.5rem;
     margin: 1.5rem 0;
-    color: #b0b5c0;
+    color: var(--dim);
     font-style: italic;
-    background: rgba(65, 105, 225, 0.05);
+    background: var(--tint);
     padding: 1rem 1.5rem;
     border-radius: 0 0.5rem 0.5rem 0;
 }
 
 blockquote.note {
     border-left-color: var(--info);
-    background: rgba(0, 191, 255, 0.08);
+    background: color-mix(in srgb, var(--info) 8%, transparent);
 }
 
 blockquote.tip {
     border-left-color: var(--success);
-    background: rgba(0, 255, 65, 0.08);
+    background: color-mix(in srgb, var(--success) 8%, transparent);
 }
 
 blockquote.warning {
     border-left-color: var(--warning);
-    background: rgba(255, 165, 0, 0.08);
+    background: color-mix(in srgb, var(--warning) 8%, transparent);
 }
 
 blockquote.danger {
     border-left-color: var(--error);
-    background: rgba(255, 68, 68, 0.08);
+    background: color-mix(in srgb, var(--error) 8%, transparent);
 }
 
 blockquote.important {
@@ -823,7 +719,7 @@ blockquote.important {
 
 blockquote.caution {
     border-left-color: var(--error);
-    background: rgba(255, 68, 68, 0.08);
+    background: color-mix(in srgb, var(--error) 8%, transparent);
 }
 
 blockquote .title {
@@ -840,22 +736,22 @@ blockquote .title {
 
 blockquote.note .title {
     color: var(--info);
-    border-bottom-color: rgba(0, 191, 255, 0.3);
+    border-bottom-color: color-mix(in srgb, var(--info) 30%, transparent);
 }
 
 blockquote.tip .title {
     color: var(--success);
-    border-bottom-color: rgba(0, 255, 65, 0.3);
+    border-bottom-color: color-mix(in srgb, var(--success) 30%, transparent);
 }
 
 blockquote.warning .title {
     color: var(--warning);
-    border-bottom-color: rgba(255, 165, 0, 0.3);
+    border-bottom-color: color-mix(in srgb, var(--warning) 30%, transparent);
 }
 
 blockquote.danger .title {
     color: var(--error);
-    border-bottom-color: rgba(255, 68, 68, 0.3);
+    border-bottom-color: color-mix(in srgb, var(--error) 30%, transparent);
 }
 
 blockquote.important .title {
@@ -865,16 +761,13 @@ blockquote.important .title {
 
 blockquote.caution .title {
     color: var(--error);
-    border-bottom-color: rgba(255, 68, 68, 0.3);
+    border-bottom-color: color-mix(in srgb, var(--error) 30%, transparent);
 }
 
 blockquote p:last-child {
     margin-bottom: 0;
 }
 
-
-/*  --------------------------------------------------------------------------
-    img and figures */
 
 img {
     max-width: 100%;
@@ -900,8 +793,8 @@ img[height] {
 img:hover {
     transform: scale(1.05) rotate(0.5deg);
     box-shadow:
-        0 16px 48px rgba(0, 0, 0, 0.85),
-        0 0 12px rgba(65, 105, 225, 0.5);
+        0 16px 48px var(--sh),
+        0 0 12px var(--gl);
     filter: brightness(1.1) saturate(1.2);
     animation: floatPulse 3s ease-in-out infinite;
 }
@@ -927,13 +820,11 @@ figure img {
 
 figcaption {
     font-style: italic;
-    color: var(--fg-dim);
+    color: var(--dim);
     font-size: 0.9rem;
     margin-top: 0.75rem;
 }
 
-/*  --------------------------------------------------------------------------
-     Horizontal rule -  hr ( a straight line in the text ) */
 
 hr {
     border: none;
@@ -973,22 +864,20 @@ hr.thin {
     opacity: 0.6;
 }
 
-/*  --------------------------------------------------------------------------
-    Details and summary */
 
 details {
     margin: 2rem 0;
     padding: 1.5rem;
-    background: var(--glass-bg);
+    background: var(--panel);
     border: 1px solid var(--glass-border);
     border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow);
 }
 
 summary {
     font-family: "OCR A Std", monospace;
     font-weight: bold;
-    color: var(--accent-bright);
+    color: var(--accent);
     cursor: pointer;
     user-select: none;
     padding: 0.75rem;
@@ -1002,7 +891,7 @@ summary:hover {
 }
 
 summary::marker {
-    color: var(--accent-primary);
+    color: var(--accent);
 }
 
 details[open] > summary {
@@ -1011,8 +900,6 @@ details[open] > summary {
     border-bottom: 1px solid var(--glass-border);
 }
 
-/*  --------------------------------------------------------------------------
-    .footnotes*/
 
 .footnotes {
     margin-top: 4rem;
@@ -1026,7 +913,7 @@ details[open] > summary {
     display: block;
     font-family: "OCR A Std", "OCR A", "Courier New", monospace;
     font-weight: bold;
-    color: var(--accent-bright);
+    color: var(--accent);
     font-size: 1.2rem;
     margin-bottom: 1rem;
 }
@@ -1036,95 +923,549 @@ details[open] > summary {
 }
 
 .footnotes li {
-    color: var(--fg-secondary);
+    color: var(--dim);
 }
 
 sup a.footnote {
-    color: var(--accent-primary);
+    color: var(--accent);
     text-decoration: none;
     padding: 0.1em 0.3em;
     border-radius: 0.25rem;
-    background: rgba(65, 105, 225, 0.2);
+    background: var(--tint);
 }
 
 sup a.footnote:hover {
-    background: rgba(65, 105, 225, 0.3);
+    background: var(--glass-hover);
 }
-
-
-/*  --------------------------------------------------------------------------
-    Main website components ( not text formatting )*/
 
 header {
     position: sticky;
-    top: 0;
+    top: 0.75rem;
     z-index: 1000;
-    background: var(--glass-bg);
+    width: calc(100% - (var(--main-inset) * 2));
+    max-width: calc(var(--container-max-width) - (var(--main-inset) * 2));
+    margin: 0.75rem auto 0;
+    background: var(--panel);
     backdrop-filter: blur(12px) saturate(120%);
     -webkit-backdrop-filter: blur(12px) saturate(120%);
-    border-bottom: 1px solid var(--glass-border);
-    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-lg);
     user-select: none;
+    transition: translate 0.35s ease;
+}
+
+header.away {
+    translate: 0 calc(-100% - 1.5rem);
 }
 
 header .container {
-    max-width: var(--container-max-width);
-    margin: 0 auto;
-    padding: clamp(1rem, 3vw, 1.5rem) var(--container-padding);
+    padding: 0.55rem 0.9rem;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: clamp(0.75rem, 2vw, 1rem);
+    gap: clamp(0.5rem, 2vw, 1rem);
 }
 
 header h1 {
     font-family: "OCR A Std", "OCR A", "Nimbus Mono PS", monospace;
     font-size: clamp(1.25rem, 4vw, 1.8rem);
     font-weight: bold;
-    color: var(--accent-bright);
-    text-shadow: var(--glow-sm);
+    color: var(--accent);
+    text-shadow: var(--glow);
     letter-spacing: 0.5px;
     margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
     flex-shrink: 0;
 }
 
-header nav {
+.logo {
     display: flex;
-    gap: clamp(0.5rem, 2vw, 1rem);
-    flex-wrap: wrap;
     align-items: center;
+    gap: 0.7rem;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-shadow: inherit;
+    cursor: pointer;
+}
+
+.mark {
+    position: relative;
+    width: 1.4rem;
+    height: 1.4rem;
+    display: grid;
+    place-items: center;
+}
+
+.mark > * {
+    grid-area: 1 / 1;
+    transition:
+        opacity 0.2s,
+        rotate 0.2s,
+        translate 0.2s;
+}
+
+.mark::after {
+    content: "";
+    position: absolute;
+    left: calc(100% + 0.35rem);
+    width: 1px;
+    height: 1.6rem;
+    background: var(--glass-border);
+}
+
+.mark img {
+    width: 1.4rem;
+    height: 1.4rem;
+}
+
+.chev {
+    width: 0.55rem;
+    height: 0.55rem;
+    border: solid var(--accent);
+    border-width: 0 2px 2px 0;
+    rotate: 45deg;
+    translate: 0 -2px;
+    opacity: 0;
+}
+
+header.expanded .chev {
+    opacity: 1;
+    rotate: 225deg;
+    translate: 0 2px;
+}
+
+header.expanded .mark img {
+    opacity: 0;
+}
+
+.links {
+    display: flex;
+    gap: 0.4rem;
+    margin-right: auto;
+    margin-left: 1rem;
+}
+
+header a,
+header a:hover {
+    text-shadow: none;
+    border-bottom: 0;
+}
+
+.links a,
+header nav a {
+    padding: 0.45rem 0.9rem;
+    background: var(--tint);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-sm);
+    color: var(--fg);
+    font-weight: 500;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.links a:hover,
+header nav a:hover {
+    background: var(--glass-hover);
+    border-color: var(--accent);
+}
+
+.tools {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: auto;
+}
+
+.find {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0;
+    background: none;
+    border: 0;
+}
+
+.find:hover {
+    background: none;
+    border: 0;
+}
+
+.find .field {
+    padding: 0.3rem 0.8rem;
+    background: var(--tint);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-sm);
+    color: var(--dim);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+.sq {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    background: var(--tint);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-sm);
+    color: var(--fg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.sq:hover,
+.find:hover .sq {
+    background: var(--glass-hover);
+    border-color: var(--accent);
+}
+
+.sq svg {
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+.sq.hex::after {
+    content: "";
+    width: 0.95rem;
+    height: 1.05rem;
+    background: var(--accent);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+
+header nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0.6rem;
+    display: flex;
+    gap: 0.4rem;
+    padding: 0.4rem;
+    background: var(--panel);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow);
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 -8px;
+    transition:
+        opacity 0.25s,
+        translate 0.25s,
+        visibility 0s 0.3s;
+}
+
+header nav::before {
+    content: "";
+    position: absolute;
+    inset: -0.7rem 0 auto;
+    height: 0.7rem;
+}
+
+header nav::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 1rem;
+    width: 0.8rem;
+    height: 0.45rem;
+    background: var(--glass-border);
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+header.expanded nav {
+    opacity: 1;
+    visibility: visible;
+    translate: 0;
+    transition-delay: 0s;
 }
 
 header nav a {
-    padding: clamp(0.5rem, 1.5vw, 0.6rem) clamp(0.8rem, 2.5vw, 1.2rem);
-    background: rgba(65, 105, 225, 0.15);
-    border: 1px solid rgba(65, 105, 225, 0.3);
-    border-radius: var(--border-radius-sm);
-    color: var(--fg-primary);
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: clamp(0.85rem, 2vw, 0.95rem);
-    white-space: nowrap;
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0;
 }
 
 header nav a:hover {
-    background: rgba(65, 105, 225, 0.3);
-    border-color: var(--accent-bright);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(65, 105, 225, 0.4);
+    z-index: 2;
 }
 
-header nav a:active {
-    transform: translateY(0);
+header nav a img {
+    width: 1.35rem;
+    height: 1.35rem;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    cursor: inherit;
 }
 
-/* Main Container */
+.tip {
+    position: absolute;
+    left: calc(100% - 4px);
+    top: -1px;
+    height: calc(100% + 2px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 1.4rem 0 0.9rem;
+    white-space: nowrap;
+    background: var(--glass-hover);
+    backdrop-filter: blur(12px);
+    clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%);
+    opacity: 0;
+    translate: -8px;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+
+header nav a:hover .tip {
+    opacity: 1;
+    translate: 0;
+}
+
+.tip b {
+    font-size: 0.8rem;
+    line-height: 1.1;
+    color: var(--fg);
+}
+
+.tip small {
+    font-size: 0.6rem;
+    line-height: 1;
+    color: var(--dim);
+}
+
+.nm,
+header nav a.nw,
+header nav a.snav {
+    display: none;
+}
+
+#nav-dim-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: var(--veil);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+
+#nav-dim-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+dialog {
+    margin: auto;
+    width: min(92vw, 30rem);
+    padding: 1.25rem 1.5rem;
+    color: var(--fg);
+    background: var(--bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+dialog::backdrop {
+    background: var(--veil);
+    backdrop-filter: blur(4px);
+}
+
+dialog h2 {
+    margin: 0 0 0.5rem;
+    font-size: var(--step-up-1);
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--glass-border);
+}
+
+.row small {
+    display: block;
+    color: var(--dim);
+    font-size: 0.75rem;
+}
+
+.acts {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.acts button {
+    padding: 0.45rem 1rem;
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--fg);
+    background: var(--tint);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.acts button:hover {
+    background: var(--glass-hover);
+    border-color: var(--accent);
+}
+
+.theme-toggle {
+    flex: none;
+    width: 2.4rem;
+    height: 2.4rem;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    color: var(--fg);
+    background: var(--tint);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    background: var(--glass-hover);
+    border-color: var(--accent);
+}
+
+.theme-toggle svg {
+    width: 1.3rem;
+    height: 1.3rem;
+}
+
+.anim-toggle.off {
+    color: var(--dim);
+}
+
+.s-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font: inherit;
+    color: var(--fg);
+    caret-color: auto;
+    background: var(--sunk);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.s-input:focus {
+    border-color: var(--accent);
+}
+
+.s-input:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.s-load {
+    margin: 1rem 0;
+}
+
+.s-bar {
+    height: 4px;
+    margin-top: 0.5rem;
+    background: var(--tint);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.s-bar span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--accent);
+    transition: width 0.2s ease;
+}
+
+.s-status,
+.s-count {
+    margin: 0.75rem 0 0.25rem;
+    color: var(--dim);
+    font-size: 0.85rem;
+}
+
+.sr,
+.sr:hover {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: var(--border-radius-sm);
+    border-bottom: 0;
+    color: var(--fg);
+    text-shadow: none;
+}
+
+.sr:hover,
+.sr:focus {
+    background: var(--glass-hover);
+    outline: none;
+}
+
+.sr b {
+    flex: none;
+    color: var(--fg);
+}
+
+.sr span {
+    color: var(--dim);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sr mark {
+    background: none;
+    padding: 0;
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+header img,
+.sr img {
+    display: inline-block;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+header img:hover,
+.sr img:hover {
+    transform: none;
+    filter: none;
+    animation: none;
+    box-shadow: none;
+}
+
+.sr img {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+    align-self: center;
+}
+
 main {
     flex: 1;
     background: var(--panel);
@@ -1137,8 +1478,8 @@ main {
     border-radius: var(--border-radius-lg);
     border: 1px solid var(--glass-border);
     box-shadow:
-        var(--shadow-xl),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        var(--shadow-lg),
+        inset 0 1px 0 var(--hl);
     position: relative;
     z-index: 1;
     overflow-wrap: break-word;
@@ -1154,7 +1495,7 @@ footer {
 
     border-top: 1px solid var(--glass-border);
     border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
-    box-shadow: var(--fg-dim);
+    box-shadow: var(--dim);
 
     position: relative;
     z-index: 100;
@@ -1163,29 +1504,18 @@ footer {
     padding-inline: clamp(0.75rem, 2vw, 1.5rem);
 }
 
-footer .container {
-    max-width: var(--container-max-width);
-    margin: 0 auto;
-    padding: clamp(1rem, 3vw, 1.5rem) var(--container-padding);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: clamp(0.75rem, 2vw, 1rem);
-}
-
 .footer-title {
-    color: var(--accent-bright);
+    color: var(--accent);
     font-size: clamp(1.25rem, 3.5vw, 1.75rem);
     margin: 0;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 2px 6px var(--sh);
     line-height: 1.2;
     flex-shrink: 0;
 }
 
 .footer-subtitle {
     font-family: italic;
-    color: var(--fg-secondary);
+    color: var(--dim);
     font-size: clamp(0.875rem, 2vw, 1rem);
 }
 
@@ -1202,9 +1532,9 @@ footer .container {
     justify-content: center;
     padding: clamp(0.5rem, 1.5vw, 0.6rem) clamp(0.8rem, 2.5vw, 1.2rem);
     border-radius: var(--border-radius-sm);
-    border: 1px solid rgba(65, 105, 225, 0.3);
+    border: 1px solid var(--glass-border);
     transition: all 0.3s ease;
-    background: rgba(65, 105, 225, 0.15);
+    background: var(--tint);
     min-height: 32px;
 }
 
@@ -1215,15 +1545,15 @@ footer a {
 }
 
 footer a:hover {
-    color: var(--accent-bright);
-    text-shadow: var(--glow-sm);
+    color: var(--accent);
+    text-shadow: var(--glow);
 }
 
 .footer-links a:hover {
-    background: rgba(65, 105, 225, 0.3);
-    border-color: var(--accent-bright);
+    background: var(--glass-hover);
+    border-color: var(--accent);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(65, 105, 225, 0.4);
+    box-shadow: 0 4px 12px var(--gl);
 }
 
 .footer-links a:active {
@@ -1242,13 +1572,10 @@ footer a:hover {
 }
 
 .footer-links a:hover img {
-    filter: brightness(1.1) drop-shadow(0 0 4px rgba(65, 105, 225, 0.4));
+    filter: brightness(1.1) drop-shadow(0 0 4px var(--gl));
 }
 
-/*  --------------------------------------------------------------------------
-    centering a div failed so..  */
 
-/* Text Align */
 .text-center {
     text-align: center;
 }
@@ -1261,7 +1588,6 @@ footer a:hover {
     text-align: right;
 }
 
-/* Margin rules */
 .mt-0 {
     margin-top: 0 !important;
 }
@@ -1286,7 +1612,6 @@ footer a:hover {
     margin-bottom: 2rem !important;
 }
 
-/* Visibility */
 .hidden {
     display: none;
 }
@@ -1295,14 +1620,13 @@ footer a:hover {
     display: block;
 }
 
-/* Animation */
 @keyframes aero-pulse {
     0%,
     100% {
         box-shadow: var(--shadow-lg);
     }
     50% {
-        box-shadow: var(--shadow-lg), var(--glow-md);
+        box-shadow: var(--shadow-lg), var(--glow);
     }
 }
 
@@ -1310,8 +1634,6 @@ footer a:hover {
     animation: aero-pulse 3s ease-in-out infinite;
 }
 
-/*  --------------------------------------------------------------------------
-    Docs*/
 
 .docs-grid {
     display: grid;
@@ -1325,22 +1647,22 @@ footer a:hover {
     grid-template-rows: auto auto 1fr;
     align-items: start;
     padding: 1.5rem;
-    background: var(--glass-bg);
+    background: var(--panel);
     backdrop-filter: blur(12px) saturate(120%);
     -webkit-backdrop-filter: blur(12px) saturate(120%);
     border: 1px solid var(--glass-border);
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
-    color: var(--fg-primary);
+    color: var(--fg);
 }
 
 .docs-card:hover {
     background: var(--glass-hover);
-    border-color: var(--accent-primary);
+    border-color: var(--accent);
     transform: translateY(-4px);
-    box-shadow: var(--shadow-xl), var(--glow-md);
+    box-shadow: var(--shadow-lg), var(--glow);
 }
 
 .docs-card .card-img {
@@ -1349,7 +1671,7 @@ footer a:hover {
     border-radius: var(--border-radius-md);
     margin-bottom: 1rem;
     background: var(--panel);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow);
 }
 
 .docs-card .card-title {
@@ -1357,26 +1679,24 @@ footer a:hover {
     font-weight: 600;
     font-size: var(--step-up-1);
     margin-bottom: 0.75rem;
-    color: var(--accent-bright);
+    color: var(--accent);
 }
 
 .docs-card .card-desc {
     font-size: 0.95rem;
     line-height: 1.5;
-    color: var(--fg-secondary);
+    color: var(--dim);
 }
 
 .docs-card code {
-    background: rgba(65, 105, 225, 0.2);
-    color: var(--accent-bright);
+    background: var(--tint);
+    color: var(--accent);
     padding: 0.4rem 0.8rem;
-    border: 1px solid var(--accent-primary);
+    border: 1px solid var(--accent);
     font-size: 0.9rem;
     border-radius: var(--border-radius-sm);
 }
 
-/*  --------------------------------------------------------------------------
-    Printing*/
 @media print {
     * {
         background: transparent !important;
@@ -1397,9 +1717,9 @@ footer a:hover {
         display: block;
     }
 
-    header,
+    
     footer,
-    main {
+main {
         position: static;
         margin: 0;
         padding: 0;
@@ -1409,17 +1729,6 @@ footer a:hover {
         width: 100%;
         max-width: 100%;
         border-radius: 0;
-    }
-
-    header {
-        border-bottom: 1px solid #ccc;
-        margin-bottom: 1cm;
-    }
-
-    header .container,
-    footer .footer-container {
-        max-width: 100%;
-        padding: 0;
     }
 
     main {
@@ -1448,6 +1757,9 @@ footer a:hover {
     }
 
     .copy-button,
+    header,
+    dialog,
+    #nav-dim-overlay,
     .footer-links,
     .docs-grid,
     .docs-card,
@@ -1473,7 +1785,7 @@ footer a:hover {
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        color: var(--fg-primary);
+        color: var(--fg);
         font-family:
             "Courier New", "Courier", "Lucida Console", "OCR A Std", monospace;
         font-weight: 700;
@@ -1549,7 +1861,7 @@ footer a:hover {
         font-size: 18px;
     }
 
-    header .container,
+    
     main {
         max-width: 1200px;
     }
@@ -1560,11 +1872,6 @@ footer a:hover {
         font-size: 15px;
     }
 
-    header .container {
-        max-width: 100%;
-        padding: 0 1rem;
-    }
-
     main {
         width: min(92%, 1200px);
         padding: clamp(1.25rem, 3.5vw, 2rem);
@@ -1572,38 +1879,11 @@ footer a:hover {
 }
 
 @media (max-width: 1023px) {
-    header {
-        padding: 1rem clamp(1rem, 3vw, 1.5rem);
-    }
-
-    header h1 {
-        font-size: clamp(1.2rem, 3.5vw, 1.4rem);
-    }
-
-    header nav {
-        width: 100%;
-        justify-content: center;
-        gap: 0.5rem;
-    }
-
-    header nav a {
-        flex: 1 1 auto;
-        text-align: center;
-        min-width: 80px;
-        padding: 0.5rem 0.75rem;
-    }
 
     main {
         width: min(90%, 100%);
         margin: 1.5rem auto;
         padding: 1.5rem;
-    }
-
-    footer .footer-container {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        text-align: center;
-        padding: 1.5rem 1.25rem;
     }
 
     .footer-left {
@@ -1627,30 +1907,12 @@ footer a:hover {
         --main-inset: clamp(1rem, 3vw, 1.5rem);
     }
 
-    header,
+    
     main,
-    footer,
-    .docs-card {
+footer,
+.docs-card {
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
-    }
-
-    header {
-        padding: 0.875rem 1rem;
-        border-radius: 0 0 0.5rem 0.5rem;
-    }
-
-    header .container {
-        gap: 0.75rem;
-    }
-
-    header h1 {
-        font-size: 1.25rem;
-    }
-
-    header nav a {
-        font-size: 0.85rem;
-        padding: 0.45rem 0.65rem;
     }
 
     main {
@@ -1686,11 +1948,6 @@ footer a:hover {
 
     dd {
         font-size: 1rem;
-    }
-
-    footer .footer-container {
-        padding: 1.25rem 1rem;
-        gap: 1.25rem;
     }
 
     .footer-title {
@@ -1744,40 +2001,90 @@ footer a:hover {
             opacity: 1;
         }
 
-        header nav a:hover,
+        
         .footer-links a:hover {
             transform: none;
         }
     }
 }
 
-@media (max-width: 480px) {
-    html {
-        font-size: 13px;
-    }
-
+@media (max-width: 768px) {
     header {
-        padding: 0.75rem 0.75rem;
+        width: auto;
+        margin-right: 0.75rem;
+        margin-left: auto;
     }
 
     header .container {
-        gap: 0.5rem;
+        padding: 0.4rem 0.5rem;
     }
 
-    header h1 {
-        font-size: 1.1rem;
-        gap: 0.35rem;
+    .logo .txt,
+    .links,
+    .tools,
+    .mark::after,
+    header nav a .tip,
+    header nav a img {
+        display: none;
+    }
+
+    .chev {
+        opacity: 1;
     }
 
     header nav {
-        gap: 0.35rem;
+        left: auto;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        width: min(70vw, 16rem);
+        padding: 0.4rem 0;
+    }
+
+    header nav::after {
+        left: auto;
+        right: 0.6rem;
     }
 
     header nav a {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.5rem;
-        min-width: 70px;
-        min-height: 44px;
+        display: block;
+        width: auto;
+        height: auto;
+        padding: 0.4rem 1.1rem;
+        background: none;
+        border: 0;
+        text-align: left;
+    }
+
+    .nm {
+        display: inline;
+        font-size: 1rem;
+        font-style: italic;
+    }
+
+    .nm::after {
+        content: "..";
+    }
+
+    header nav a.nw,
+    header nav a.snav {
+        display: block;
+    }
+
+    header nav a.snav {
+        margin: 0 0.4rem 0.3rem;
+        padding: 0.35rem 0.7rem;
+        background: var(--sunk);
+        border-bottom: 1px solid var(--glass-border);
+        border-radius: var(--border-radius-sm);
+        color: var(--dim);
+        font-style: italic;
+    }
+}
+
+@media (max-width: 480px) {
+    html {
+        font-size: 13px;
     }
 
     main {
@@ -1791,12 +2098,6 @@ footer a:hover {
     h2::before,
     h3::before {
         display: none;
-    }
-
-    footer .footer-container {
-        padding: 0.875rem 0.75rem;
-        gap: 0.875rem;
-        font-size: 0.8rem;
     }
 
     .footer-left {
@@ -1839,25 +2140,10 @@ footer a:hover {
         font-size: 12px;
     }
 
-    header h1 {
-        font-size: 1rem;
-    }
-
-    header nav a {
-        font-size: 0.75rem;
-        padding: 0.35rem 0.4rem;
-        min-width: 60px;
-    }
-
     main {
         width: calc(100% - 0.5rem);
         margin: 0.5rem 0.25rem;
         padding: 0.875rem;
-    }
-
-    footer .footer-container {
-        padding: 0.75rem 0.5rem;
-        gap: 0.75rem;
     }
 
     .footer-title {
@@ -1884,22 +2170,10 @@ footer a:hover {
 }
 
 @media (max-height: 600px) and (orientation: landscape) {
-    header {
-        padding: 0.75rem 1rem;
-    }
-
-    header h1 {
-        font-size: 1.1rem;
-    }
 
     main {
         margin: 0.75rem auto;
         padding: 1rem;
-    }
-
-    footer .footer-container {
-        padding: 0.75rem 1rem;
-        gap: 1rem;
     }
 
     .footer-title {
