@@ -6,7 +6,6 @@ description: "Search across every page of the error.os documentation"
 
 # Search
 
-{% assign search_pages = site.pages | where_exp: "p", "p.layout == 'default' and p.url != page.url and p.url != '/404.html'" | map: "url" %}
 <div id="search-app" data-base="{{ '/' | relative_url }}" data-pages="{{ search_pages | jsonify | escape }}">
   <input class="s-input" id="s-input" type="search" placeholder="search across all docs" autocomplete="off" aria-label="Search all docs" disabled>
   <div class="s-load" id="s-load">
