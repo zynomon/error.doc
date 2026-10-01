@@ -55,8 +55,11 @@ Vex is a text editor, loosely inspired by Vim and FeatherPad, with an extra laye
 
 On March 18, version 4.0 introduced this new "extensive" system. It was refined in version 4.1 on March 20, which added Windows executables and an NSIS installer. Later versions have some gaps on Windows, which should be resolved in the next stable release of Vex, 4.5.
 
+<<<<<<< HEAD
 Also void V3 ( Neospace 2026 beta ) was released by this time.
 
+=======
+>>>>>>> cfde602 (git commit commit more)
 ### April 2026
 
 Development of Vex began to evolve drastically. Release 4.2 fixed several issues.
@@ -81,13 +84,18 @@ I started turning the unfinished error.doc into a stable, TTS-based manpage read
 
 error.os NS26+1 arrived, along with improvements to "once" (the onboarder), "err_", error.doc, "libtrigonometry", and other unfocused packages. The previous attempt at running most things through terminal execution was replaced by libterm (tan), the part of libtrigonometry that executes commands in a terminal live.
 
+<<<<<<< HEAD
 This release specifically addressed the minor bugs found in version NS26. after that Neospace 2026 has been declared as Void V4.
+=======
+This release specifically addressed the minor bugs found in version NS26.
+>>>>>>> cfde602 (git commit commit more)
 
 This marked one year with error.os.
 <hr>
 
 
 ### TL;DR
+<<<<<<< HEAD
 Even though there have been no users up until now, this entire ecosystem of projects has continued for the fun of development. With each update, stability has been redefined.
 
 ## Related pages
@@ -97,3 +105,6 @@ Even though there have been no users up until now, this entire ecosystem of proj
 - [004 - Our default apps](./../004)
 
 - [011 - Advanced easy guide to linux](./../011)
+=======
+Even though there have been no users up until now, this project has continued for the fun of development. With each update, stability has been redefined.
+>>>>>>> cfde602 (git commit commit more)
