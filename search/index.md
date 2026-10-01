@@ -31,15 +31,14 @@ description: "Search across every page of the error.os documentation"
   var rx  = function (s) { return s.replace(/[.*+?^$()|[\]\\{}]/g, '\\$&'); };
   var slug = function (t) { return t.toLowerCase().replace(/[^a-z0-9 -]/g, '').replace(/ /g, '-').replace(/^[^a-z]+/, ''); };
 
-  /* every .md under docs/ : the git tree first, jsdelivr as the fallback when the api is rate limited */
   function list() {
-    return fetch('https:
+    return fetch('https://api.github.com/repos/' + repo + '/git/trees/' + branch + '?recursive=1')
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (t) { return t.tree.map(function (f) { return f.path; }); })
       .catch(function () {
         return fetch('https://data.jsdelivr.com/v1/package/gh/' + repo + '@' + branch + '/flat')
           .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-          .then(function (d) { return d.files.map(function (f) { return f.name.replace(/^\
+          .then(function (d) { return d.files.map(function (f) { return f.name.replace(/^\//, ''); }); });
       })
       .then(function (all) { return all.filter(function (p) { return p.indexOf(dir) === 0 && /\.md$/i.test(p); }); });
   }
@@ -89,7 +88,6 @@ description: "Search across every page of the error.os documentation"
       .then(function () { done++; progress(); });
   }
 
-  /* everything is in memory now, so results are instant */
   function run() {
     var q = input.value.trim(), words = q.toLowerCase().split(/\s+/).filter(Boolean);
     history.replaceState(null, '', q ? '?q=' + encodeURIComponent(q) : location.pathname);
@@ -111,7 +109,7 @@ description: "Search across every page of the error.os documentation"
       var e = h.e, p = e.tl.indexOf(words[0]), from = Math.max(0, p < 0 ? 0 : p - 40);
       var snip = (from ? '…' : '') + e.text.slice(from, from + 140) + (from + 140 < e.text.length ? '…' : '');
       var mark = snip.split(re).map(function (v, i) { return i % 2 ? '<mark>' + esc(v) + '</mark>' : esc(v); }).join('');
-      return '<a class="sr" href="' + esc(e.url) + '"><img src="' + esc(e.icon) + '" alt=""><b>' + esc(e.id) + '</b>:<span>' + mark + '</span></a>';
+      return '<a class="hit" href="' + esc(e.url) + '"><img src="' + esc(e.icon) + '" alt=""><b>' + esc(e.id) + '</b>:<span>' + mark + '</span></a>';
     }).join('');
   }
 
