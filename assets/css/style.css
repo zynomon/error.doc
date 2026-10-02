@@ -981,17 +981,36 @@ sup a.footnote:hover {
 }
 
 header,
-.tools {
+.tools,
+header nav,
+.hint,
+dialog {
     background: var(--noise), var(--panel);
     border: 1px solid var(--line);
-    border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-lg), var(--bevel);
+}
+
+header,
+.tools {
+    border-radius: var(--border-radius-lg);
     user-select: none;
 }
 
 header {
     position: relative;
     padding: 0.5rem 0.9rem;
+}
+
+header::after {
+    content: "";
+    position: absolute;
+    inset: 100% 0 auto;
+    height: 1.2rem;
+    pointer-events: none;
+}
+
+header.expanded::after {
+    pointer-events: auto;
 }
 
 header h1 {
@@ -1010,10 +1029,12 @@ header h1 {
     gap: 0.7rem;
 }
 
-.logo .txt {
+.txt,
+.txt:hover {
     margin-left: 0.5rem;
     color: inherit;
     text-shadow: inherit;
+    border-bottom: 0;
 }
 
 .mark {
@@ -1046,11 +1067,6 @@ header h1 {
     background: var(--line);
 }
 
-.mark img {
-    width: 1.4rem;
-    height: 1.4rem;
-}
-
 .chev {
     width: 0.55rem;
     height: 0.55rem;
@@ -1071,71 +1087,99 @@ header.expanded .mark img {
     opacity: 0;
 }
 
-header a,
-header a:hover,
-.tools a,
-.tools a:hover {
-    text-shadow: none;
-    border-bottom: 0;
-}
-
 .tools {
+    --s: 2rem;
     display: flex;
     align-items: center;
     gap: 0.35rem;
     padding: 0.4rem;
 }
 
-.sq {
+.bt {
+    position: relative;
     display: grid;
     place-items: center;
-    width: 2rem;
-    height: 2rem;
+    width: var(--s, 2.4rem);
+    height: var(--s, 2.4rem);
     padding: 0;
-    background: var(--tint);
+    color: var(--fg);
+    background: var(--raise);
     border: 1px solid var(--line);
     border-radius: var(--border-radius-sm);
-    color: var(--fg);
-    cursor: pointer;
     box-shadow: var(--bevel);
+    font: inherit;
+    text-shadow: none;
+    white-space: nowrap;
+    cursor: pointer;
     transition: all 0.3s ease;
 }
 
-.sq:hover {
+.bt:hover {
+    z-index: 2;
+    color: var(--fg);
     background: var(--glass-hover);
     border-color: var(--accent);
+    text-shadow: none;
 }
 
-.sq:active,
-header nav a:active,
-.acts button:active,
-.theme-toggle:active {
+.bt:active {
     box-shadow: inset 0 2px 5px var(--sh-in);
 }
 
-.sq svg {
-    width: 1.15rem;
-    height: 1.15rem;
+.ico {
+    display: grid;
+    place-items: center;
+    width: calc(var(--s, 2.4rem) * 0.56);
+    height: calc(var(--s, 2.4rem) * 0.56);
+}
+
+.ico > * {
+    width: 100%;
+    height: 100%;
+}
+
+.ico > .hexi {
+    width: 82%;
 }
 
 .hexi {
     display: block;
-    width: 0.95rem;
-    height: 1.05rem;
     background: var(--accent);
     clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
 }
 
+.ico img,
+.mark img,
+.hit img {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.ico img:hover,
+.mark img:hover,
+.hit img:hover {
+    transform: none;
+    filter: none;
+    animation: none;
+    box-shadow: none;
+}
+
+.mark img {
+    width: 1.4rem;
+    height: 1.4rem;
+}
+
 header nav {
+    --nx: 0.9rem;
     position: absolute;
     top: 100%;
     left: 0;
-    margin-top: 0.6rem;
+    margin-top: 1rem;
     display: flex;
     gap: 0.4rem;
     padding: 0.4rem;
-    background: var(--noise), var(--panel);
-    border: 1px solid var(--line);
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow), var(--bevel);
     opacity: 0;
@@ -1147,22 +1191,6 @@ header nav {
         visibility 0s 0.3s;
 }
 
-header nav::before {
-    content: "";    position: absolute;
-    inset: -0.7rem 0 auto;
-    height: 0.7rem;
-}
-
-header nav::after {
-    content: "";    position: absolute;
-    bottom: 100%;
-    left: 1rem;
-    width: 0.8rem;
-    height: 0.45rem;
-    background: var(--line);
-    clip-path: polygon(50% 0, 100% 100%, 0 100%);
-}
-
 header.expanded nav {
     opacity: 1;
     visibility: visible;
@@ -1170,79 +1198,66 @@ header.expanded nav {
     transition-delay: 0s;
 }
 
-header nav a {
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: 2.4rem;
-    height: 2.4rem;
-    background: var(--raise);
-    border: 1px solid var(--line);
-    border-radius: var(--border-radius-sm);
-    color: var(--fg);
-    white-space: nowrap;
-    box-shadow: var(--bevel);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.nib::before,
+.nib::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: var(--nx);
+    width: 1.4rem;
+    height: 0.75rem;
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    background:
+        linear-gradient(var(--line), var(--line)),
+        var(--noise),
+        var(--panel);
 }
 
-header nav a:hover {
-    z-index: 2;    background: var(--glass-hover);
-    border-color: var(--accent);
-}
-
-.ico {
-    display: grid;
-    place-items: center;
-}
-
-.ico img,
-.ico svg {
-    width: 1.35rem;
-    height: 1.35rem;
-    margin: 0;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    cursor: inherit;
+.nib::after {
+    bottom: calc(100% - 1px);
+    left: calc(var(--nx) + 1.5px);
+    width: calc(1.4rem - 3px);
+    height: calc(0.75rem - 1px);
+    background: var(--noise), var(--panel);
 }
 
 .hint {
+    --nx: 0.5rem;
     position: absolute;
-    left: calc(100% - 4px);
-    top: -1px;
-    height: calc(100% + 2px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0 1.4rem 0 0.9rem;
+    top: calc(100% + 1.2rem);
+    left: 0;
+    padding: 0.4rem 0.9rem;
+    border-radius: var(--border-radius-md);
     white-space: nowrap;
-    background: var(--noise), var(--raise);
-    clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%);
+    text-align: left;
     opacity: 0;
-    translate: -8px;
+    translate: 0 -6px;
     pointer-events: none;
     transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
 }
 
-header nav a:hover .hint {
+.bt:hover .hint {
     opacity: 1;
     translate: 0;
 }
 
+.hint b,
+.hint small {
+    display: block;
+    line-height: 1.2;
+}
+
 .hint b {
     font-size: 0.8rem;
-    line-height: 1.1;
-    color: var(--fg);
 }
 
 .hint small {
-    font-size: 0.6rem;
-    line-height: 1;
+    font-size: 0.65rem;
     color: var(--dim);
 }
 
 .nm,
-header nav a.nw {
+.narrow {
     display: none;
 }
 
@@ -1268,10 +1283,7 @@ dialog {
     width: min(92vw, 30rem);
     padding: 1.25rem 1.5rem;
     color: var(--fg);
-    background: var(--noise), var(--panel);
-    border: 1px solid var(--line);
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg), var(--bevel);
 }
 
 dialog::backdrop {
@@ -1307,39 +1319,14 @@ dialog h2 {
     border-top: 1px solid var(--line);
 }
 
-.acts button {
+.acts .bt {
+    width: auto;
+    height: auto;
     padding: 0.45rem 1rem;
-    font: inherit;
-    font-size: 0.9rem;
-    color: var(--fg);
-    background: var(--tint);
-    border: 1px solid var(--line);
-    border-radius: var(--border-radius-sm);
-    cursor: pointer;
-    box-shadow: var(--bevel);
-    transition: all 0.3s ease;
 }
 
 .theme-toggle {
-    flex: none;
-    width: 2.4rem;
-    height: 2.4rem;
-    display: grid;
-    place-items: center;
-    padding: 0;
-    color: var(--fg);
-    background: var(--tint);
-    border: 1px solid var(--line);
     border-radius: 50%;
-    cursor: pointer;
-    box-shadow: var(--bevel);
-    transition: all 0.3s ease;
-}
-
-.acts button:hover,
-.theme-toggle:hover {
-    background: var(--glass-hover);
-    border-color: var(--accent);
 }
 
 .theme-toggle svg {
@@ -1435,23 +1422,6 @@ dialog h2 {
     padding: 0;
     color: var(--accent);
     text-decoration: underline;
-}
-
-header img,
-.hit img {
-    display: inline-block;
-    margin: 0;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-}
-
-header img:hover,
-.hit img:hover {
-    transform: none;
-    filter: none;
-    animation: none;
-    box-shadow: none;
 }
 
 .hit img {
@@ -1940,11 +1910,10 @@ footer,
     }
 
     .tools,
-    .logo .txt,
+    .txt,
     .mark::after,
     .mark img,
-    header nav a .hint,
-    header nav a.wo {
+    .hint {
         display: none;
     }
 
@@ -1957,6 +1926,7 @@ footer,
     }
 
     header nav {
+        --nx: calc(100% - 2rem);
         left: auto;
         right: 0;
         flex-direction: column;
@@ -1965,13 +1935,8 @@ footer,
         padding: 0.4rem 0;
     }
 
-    header nav::after {
-        left: auto;
-        right: 0.6rem;
-    }
-
-    header nav a,
-    header nav a.nw {
+    .bt,
+    .narrow {
         display: flex;
         align-items: center;
         gap: 0.65rem;
@@ -1981,26 +1946,20 @@ footer,
         background: none;
         border: 0;
         border-radius: 0;
-    }
-
-    header nav a:hover {
-        background: var(--glass-hover);
-    }
-
-    header nav a,
-    header nav a:active {
         box-shadow: none;
     }
 
-    header nav a.snav {
+    .bt:hover {
+        background: var(--glass-hover);
+    }
+
+    .snav {
         margin-bottom: 0.3rem;
         border-bottom: 1px solid var(--line);
     }
 
-    header nav .ico img,
-    header nav .ico svg {
-        width: 1.1rem;
-        height: 1.1rem;
+    .ico {
+        --s: 2rem;
     }
 
     .nm {
@@ -2013,7 +1972,7 @@ footer,
         content: "..";
     }
 
-    header nav a.snav .nm::after {
+    .snav .nm::after {
         content: ".....";
     }
 }
