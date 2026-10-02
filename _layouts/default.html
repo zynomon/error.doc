@@ -92,6 +92,7 @@
         <a class="bt narrow snav" href="{{ search_url }}" target="_blank" rel="noopener"><span class="ico"><svg width="1em" height="1em"><title>search</title><use href="#i-search"/></svg></span><span class="nm">search</span></a>
         <a class="bt narrow snav" href="{{ "/" | relative_url }}"><span class="ico"><img src="{{ favicon }}" alt=""></span><span class="nm">home</span></a>
         <a class="bt narrow snav" href="{{ "/" | relative_url }}"><span class="ico"><img src="{{ favicon }}" alt=""></span><span class="nm">home</span></a>
+        <a class="bt narrow snav" href="{{ "/" | relative_url }}"><span class="ico"><img src="{{ favicon }}" alt=""></span><span class="nm">home</span></a>
         {% for l in links %}{% assign f = l | split: "|" %}<a class="bt" href="{{ f[1] | strip }}"{% if f[1] contains "://" %} target="_blank" rel="noopener"{% endif %}><span class="ico"><img src="{{ f[2] | strip }}" alt=""></span><span class="hint nib"><b>Visit</b><small>{{ f[3] | strip }}</small></span><span class="nm">{{ f[0] | strip }}</span></a>
         {% endfor %}<a class="bt narrow" href="#settings" id="more-btn"><span class="ico"><span class="hexi"></span></span><span class="nm">more</span></a>
       </nav>
@@ -150,7 +151,7 @@
     }
   </style>
 
-  <div id="vanta-bg" style="height:400px;"></div>
+  <div id="vanta-bg"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds2.min.js"></script>
