@@ -74,6 +74,12 @@
 
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><mask id="SVGzmt0MemV"><g fill="none" stroke="#fff" stroke-linejoin="round" stroke-width="4"><path fill="#555" d="M21 38c9.389 0 17-7.611 17-17S30.389 4 21 4S4 11.611 4 21s7.611 17 17 17Z"/><path stroke-linecap="round" d="M26.657 14.343A7.98 7.98 0 0 0 21 12a7.98 7.98 0 0 0-5.657 2.343m17.879 18.879l8.485 8.485"/></g></mask><symbol id="i-search" viewBox="0 0 48 48"><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#SVGzmt0MemV)"/></symbol></defs></svg>
   {% assign search_url = "/search/" | relative_url %}
+  {% capture links %}home|{{ "/" | relative_url }}|{{ favicon }}|error.doc;
+    doc|{{ "/docs" | relative_url }}|{{ default_icon }}|error.doc/docs;
+    error|https://zynomon.github.io/error/|https://zynomon.github.io/error/icons/home.svg|zynomon.github.io/error;
+    source|https://github.com/zynomon/error|https://api.iconify.design/logos:github-octocat.svg|github.com/zynomon/error;
+    debian|https://debian.org|https://api.iconify.design/logos:debian.svg|debian.org{% endcapture %}
+  {% assign links = links | split: ";" %}
   <div class="bars">
     <header>
       <h1>
@@ -82,36 +88,15 @@
           <a class="txt" href="{{ "/" | relative_url }}">error.doc</a>
         </span>
       </h1>
-      <nav aria-label="Site navigation">
-        <a class="nw snav" href="{{ search_url }}" target="_blank" rel="noopener">
-          <span class="ico"><svg width="1em" height="1em"><title>search</title><use href="#i-search"/></svg></span><span class="nm">search</span>
-        </a>
-        <a class="nw" href="{{ "/" | relative_url }}">
-          <span class="ico"><img src="{{ favicon }}" alt=""></span><span class="nm">home</span>
-        </a>
-        <a class="nw" href="{{ "/docs" | relative_url }}">
-          <span class="ico"><img src="{{ default_icon }}" alt=""></span><span class="nm">doc</span>
-        </a>
-        <a href="https://zynomon.github.io/error/" target="_blank" rel="noopener">
-          <span class="ico"><img src="https://zynomon.github.io/error/icons/home.svg" alt=""></span>
-          <span class="hint"><b>Visit</b><small>zynomon.github.io/error</small></span><span class="nm">error</span>
-        </a>
-        <a href="https://github.com/zynomon/error" target="_blank" rel="noopener">
-          <span class="ico"><img src="https://api.iconify.design/logos:github-octocat.svg" alt=""></span>
-          <span class="hint"><b>Visit</b><small>github.com/zynomon/error</small></span><span class="nm">source</span>
-        </a>
-        <a class="wo" href="https://debian.org" target="_blank" rel="noopener">
-          <span class="ico"><img src="https://api.iconify.design/logos:debian.svg" alt=""></span>
-          <span class="hint"><b>Visit</b><small>debian.org</small></span>
-        </a>
-        <a class="nw" href="#settings" id="more-btn">
-          <span class="ico"><span class="hexi"></span></span><span class="nm">more</span>
-        </a>
+      <nav class="nib" aria-label="Site navigation">
+        <a class="bt narrow snav" href="{{ search_url }}" target="_blank" rel="noopener"><span class="ico"><svg width="1em" height="1em"><title>search</title><use href="#i-search"/></svg></span><span class="nm">search</span></a>
+        {% for l in links %}{% assign f = l | split: "|" %}<a class="bt" href="{{ f[1] | strip }}"{% if f[1] contains "://" %} target="_blank" rel="noopener"{% endif %}><span class="ico"><img src="{{ f[2] | strip }}" alt=""></span><span class="hint nib"><b>Visit</b><small>{{ f[3] | strip }}</small></span><span class="nm">{{ f[0] | strip }}</span></a>
+        {% endfor %}<a class="bt narrow" href="#settings" id="more-btn"><span class="ico"><span class="hexi"></span></span><span class="nm">more</span></a>
       </nav>
     </header>
     <div class="tools">
-      <a class="sq" href="{{ search_url }}" target="_blank" rel="noopener" aria-label="Search all docs"><svg width="1em" height="1em"><title>search</title><use href="#i-search"/></svg></a>
-      <button class="sq" id="settings-btn" aria-label="Settings"><span class="hexi"></span></button>
+      <a class="bt" href="{{ search_url }}" target="_blank" rel="noopener" aria-label="Search all docs"><span class="ico"><svg width="1em" height="1em"><title>search</title><use href="#i-search"/></svg></span></a>
+      <button class="bt" id="settings-btn" aria-label="Settings"><span class="ico"><span class="hexi"></span></span></button>
     </div>
   </div>
 
@@ -144,10 +129,10 @@
   <dialog id="settings">
     <h2>settings</h2>
     <div class="row"><span>color scheme<small>light / dark</small></span>
-      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme"></button></div>
+      <button class="bt theme-toggle" id="theme-toggle" aria-label="Toggle theme"></button></div>
     <div class="row"><span>animation<small>background on / off</small></span>
-      <button class="theme-toggle anim-toggle" id="anim-toggle" aria-label="Toggle animation"></button></div>
-    <div class="acts"><button id="reset-btn">reset</button><button id="close-btn">close</button></div>
+      <button class="bt theme-toggle anim-toggle" id="anim-toggle" aria-label="Toggle animation"></button></div>
+    <div class="acts"><button class="bt" id="reset-btn">reset</button><button class="bt" id="close-btn">close</button></div>
   </dialog>
 
   <style>
