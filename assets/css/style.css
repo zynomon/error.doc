@@ -282,6 +282,8 @@ code {
         0 2px 4px var(--sh);
     font-size: 0.9em;
     font-family: "Nimbus Mono PS", "Nimbus Mono", monospace;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .code-block-wrapper {
@@ -959,15 +961,18 @@ sup a.footnote:hover {
 }
 
 .bars {
-    position: sticky;
+    position: fixed;
     top: 0.75rem;
+    left: 0;
+    right: 0;
     z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    width: calc(100% - (var(--main-inset) * 2));
-    max-width: calc(var(--container-max-width) - (var(--main-inset) * 2));
-    margin: 0.75rem auto 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0 1.5rem;
     pointer-events: none;
     transition: translate 0.35s ease;
 }
