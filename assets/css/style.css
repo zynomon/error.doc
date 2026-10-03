@@ -1463,6 +1463,8 @@ main {
     word-wrap: break-word;
 }
 
+
+
 footer {
     padding: clamp(1rem, 3vw, 1.5rem) max(1rem, var(--container-padding));
 
