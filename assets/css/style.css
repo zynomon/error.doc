@@ -1955,6 +1955,8 @@ footer,
         box-shadow:
             var(--shadow-lg),
             var(--bevel);
+    
+        z-index: 1002;
     }
 
     .chev {
@@ -1970,6 +1972,9 @@ footer,
         gap: 0;
         width: min(72vw, 16rem);
         padding: 0.4rem 0;
+    
+        max-height: 80vh;
+        overflow-y: auto;
     }
 
     .bt,
