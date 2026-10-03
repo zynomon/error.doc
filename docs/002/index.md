@@ -266,7 +266,7 @@ The actual installation now begins. It usually takes 3-8 minutes, but can take u
 ## Step 8: [Finish]
 
 The system restarts automatically once installation finishes.
-
+<details><summary>This section is or NeoSpace 2026, Not NS26+1</summary>
 # Things After Installation
 <img width="730" height="655" alt="screen-08_10_21_51--2026-01" src="https://github.com/user-attachments/assets/631b1cc4-6a43-4a48-b975-8d89cc061917" />
 
@@ -289,6 +289,7 @@ sudo update-grub
 
 This is the real error.os grub theme.
 
+
 ### 2. Date & Time
 
 If you run into time-sync issues, install and configure `ntp`. It fetches accurate time data over the internet based on your location.
@@ -296,6 +297,7 @@ If you run into time-sync issues, install and configure `ntp`. It fetches accura
 ### 3. Onboarder (`once`)
 
 The onboarding app is called `once`, it walks you through installing recommended apps. Currently there's a typo (`firefox` instead of `firefox-esr`) that causes a package-not-found error, so the preselected app bundle won't install. This will be fixed in the next update.
+</details>
 
 <hr>
 
