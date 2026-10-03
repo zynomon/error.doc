@@ -1449,8 +1449,8 @@ dialog h2 {
 main {
     flex: 1;
     background: var(--noise), var(--panel);
-    width: 80%;
-    margin: clamp(1rem, 2vw, 2rem) auto;
+    width: 96%;
+    margin: clamp(1rem, 2vw, 2rem) 2% auto;
     padding: clamp(1.5rem, 3vw, 2.5rem) var(--container-padding);
     border-radius: var(--border-radius-lg);
     border: 1px solid var(--line);
@@ -1687,8 +1687,8 @@ main {
     }
 
     main {
-        width: 100%;
-        margin: 0;
+        width: 96%;
+        margin: clamp(1rem, 2vw, 2rem) 2% auto;
         padding: 0;
         border: none;
     }
@@ -1826,8 +1826,8 @@ footer,
     }
 
     main {
-        width: calc(100% - 2rem);
-        margin: 1rem;
+        width: 96%;
+        margin: clamp(1rem, 2vw, 2rem) 2% auto;
         padding: 1.25rem;
     }
 
@@ -1942,6 +1942,8 @@ footer,
         margin-left: 0;
     }
 
+    .txt { display: none; }
+
     .mark {
         position: absolute;
         top: 0;
@@ -1976,6 +1978,8 @@ footer,
         max-height: 80vh;
         overflow-y: auto;
     }
+        max-height: 80vh;
+        overflow-y: auto;
 
     .bt,
     .narrow {
@@ -2054,4 +2058,11 @@ footer,
     width: 100% !important;
     height: 100% !important;
     image-rendering: auto;
+}
+
+body.vanta-active main {
+    background: color-mix(in srgb, var(--panel) 85%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid color-mix(in srgb, var(--line) 50%, transparent);
 }
