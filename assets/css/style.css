@@ -281,8 +281,12 @@ code {
         0 2px 4px var(--sh);
     font-size: 0.9em;
     font-family: "Nimbus Mono PS", "Nimbus Mono", monospace;
-    white-space: pre-wrap;
-    word-break: break-word;
+    display: inline-block;
+    max-width: 100%;
+    line-height: 1.2;
+    vertical-align: baseline;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 .code-block-wrapper {
@@ -313,6 +317,9 @@ pre code {
     display: block;
     font-size: 0.95rem;
     line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    max-width: none;
 }
 
 code .c,
@@ -960,20 +967,24 @@ sup a.footnote:hover {
 }
 
 .bars {
-    position: fixed;
+    --px: 10%;
+    position: sticky;
     top: 0.75rem;
-    left: 0;
-    right: 0;
     z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 0 1.5rem;
+    margin: 0.75rem 0 0;
+    padding: 0 var(--px);
     pointer-events: none;
-    transition: translate 0.35s ease;
+    transition:
+        translate 0.35s ease,
+        padding 0.35s ease;
+}
+
+.bars.float {
+    --px: 0.75rem;
 }
 
 .bars > * {
@@ -1438,8 +1449,7 @@ dialog h2 {
 main {
     flex: 1;
     background: var(--noise), var(--panel);
-    max-width: calc(var(--container-max-width) - (var(--main-inset) * 2));
-    width: calc(100% - (var(--main-inset) * 2));
+    width: 80%;
     margin: clamp(1rem, 2vw, 2rem) auto;
     padding: clamp(1.5rem, 3vw, 2.5rem) var(--container-padding);
     border-radius: var(--border-radius-lg);
@@ -1907,14 +1917,15 @@ footer,
     }
 
     .bars {
-        justify-content: flex-end;
-        width: auto;
-        margin-right: 0.75rem;
-        margin-left: auto;
+        --px: 1rem;
+        justify-content: flex-start;
+    }
+
+    .bars.float {
+        --px: 0.75rem;
     }
 
     .tools,
-    .txt,
     .mark::after,
     .mark img,
     .hint {
@@ -1922,7 +1933,28 @@ footer,
     }
 
     header {
-        padding: 0.35rem 0.5rem;
+        position: static;
+        padding: 0.35rem 0.8rem;
+    }
+
+    .txt,
+    .txt:hover {
+        margin-left: 0;
+    }
+
+    .mark {
+        position: absolute;
+        top: 0;
+        right: var(--px);
+        bottom: 0;
+        width: 2.6rem;
+        height: auto;
+        background: var(--noise), var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--border-radius-lg);
+        box-shadow:
+            var(--shadow-lg),
+            var(--bevel);
     }
 
     .chev {
@@ -1931,8 +1963,9 @@ footer,
 
     header nav {
         --nx: calc(100% - 2rem);
+        top: 100%;
         left: auto;
-        right: 0;
+        right: var(--px);
         flex-direction: column;
         gap: 0;
         width: min(72vw, 16rem);

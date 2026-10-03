@@ -74,8 +74,7 @@
 
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><mask id="SVGzmt0MemV"><g fill="none" stroke="#fff" stroke-linejoin="round" stroke-width="4"><path fill="#555" d="M21 38c9.389 0 17-7.611 17-17S30.389 4 21 4S4 11.611 4 21s7.611 17 17 17Z"/><path stroke-linecap="round" d="M26.657 14.343A7.98 7.98 0 0 0 21 12a7.98 7.98 0 0 0-5.657 2.343m17.879 18.879l8.485 8.485"/></g></mask><symbol id="i-search" viewBox="0 0 48 48"><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#SVGzmt0MemV)"/></symbol></defs></svg>
   {% assign search_url = "/search/" | relative_url %}
-  {% capture links %}
-    doc|{{ "/docs" | relative_url }}|{{ default_icon }}|error.doc/docs;
+  {% capture links %}doc|{{ "/docs" | relative_url }}|{{ default_icon }}|error.doc/docs;
     error|https://zynomon.github.io/error/|https://zynomon.github.io/error/icons/home.svg|zynomon.github.io/error;
     source|https://github.com/zynomon/error|https://api.iconify.design/logos:github-octocat.svg|github.com/zynomon/error;
     debian|https://debian.org|https://api.iconify.design/logos:debian.svg|debian.org{% endcapture %}
@@ -90,10 +89,6 @@
       </h1>
       <nav class="nib" aria-label="Site navigation">
         <a class="bt narrow snav" href="{{ search_url }}" target="_blank" rel="noopener"><span class="ico"><svg width="1em" height="1em"><title>search</title><use href="#i-search"/></svg></span><span class="nm">search</span></a>
-        <a class="bt narrow snav" href="{{ "/" | relative_url }}"><span class="ico"><img src="{{ favicon }}" alt=""></span><span class="nm">home</span></a>
-        <a class="bt narrow snav" href="{{ "/" | relative_url }}"><span class="ico"><img src="{{ favicon }}" alt=""></span><span class="nm">home</span></a>
-        <a class="bt narrow snav" href="{{ "/" | relative_url }}"><span class="ico"><img src="{{ favicon }}" alt=""></span><span class="nm">home</span></a>
-        <a class="bt narrow snav" href="{{ "/" | relative_url }}"><span class="ico"><img src="{{ favicon }}" alt=""></span><span class="nm">home</span></a>
         {% for l in links %}{% assign f = l | split: "|" %}<a class="bt" href="{{ f[1] | strip }}"{% if f[1] contains "://" %} target="_blank" rel="noopener"{% endif %}><span class="ico"><img src="{{ f[2] | strip }}" alt=""></span><span class="hint nib"><b>Visit</b><small>{{ f[3] | strip }}</small></span><span class="nm">{{ f[0] | strip }}</span></a>
         {% endfor %}<a class="bt narrow" href="#settings" id="more-btn"><span class="ico"><span class="hexi"></span></span><span class="nm">more</span></a>
       </nav>
@@ -139,41 +134,35 @@
     <div class="acts"><button class="bt" id="reset-btn">reset</button><button class="bt" id="close-btn">close</button></div>
   </dialog>
 
-  <style>
 
-    #vanta-bg {
-      will-change: transform;
-    }
-
-    #vanta-bg canvas {
-      width: 100%;
-      height: 100%;
-      image-rendering: crisp-edges;
-    }
-  </style>
-
-  <div id="vanta-bg"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.clouds2.min.js"></script>
   <script>
-    const cores = navigator.hardwareConcurrency || 1;
-    const ram = navigator.deviceMemory || 1;
-
-    const adaptivePoints = (cores <= 2 || ram <= 2) ? 10 : 20;
-    const adaptiveSpacing = (cores <= 2 || ram <= 2) ? 25 : 20;
-
-    const vantaTheme = () => document.documentElement.getAttribute('data-theme') === 'light'
-      ? { backgroundColor: 0xffffff, skyColor: 0x9dcbf5, cloudColor: 0xffffff, lightColor: 0xffffff }
-      : { backgroundColor: 0x000000, skyColor: 0x020202, cloudColor: 0x000000, lightColor: 0xffffff };
-
     let vantaEffect = null;
 
+    function createNoiseTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      const img = ctx.createImageData(256, 256);
+      for (let i = 0; i < img.data.length; i += 4) {
+        const v = Math.random() * 255;
+        img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+        img.data[i + 3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+      return canvas.toDataURL();
+    }
+
+    const vantaTheme = () => document.documentElement.getAttribute('data-theme') === 'light'
+      ? { backgroundColor: 0xffffff, skyColor: 0x3190be, cloudColor: 0x2c3857, lightColor: 0xffffff }
+      : { backgroundColor: 0x000000, skyColor: 0x020106, cloudColor: 0x000000, lightColor: 0xffffff };
+
     function initVanta() {
-      if (vantaEffect) return;
-      const t = vantaTheme();
-      vantaEffect = VANTA.CLOUDS2({
-        el: "#vanta-bg",
+      if (vantaEffect || typeof VANTA === 'undefined') return;
+      vantaEffect = VANTA.CLOUDS2(Object.assign({
+        el: '#vanta-bg',
         mouseControls: true,
         touchControls: true,
         gyroControls: false,
@@ -181,13 +170,9 @@
         minWidth: 200.00,
         scale: 1.00,
         scaleMobile: 4.00,
-        backgroundColor: t.backgroundColor,
-        skyColor: t.skyColor,
-        cloudColor: t.cloudColor,
-        lightColor: t.lightColor,
-        speed: 1.40,
-        texturePath: "https://www.vantajs.com/gallery/noise.png"
-      });
+        speed: 1.00,
+        texturePath: createNoiseTexture()
+      }, vantaTheme()));
     }
 
     function destroyVanta() {
@@ -195,16 +180,8 @@
         vantaEffect.destroy();
         vantaEffect = null;
       }
-      const t = vantaTheme();
-      document.querySelector("#vanta-bg").style.background = '#' + t.backgroundColor.toString(16).padStart(6, '0');
     }
-
-    window.disableTopology = () => {
-      if (vantaEffect) {
-        destroyVanta();
-      }
-    };
-</script>
+  </script>
 
   <script>
   document.addEventListener('DOMContentLoaded', () => {
@@ -394,6 +371,7 @@ document.addEventListener('DOMContentLoaded', function () {
       scrollTick = true;
       requestAnimationFrame(function () {
         var y = t === document ? window.scrollY : t.scrollTop, delta = y - lastY;
+        bars.classList.toggle('float', y > 8);
         if (y <= bars.offsetHeight || header.classList.contains('expanded')) bars.classList.remove('away');
         else if (delta > 6)  bars.classList.add('away');
         else if (delta < -6) bars.classList.remove('away');
@@ -401,6 +379,7 @@ document.addEventListener('DOMContentLoaded', function () {
         scrollTick = false;
       });
     }, { passive: true, capture: true });
+    bars.classList.toggle('float', (document.body.scrollTop || window.scrollY) > 8);
 
     document.querySelectorAll('header nav a').forEach(function (link) {
       link.addEventListener('mouseenter', function () {
