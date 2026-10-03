@@ -74,12 +74,13 @@
 
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><mask id="SVGzmt0MemV"><g fill="none" stroke="#fff" stroke-linejoin="round" stroke-width="4"><path fill="#555" d="M21 38c9.389 0 17-7.611 17-17S30.389 4 21 4S4 11.611 4 21s7.611 17 17 17Z"/><path stroke-linecap="round" d="M26.657 14.343A7.98 7.98 0 0 0 21 12a7.98 7.98 0 0 0-5.657 2.343m17.879 18.879l8.485 8.485"/></g></mask><symbol id="i-search" viewBox="0 0 48 48"><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#SVGzmt0MemV)"/></symbol></defs></svg>
   
-    {% assign search_url = "/search/" | relative_url %}
-    {% capture links %}doc|{{ "/docs" | relative_url }}|{{ default_icon }}|All Documentations;
-      source|https://github.com/zynomon/error|https://api.iconify.design/logos:github-octocat.svg|Source Code Of This Page;
-      discord|https://discord.gg/Jn7FBwu99F|https://img.shields.io/badge/-%235865F2.svg?&logo=discord&logoColor=white|Discord;
-      repo|https://zynomon.github.io/error/e.html|https://img.shields.io/badge/-A81D33?logo=linux&logoColor=fff|APT Repository{% endcapture %}
-    {% assign links = links | split: ";" %}
+{% assign search_url = "/search/" | relative_url %}
+{% capture links %}doc|{{ "/docs" | relative_url }}|{{ default_icon }}|All Documentations;
+  source|{{ site.github.repository_url }}/blob/main/{{ page.path }}|https://api.iconify.design/logos:github-octocat.svg|Source Code Of This Page;
+  discord|https://discord.gg/Jn7FBwu99F|https://img.shields.io/badge/-%235865F2.svg?&logo=discord&logoColor=white|Discord;
+  debian|https://debian.org|https://api.iconify.design/logos:debian.svg|Debian Wiki;
+  repo|https://zynomon.github.io/error/e.html|https://img.shields.io/badge/-A81D33?logo=linux&logoColor=fff|APT Repository{% endcapture %}
+{% assign links = links | split: ";" %}
   <div class="bars">
     <header>
       <h1>
