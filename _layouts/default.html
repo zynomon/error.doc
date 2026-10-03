@@ -93,6 +93,7 @@
         <a class="bt narrow snav" href="{{ "/" | relative_url }}"><span class="ico"><img src="{{ favicon }}" alt=""></span><span class="nm">home</span></a>
         <a class="bt narrow snav" href="{{ "/" | relative_url }}"><span class="ico"><img src="{{ favicon }}" alt=""></span><span class="nm">home</span></a>
         <a class="bt narrow snav" href="{{ "/" | relative_url }}"><span class="ico"><img src="{{ favicon }}" alt=""></span><span class="nm">home</span></a>
+        <a class="bt narrow snav" href="{{ "/" | relative_url }}"><span class="ico"><img src="{{ favicon }}" alt=""></span><span class="nm">home</span></a>
         {% for l in links %}{% assign f = l | split: "|" %}<a class="bt" href="{{ f[1] | strip }}"{% if f[1] contains "://" %} target="_blank" rel="noopener"{% endif %}><span class="ico"><img src="{{ f[2] | strip }}" alt=""></span><span class="hint nib"><b>Visit</b><small>{{ f[3] | strip }}</small></span><span class="nm">{{ f[0] | strip }}</span></a>
         {% endfor %}<a class="bt narrow" href="#settings" id="more-btn"><span class="ico"><span class="hexi"></span></span><span class="nm">more</span></a>
       </nav>

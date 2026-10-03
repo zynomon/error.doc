@@ -101,7 +101,7 @@ body {
 
 body {
     background: var(--bg);
-    font-family: "Fira Code", "Consolas", monospace;
+    font-family: "Nimbus Mono", monospace;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -120,8 +120,7 @@ h3,
 h4,
 h5,
 h6 {
-    font-family:
-        "OCR A Std", "OCR A", "Nimbus Mono PS", "Nimbus Mono", monospace;
+    font-family: "Nimbus Mono", monospace;
     font-weight: 500;
     line-height: 1.3;
 }
@@ -245,7 +244,7 @@ abbr[title] {
 }
 
 kbd {
-    font-family: "Nimbus Mono PS", "Courier New", monospace;
+    font-family: "Nimbus Mono", monospace;
     font-size: 0.9em;
     background: linear-gradient(to bottom, var(--raise), var(--sunk));
     color: var(--fg);
@@ -262,7 +261,7 @@ kbd {
 }
 
 samp {
-    font-family: "Nimbus Mono PS", "Courier New", monospace;
+    font-family: "Nimbus Mono", monospace;
     font-size: 0.9em;
     background: var(--sunk);
     color: var(--success);
