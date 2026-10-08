@@ -79,6 +79,7 @@
         var ok = g('consentGiven') === 'true';
         var t = ok ? g('theme') : null;
         var m = (ok && g('mode')) || 'full';
+        if (/[?&]bare(=|&|$)/.test(location.search)) m = 'half';
         document.documentElement.setAttribute('data-mode', m);
         document.documentElement.classList.add('pending');
         if (t === 'light' || (t !== 'dark' && matchMedia('(prefers-color-scheme: light)').matches))
@@ -97,8 +98,8 @@
     <h2>settings</h2>
     <div class="row"><span>color scheme<small>light / dark</small></span>
       <button class="bt theme-toggle" id="theme-toggle" aria-label="Toggle theme"></button></div>
-    <div class="row"><span>bare minimum mode<small>on / off, reloads</small></span>
-      <button class="bt" id="mode-btn" style="width:auto;height:auto;padding:0.45rem 1rem"></button></div>
+    <div class="row"><span>bare minimum<small>plain page</small></span>
+      <button class="bt theme-toggle" id="mode-btn" aria-label="Toggle bare minimum mode"></button></div>
     <div class="acts"><button class="bt" id="reset-btn">reset</button><button class="bt" id="close-btn">close</button></div>
 </dialog>
 
@@ -124,7 +125,10 @@
 
   ED.setMode = function (m) {
     ED.remember('mode', m);
-    if (ED.get('mode') === m) location.reload();
+    if (ED.get('mode') !== m) return;
+    var u = new URL(location.href);
+    u.searchParams.delete('bare');
+    if (u.href === location.href) location.reload(); else location.href = u.href;
   };
   ED.reset = function () {
     ['consentGiven', 'theme', 'animEnabled', 'headerExpanded', 'mode'].forEach(ED.del);
@@ -251,9 +255,9 @@
     if (e.key === 'theme' && (e.newValue === 'light' || e.newValue === 'dark')) ED.setTheme(e.newValue);
   });
 
-  modeBtn.textContent = half() ? 'on' : 'off';
+  modeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title>heart-plus-outline</title><path fill="currentColor" d="M12 9.75a.75.75 0 0 1 .75.75v1.75h1.75a.75.75 0 0 1 0 1.5h-1.75v1.75a.75.75 0 0 1-1.5 0v-1.75H9.5a.75.75 0 0 1 0-1.5h1.75V10.5a.75.75 0 0 1 .75-.75"/><path fill="currentColor" fill-rule="evenodd" d="M8.4 5.25c-2.78 0-5.15 2.08-5.15 4.78c0 1.85.789 3.476 1.882 4.852c1.09 1.372 2.518 2.537 3.885 3.484c.521.362 1.05.695 1.533.941c.454.231.975.443 1.45.443s.996-.212 1.45-.443a14 14 0 0 0 1.534-.941c1.366-.947 2.793-2.112 3.884-3.484c1.093-1.376 1.882-3.002 1.882-4.852c0-2.7-2.37-4.78-5.15-4.78c-1.434 0-2.695.672-3.6 1.542c-.905-.87-2.167-1.542-3.6-1.542m-3.65 4.78c0-1.75 1.57-3.28 3.65-3.28c1.194 0 2.31.713 3.005 1.619a.75.75 0 0 0 1.19 0c.696-.906 1.81-1.619 3.005-1.619c2.08 0 3.65 1.53 3.65 3.28c0 1.403-.596 2.71-1.556 3.918c-.962 1.21-2.257 2.279-3.565 3.185a12 12 0 0 1-1.36.838c-.428.218-.676.279-.769.279s-.341-.061-.77-.28a12 12 0 0 1-1.36-.837c-1.307-.906-2.602-1.974-3.564-3.185c-.96-1.208-1.556-2.515-1.556-3.918" clip-rule="evenodd"/></svg>';
   modeBtn.addEventListener('click', function () {
-    if (!half() && !confirm('Turn on bare minimum mode? The page will reload without styling and animation.')) return;
+    if (!half() && !confirm('Switch to bare minimum mode?')) return;
     ED.setMode(half() ? 'full' : 'half');
   });
   document.getElementById('reset-btn').addEventListener('click', ED.reset);
