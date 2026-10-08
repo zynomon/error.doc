@@ -1,0 +1,266 @@
+(function () {
+  'use strict';
+  var ED = window.ED, C = ED.cfg, root = document.documentElement;
+
+  var LOGO = `<svg
+   viewBox="0 0 249.62665 30.716187" 
+   preserveAspectRatio="xMidYMid meet"
+   version="1.1"
+   id="svg1"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient5">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop5" />
+      <stop
+         style="stop-color:#d2d2d2;stop-opacity:1;"
+         offset="1"
+         id="stop6" />
+    </linearGradient>
+    <rect
+       id="SVGID_00000105414853600283290720000017360153226701225652_"
+       y="0"
+       width="640"
+       height="483.70001"
+       x="0" />
+    <linearGradient
+       xlink:href="#linearGradient5"
+       id="linearGradient6"
+       x1="8.3539963"
+       y1="2.9962766"
+       x2="8.1593733"
+       y2="4.2616396"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(15.333247,0,0,17.263727,-28.310722,17.45852)" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1-0">
+      <use
+         xlink:href="#SVGID_00000105414853600283290720000017360153226701225652_"
+         style="overflow:visible"
+         id="use1-9"
+         transform="matrix(0.26458439,0,0,0.26458333,-3.1190052,-118.71854)" />
+    </clipPath>
+  </defs>
+  <g
+     id="layer1"
+     transform="translate(835.35725,-236.94318)">
+    <g
+       id="layer1-2"
+       transform="translate(-808.83495,168)">
+      <path
+         d="M -1.3873755,83.679858 H -23.797025 q 0.57595,4.804512 3.560412,7.752066 3.010643,2.918079 7.434978,2.918079 2.460872,0 5.1573597,-0.913734 2.696489,-0.913752 4.398156,-2.416994 0.4974105,-0.442142 0.8639217,-0.442142 0.4188726,0 0.7330201,0.383186 0.3141476,0.353699 0.3141476,0.854796 0,0.50108 -0.4188736,0.97269 -1.25662,1.47377 -4.476694,2.7707 -3.1938986,1.267451 -6.5710535,1.267451 -5.654771,0 -9.450798,-4.15605 -3.769848,-4.185526 -3.769848,-10.11011 0,-5.394023 3.534232,-9.255318 3.560412,-3.861296 8.796311,-3.861296 5.3929763,0 8.8748492,3.979198 3.4818739,3.949722 3.4295135,10.257487 z m -2.2252571,-2.50542 q -0.6544875,-4.0971 -3.4556942,-6.661472 -2.775026,-2.564371 -6.6234122,-2.564371 -3.848385,0 -6.623412,2.534895 -2.775027,2.534898 -3.455694,6.690948 z M 16.257606,70.32744 v 6.248814 q 4.293438,-4.36238 6.413977,-5.600352 2.146719,-1.267451 3.953103,-1.267451 1.963463,0 3.638951,1.503256 1.701667,1.473769 1.701667,2.240141 0,0.560035 -0.340337,0.94322 -0.314162,0.3537 -0.811573,0.3537 -0.2618,0 -0.445048,-0.08839 -0.183263,-0.117912 -0.680673,-0.677929 -0.916284,-1.031646 -1.596948,-1.414831 -0.680674,-0.383187 -1.335158,-0.383187 -1.439868,0 -3.481874,1.296921 -2.01582,1.29692 -7.016105,6.337241 V 93.37731 h 9.738773 q 0.811558,0 1.151894,0.353699 0.340337,0.32423 0.340337,0.884265 0,0.530566 -0.340337,0.884266 -0.340336,0.353699 -1.151894,0.353699 H 8.7440912 q -0.7853837,0 -1.1257205,-0.324231 -0.3403368,-0.353699 -0.3403368,-0.884265 0,-0.50108 0.3141624,-0.825309 0.3403368,-0.3537 1.1518949,-0.3537 H 14.058528 V 72.83286 h -4.057822 q -0.7853839,0 -1.1257207,-0.353698 -0.3403367,-0.3537 -0.3403367,-0.913735 0,-0.530566 0.3141476,-0.884266 0.3403367,-0.353699 1.1518948,-0.353699 z m 32.174604,0 v 6.248814 q 4.293436,-4.36238 6.413976,-5.600352 2.146719,-1.267451 3.953104,-1.267451 1.963462,0 3.638949,1.503256 1.701668,1.473769 1.701668,2.240141 0,0.560035 -0.340337,0.94322 -0.314146,0.3537 -0.811557,0.3537 -0.2618,0 -0.445048,-0.08839 -0.183263,-0.117912 -0.680674,-0.677929 -0.916284,-1.031646 -1.596948,-1.414831 -0.680673,-0.383187 -1.335158,-0.383187 -1.439868,0 -3.481874,1.296921 -2.015819,1.29692 -7.016104,6.337241 V 93.37731 h 9.738774 q 0.811558,0 1.151895,0.353699 0.340337,0.32423 0.340337,0.884265 0,0.530566 -0.340337,0.884266 -0.340337,0.353699 -1.151895,0.353699 H 40.918693 q -0.785384,0 -1.125721,-0.324231 -0.340336,-0.353699 -0.340336,-0.884265 0,-0.50108 0.314147,-0.825309 0.340337,-0.3537 1.151895,-0.3537 H 46.23313 V 72.83286 h -4.05782 q -0.785385,0 -1.125722,-0.353698 -0.340337,-0.3537 -0.340337,-0.913735 0,-0.530566 0.314148,-0.884266 0.340337,-0.353699 1.151895,-0.353699 z m 47.096921,12.821859 q 0,5.659304 -3.612775,9.667975 -3.586589,4.008674 -8.665413,4.008674 -5.13118,0 -8.717772,-4.008674 -3.58659,-4.038148 -3.58659,-9.667975 0,-5.659303 3.58659,-9.667977 3.586592,-4.038148 8.717772,-4.038148 5.078824,0 8.665413,4.008672 3.612775,4.008674 3.612775,9.697453 z m -2.225256,0 q 0,-4.657135 -2.958289,-7.92892 -2.932102,-3.271784 -7.120817,-3.271784 -4.188725,0 -7.147008,3.301259 -2.932103,3.271786 -2.932103,7.899445 0,4.598183 2.932103,7.899443 2.958283,3.301261 7.147008,3.301261 4.188715,0 7.120817,-3.271785 2.958289,-3.301259 2.958289,-7.928919 z M 112.78141,70.32744 v 6.248814 q 4.29345,-4.36238 6.41398,-5.600352 2.14672,-1.267451 3.95311,-1.267451 1.96347,0 3.63895,1.503256 1.70166,1.473769 1.70166,2.240141 0,0.560035 -0.3404,0.94322 -0.31417,0.3537 -0.81158,0.3537 -0.26175,0 -0.44498,-0.08839 -0.18323,-0.117912 -0.68064,-0.677929 -0.91631,-1.031646 -1.59695,-1.414831 -0.68065,-0.383187 -1.33516,-0.383187 -1.43986,0 -3.48187,1.296921 -2.01582,1.29692 -7.01611,6.337241 V 93.37731 h 9.73878 q 0.81156,0 1.15189,0.353699 0.34034,0.32423 0.34034,0.884265 0,0.530566 -0.34034,0.884266 -0.34033,0.353699 -1.15189,0.353699 h -17.2523 q -0.78539,0 -1.12572,-0.324231 -0.34034,-0.353699 -0.34034,-0.884265 0,-0.50108 0.31415,-0.825309 0.34034,-0.3537 1.15189,-0.3537 h 5.31446 V 72.83286 h -4.05782 q -0.78539,0 -1.12572,-0.353698 -0.34034,-0.3537 -0.34034,-0.913735 0,-0.530566 0.31414,-0.884266 0.34034,-0.353699 1.1519,-0.353699 z m 79.27153,12.821859 q 0,5.659304 -3.61277,9.667975 -3.5866,4.008674 -8.66541,4.008674 -5.13118,0 -8.71778,-4.008674 -3.58658,-4.038148 -3.58658,-9.667975 0,-5.659303 3.58658,-9.667977 3.5866,-4.038148 8.71778,-4.038148 5.07881,0 8.66541,4.008672 3.61277,4.008674 3.61277,9.697453 z m -2.22526,0 q 0,-4.657135 -2.95828,-7.92892 -2.93211,-3.271784 -7.12083,-3.271784 -4.18871,0 -7.147,3.301259 -2.9321,3.271786 -2.9321,7.899445 0,4.598183 2.9321,7.899443 2.95829,3.301261 7.147,3.301261 4.18872,0 7.12083,-3.271785 2.95828,-3.301259 2.95828,-7.928919 z m 29.3734,-11.200704 q 0,-0.854796 0.31417,-1.237965 0.31418,-0.383185 0.78537,-0.383185 0.49741,0 0.81159,0.383185 0.31418,0.383186 0.31418,1.296921 v 4.244477 q 0,0.884266 -0.31418,1.267451 -0.31418,0.383185 -0.81159,0.383185 -0.44512,0 -0.75915,-0.324229 -0.28796,-0.324231 -0.34039,-1.061116 -0.15702,-1.768532 -1.62314,-2.918077 -2.14671,-1.650636 -5.68095,-1.650636 -3.6913,0 -5.7333,1.680106 -1.5446,1.26745 -1.5446,2.829652 0,1.768533 1.83258,2.947553 1.25655,0.825311 4.76467,1.267452 4.5814,0.560035 6.3616,1.267451 2.53942,1.031645 3.76985,2.859126 1.25656,1.827483 1.25656,3.949721 0,3.153884 -2.69649,5.629828 -2.69649,2.44647 -7.90621,2.44647 -5.20971,0 -8.53451,-2.97703 0,1.002177 -0.10423,1.296921 -0.10423,0.294761 -0.39268,0.50108 -0.26174,0.206319 -0.60214,0.206319 -0.47119,0 -0.78536,-0.383187 -0.31418,-0.383185 -0.31418,-1.26745 v -5.099261 q 0,-0.884265 0.28796,-1.267452 0.31418,-0.383185 0.81158,-0.383185 0.4712,0 0.78537,0.383185 0.3404,0.3537 0.3404,0.972691 0,1.355876 0.60213,2.269615 0.91632,1.414832 2.90593,2.358044 2.01582,0.913735 4.92175,0.913735 4.29343,0 6.3878,-1.798009 2.09435,-1.798007 2.09435,-3.802344 0,-2.299092 -2.12054,-3.684442 -2.14672,-1.385345 -6.2569,-1.856959 -4.084,-0.47161 -5.86421,-1.237965 -1.78019,-0.766371 -2.77502,-2.299092 -0.99482,-1.532724 -0.99482,-3.301259 0,-3.183359 2.77503,-5.040317 2.77502,-1.886434 6.6234,-1.886434 4.55524,0 7.4088,2.505421 z"
+         id="text3"
+         style="font-size:3.49669px;font-family:Monospace;-inkscape-font-specification:Monospace;fill:url(#linearGradient6);fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.6;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.648312;paint-order:markers fill stroke"
+         aria-label="error os" />
+      <path
+         class="st26"
+         d="M 11.300844,2.0108335 10.930426,2.3812501 10.560008,2.0108335 10.930426,1.6404168 11.300844,2.0108335"
+         id="path278"
+         style="opacity:1;fill:#d6d6d6;fill-opacity:1;stroke:#000000;stroke-width:0.143018;stroke-dasharray:none;stroke-opacity:1"
+         clip-path="url(#clipPath1-0)"
+         transform="matrix(13.508432,0,0,13.947042,1.564839,65.037505)" />
+      <path
+         d="m 192.52929,72.846804 -2.08032,-1.290522 V 71.13299 l 2.08032,-1.290522 0.21681,0.309725 -1.95127,1.192443 1.95127,1.192443 z m 1.89965,-1.089201 v -2.451992 h 0.42329 v 2.451992 z m 0.21165,1.38344 q -0.0723,0 -0.14454,-0.02065 -0.0723,-0.02065 -0.12389,-0.07227 -0.0516,-0.05678 -0.0774,-0.12389 -0.0206,-0.07227 -0.0206,-0.149701 0,-0.07227 0.0206,-0.139376 0.0258,-0.07227 0.0774,-0.123891 0.0516,-0.05678 0.12389,-0.07743 0.0723,-0.02065 0.14454,-0.02065 0.0723,0 0.14454,0.02065 0.0723,0.02065 0.12389,0.07743 0.0516,0.05162 0.0723,0.123891 0.0206,0.06711 0.0206,0.139376 0,0.07743 -0.0206,0.149701 -0.0206,0.06711 -0.0723,0.12389 -0.0516,0.05162 -0.12389,0.07227 -0.0723,0.02065 -0.14454,0.02065 z m 2.11129,-0.294239 -0.2168,-0.309725 1.95127,-1.192443 -1.95127,-1.192443 0.2168,-0.309725 2.08033,1.290522 v 0.423292 z"
+         id="text1"
+         style="font-size:5.16209px;font-family:'Adwaita Mono';-inkscape-font-specification:'Adwaita Mono';stroke-width:0.967892;stroke-linecap:round"
+         transform="scale(0.76629427,1.3049817)"
+         aria-label="&lt;!&gt;" />
+    </g>
+  </g>
+</svg>`;
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); };
+
+    var TOP =
+    '<div id="nav-dim-overlay"></div><div id="vanta-bg"></div>' +
+    '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><mask id="SVGzmt0MemV"><g fill="none" stroke="#fff" stroke-linejoin="round" stroke-width="4"><path fill="#555" d="M21 38c9.389 0 17-7.611 17-17S30.389 4 21 4S4 11.611 4 21s7.611 17 17 17Z"/><path stroke-linecap="round" d="M26.657 14.343A7.98 7.98 0 0 0 21 12a7.98 7.98 0 0 0-5.657 2.343m17.879 18.879l8.485 8.485"/></g></mask><symbol id="i-search" viewBox="0 0 48 48"><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#SVGzmt0MemV)"/></symbol></defs></svg>' +
+    '<div class="bars"><header><h1><span class="logo">' +
+    '<button class="mark" id="menu-btn" aria-label="Toggle navigation" aria-expanded="false"><img src="' + esc(C.favicon) + '" alt=""><span class="chev"></span></button>' +
+    '<a class="txt" href="' + esc(C.home) + '">error.doc</a></span></h1>' +
+    '<nav class="nib" aria-label="Site navigation">' +
+    '<a class="bt narrow snav" href="' + esc(C.search) + '" target="_blank" rel="noopener"><span class="ico"><svg width="1em" height="1em"><title>search</title><use href="#i-search"/></svg></span><span class="nm">search</span></a>' +
+    '<span id="links" style="display: contents"></span>' +
+    '<a class="bt narrow" href="#settings" id="more-btn"><span class="ico"><span class="hexi"></span></span><span class="nm">more</span></a>' +
+    '</nav></header>' +
+    '<div class="tools"><a class="bt" href="' + esc(C.search) + '" target="_blank" rel="noopener" aria-label="Search all docs"><span class="ico"><svg width="1em" height="1em"><title>search</title><use href="#i-search"/></svg></span></a>' +
+    '<button class="bt" id="settings-btn" aria-label="Settings"><span class="ico"><span class="hexi"></span></span></button></div></div>';
+
+  var FOOT =
+    '<footer class="site-footer"><div class="footer-left" style="display: flex; flex-direction: column; align-items: center; text-align: center;">' +
+    '<a href="' + esc(C.footerHome) + '">' + LOGO + '</a>' +
+    '<p class="footer-subtitle"> born from failure, built for control.<br><sub>Follows Apache 2.0 License.</sub></p></div></footer>';
+
+  var ANIMROW = '<div class="row"><span>animation<small>background on / off</small></span><button class="bt theme-toggle anim-toggle" id="anim-toggle" aria-label="Toggle animation"></button></div>';
+
+    var COPY_ICON = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+  var CHECK_ICON = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+  var ICONS = {
+    note: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">check-list-3</title><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-dasharray="24"><path d="M11.5 5c0 -0.83 0.67 -1.5 1.5 -1.5h6c0.83 0 1.5 0.67 1.5 1.5c0 0.83 -0.67 1.5 -1.5 1.5h-6c-0.83 0 -1.5 -0.67 -1.5 -1.5Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="24;0"/></path><path stroke-dashoffset="24" d="M11.5 12c0 -0.83 0.67 -1.5 1.5 -1.5h6c0.83 0 1.5 0.67 1.5 1.5c0 0.83 -0.67 1.5 -1.5 1.5h-6c-0.83 0 -1.5 -0.67 -1.5 -1.5Z"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.4s" dur="0.3s" to="0"/></path><path stroke-dashoffset="24" d="M11.5 19c0 -0.83 0.67 -1.5 1.5 -1.5h6c0.83 0 1.5 0.67 1.5 1.5c0 0.83 -0.67 1.5 -1.5 1.5h-6c-0.83 0 -1.5 -0.67 -1.5 -1.5Z"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.3s" to="0"/></path></g><g stroke-dasharray="12" stroke-dashoffset="12" stroke-width="2"><path d="M3 5l2 2l4 -4"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.2s" dur="0.2s" to="0"/></path><path d="M3 12l2 2l4 -4"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" to="0"/></path><path d="M3 19l2 2l4 -4"><animate fill="freeze" attributeName="stroke-dashoffset" begin="1s" dur="0.2s" to="0"/></path></g></g></svg>',
+    tip: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">lightbulb-filled</title><g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="currentColor" fill-opacity="0" stroke-dasharray="46" d="M12 17h-3v-2.8c-1.79 -1.04 -3 -2.98 -3 -5.2c0 -3.31 2.69 -6 6 -6c3.31 0 6 2.69 6 6c0 2.22 -1.21 4.16 -3 5.2v2.8Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="46;0"/><animate fill="freeze" attributeName="fill-opacity" begin="0.7s" dur="0.4s" to="1"/></path><path fill="none" stroke-dasharray="6" stroke-dashoffset="6" d="M10 21h4"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.2s" to="0"/></path></g></svg>',
+    warning: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">alert-loop</title><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" d="M12 3l9 17h-18l9 -17Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10v4"><animate attributeName="stroke-width" begin="0.7s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" to="0"/></path><path stroke-dasharray="4" stroke-dashoffset="4" d="M12 17v0.01"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" to="0"/><animate attributeName="stroke-width" begin="1s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/></path></g></svg>',
+    important: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">bell-alert-filled-loop</title><g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="none" stroke-dasharray="4" d="M12 3v2"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s" values="4;0"/><animateTransform attributeName="transform" dur="6s" keyTimes="0;0.05;0.15;0.2;1" repeatCount="indefinite" type="rotate" values="0 12 3;3 12 3;-3 12 3;0 12 3;0 12 3"/></path><path fill="currentColor" fill-opacity="0" stroke-dasharray="30" stroke-dashoffset="30" d="M12 5c-3.31 0 -6 2.69 -6 6l0 6c-1 0 -2 1 -2 2h8M12 5c3.31 0 6 2.69 6 6l0 6c1 0 2 1 2 2h-8"><animateTransform attributeName="transform" dur="6s" keyTimes="0;0.05;0.15;0.2;1" repeatCount="indefinite" type="rotate" values="0 12 3;3 12 3;-3 12 3;0 12 3;0 12 3"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.2s" dur="0.4s" to="0"/><animate fill="freeze" attributeName="fill-opacity" begin="1.3s" dur="0.4s" to="1"/></path><g fill="none"><path stroke-dasharray="10" stroke-dashoffset="10" d="M10 20c0 1.1 0.9 2 2 2c1.1 0 2 -0.9 2 -2"><animateTransform attributeName="transform" begin="0.2s" dur="6s" keyTimes="0;0.05;0.15;0.2;1" repeatCount="indefinite" type="rotate" values="0 12 8;6 12 8;-6 12 8;0 12 8;0 12 8"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" to="0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M22 6v4"><animate attributeName="stroke-width" begin="0.9s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.9s" dur="0.2s" to="0"/></path><path stroke-dasharray="4" stroke-dashoffset="4" d="M22 14v0.01"><animate attributeName="stroke-width" begin="1.1s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="1.1s" dur="0.2s" to="0"/></path></g></g></svg>',
+    caution: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">hazard-lights-filled-loop</title><g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="currentColor" fill-opacity="0" stroke-dasharray="28" d="M12 10l4 7h-8Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.4s" values="28;0"/><animate fill="freeze" attributeName="fill-opacity" begin="0.6s" dur="0.4s" to="1"/></path><path fill="none" d="M12 10l4 7h-8Z" opacity="0"><animate attributeName="d" begin="0.4s" dur="0.8s" keyTimes="0;0.25;1" repeatCount="indefinite" values="M12 10l4 7h-8Z;M12 4l9.25 16h-18.5Z;M12 4l9.25 16h-18.5Z"/><animate attributeName="opacity" begin="0.4s" dur="0.8s" keyTimes="0;0.1;0.75;1" repeatCount="indefinite" values="0;1;1;0"/></path></g></svg>',
+    danger: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">brake-alert-filled</title><defs><mask id="SVGG1he6d3K"><g stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="#fff" fill-opacity="0" stroke="#fff" stroke-dasharray="54" d="M12 4c4.42 0 8 3.58 8 8c0 4.42 -3.58 8 -8 8c-4.42 0 -8 -3.58 -8 -8c0 -4.42 3.58 -8 8 -8"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="54;0"/><animate fill="freeze" attributeName="fill-opacity" begin="1.3s" dur="0.4s" to="1"/></path><g fill="none" stroke="#000"><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 8v4"><animate fill="freeze" attributeName="stroke-dashoffset" begin="1.8s" dur="0.2s" to="0"/></path><path stroke-dasharray="4" stroke-dashoffset="4" d="M12 16v0.01"><animate fill="freeze" attributeName="stroke-dashoffset" begin="2s" dur="0.2s" to="0"/></path></g></g></mask></defs><path fill="currentColor" d="M0 0h24v24H0z" mask="url(#SVGG1he6d3K)"/><g fill="none" stroke="currentColor" stroke-dasharray="20" stroke-dashoffset="20" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4.22 4.22c-4.29 4.3 -4.29 11.26 0 15.56"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.3s" to="0"/></path><path d="M19.78 4.22c4.29 4.3 4.29 11.26 0 15.56"><animate fill="freeze" attributeName="stroke-dashoffset" begin="1s" dur="0.3s" to="0"/></path></g></svg>'
+  };
+
+  var ICON_ANIM_ON = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">lightbulb-alt-outline</title><path fill="currentColor" fill-rule="evenodd" d="M12 3.75c-3.476 0-6.25 2.717-6.25 6.016c0 2.005.82 3.733 2.285 4.81c.323.237.6.591.705 1.04c.087.369.186.818.284 1.294h2.226v-1.083a.75.75 0 0 1 .117-.403l.802-1.26l-1.799-1.412a.75.75 0 0 1-.17-.993l1.167-1.832a.75.75 0 0 1 1.266.806l-.802 1.259l1.799 1.413a.75.75 0 0 1 .17.992l-1.05 1.649v.864h2.226c.098-.476.197-.925.284-1.294c.106-.449.382-.803.705-1.04c1.464-1.077 2.285-2.806 2.285-4.81c0-3.299-2.774-6.016-6.25-6.016m2.689 14.66H9.31c.11.637.197 1.24.224 1.674c.027.457.368.866.871.974l.196.043c.92.199 1.875.199 2.796 0l.196-.043c.503-.108.844-.517.872-.974c.026-.433.112-1.037.223-1.674M4.25 9.766C4.25 5.59 7.744 2.25 12 2.25s7.75 3.341 7.75 7.516c0 2.424-1.004 4.627-2.897 6.018a.32.32 0 0 0-.133.176a51 51 0 0 0-.394 1.843c-.183.938-.332 1.848-.363 2.372c-.07 1.158-.922 2.105-2.052 2.35l-.196.042c-1.13.244-2.3.244-3.43 0l-.196-.042c-1.13-.244-1.982-1.192-2.052-2.35c-.031-.524-.18-1.434-.363-2.372a51 51 0 0 0-.394-1.843a.32.32 0 0 0-.133-.176C5.254 14.394 4.25 12.19 4.25 9.767" clip-rule="evenodd"/></svg>';
+  var ICON_ANIM_OFF = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">lightbulb-off-solid</title><path fill="currentColor" d="M4.5 9.766C4.5 5.737 7.874 2.5 12 2.5c1.925 0 3.687.705 5.018 1.866a.29.29 0 0 1 .01.425L6.92 14.901a.29.29 0 0 1-.412.003C5.194 13.578 4.5 11.754 4.5 9.766m-.497 10.17l-.033.034a.75.75 0 1 0 1.06 1.06l4.121-4.12h6.858c.142 0 .264-.1.294-.238c.061-.28.12-.541.174-.77a.57.57 0 0 1 .228-.319c1.822-1.34 2.795-3.463 2.795-5.817a7 7 0 0 0-.526-2.68L21.03 5.03a.75.75 0 0 0-1.033-1.086L4.03 19.91z"/><path fill="currentColor" d="M8.281 18.41a.2.2 0 0 0-.198.235c.105.604.182 1.147.204 1.515c.063 1.041.83 1.899 1.855 2.12l.196.043a7.9 7.9 0 0 0 3.324 0l.196-.043c1.025-.221 1.792-1.079 1.855-2.12c.022-.368.1-.91.204-1.515a.2.2 0 0 0-.198-.235z"/></svg>';
+  var ICON_THEME = '<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><title xmlns="">brush-alt</title><path fill="currentColor" d="M19 8.001h-4V4.999a2.92 2.92 0 0 0-.874-2.108a2.94 2.94 0 0 0-2.39-.879C10.202 2.144 9 3.508 9 5.117V8H5c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2v-9.999c0-1.103-.897-2-2-2M5 10h6V5.117c0-.57.407-1.07 1.002-1.117c.266 0 .512.103.712.307a.96.96 0 0 1 .286.692V10h.995l.005.001h5V12H5zm0 10v-6h14l.002 6z"/></svg>';
+
+    var vantaEffect = null;
+  function createNoiseTexture() {
+    var canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 256;
+    var ctx = canvas.getContext('2d'), img = ctx.createImageData(256, 256);
+    for (var i = 0; i < img.data.length; i += 4) {
+      var v = Math.random() * 255;
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+      img.data[i + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    return canvas.toDataURL();
+  }
+  var vantaTheme = function () {
+    return root.getAttribute('data-theme') === 'light'
+      ? { backgroundColor: 0xffffff, skyColor: 0x3190be, cloudColor: 0x2c3857, lightColor: 0xffffff }
+      : { backgroundColor: 0x000000, skyColor: 0x020106, cloudColor: 0x000000, lightColor: 0xffffff };
+  };
+  function initVanta() {
+    if (vantaEffect || typeof VANTA === 'undefined') return;
+    vantaEffect = VANTA.CLOUDS2(Object.assign({
+      el: '#vanta-bg', mouseControls: true, touchControls: true, gyroControls: false,
+      minHeight: 200.00, minWidth: 200.00, scale: 1.00, scaleMobile: 4.00, speed: 1.00,
+      texturePath: createNoiseTexture()
+    }, vantaTheme()));
+  }
+  function destroyVanta() { if (vantaEffect) { vantaEffect.destroy(); vantaEffect = null; } }
+  function loadScript(src, cb) {
+    var s = document.createElement('script');
+    s.src = src; s.onload = cb; s.onerror = cb;
+    document.head.appendChild(s);
+  }
+  function runVanta() {
+    if (typeof VANTA !== 'undefined') return initVanta();
+    loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js', function () {
+      loadScript('https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.clouds2.min.js', initVanta);
+    });
+  }
+
+    function build() {
+    var main = document.querySelector('main');
+    main.insertAdjacentHTML('beforebegin', TOP);
+    main.insertAdjacentHTML('afterend', FOOT);
+    document.getElementById('mode-btn').closest('.row').insertAdjacentHTML('beforebegin', ANIMROW);
+
+    ED.links(document.getElementById('links'), function (l) {
+      if (l.name === 'search') return '';                var ext = ED.external(l.href);
+      return '<a class="bt" href="' + esc(l.href) + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '><span class="ico"><img src="' + esc(l.icon) + '" alt=""></span><span class="hint nib"><b>Visit</b><small>' + esc(l.label) + '</small></span><span class="nm">' + esc(l.name) + '</span></a>';
+    });
+
+    ED.copy({ label: COPY_ICON, done: CHECK_ICON });
+    ED.callouts(ICONS);
+    behaviour();
+    root.classList.remove('pending');
+  }
+
+  function behaviour() {
+    var header = document.querySelector('header'), bars = document.querySelector('.bars');
+    var menuBtn = document.getElementById('menu-btn'), animToggle = document.getElementById('anim-toggle');
+    var themeToggle = document.getElementById('theme-toggle'), dialog = document.getElementById('settings');
+    var dimOverlay = document.getElementById('nav-dim-overlay');
+
+    var cores = navigator.hardwareConcurrency || 1, ram = navigator.deviceMemory || 1;
+    var isLowEnd = cores <= 2 || ram <= 2;
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var animEnabled = (function () {
+      if (reducedMotion) return false;
+      if (ED.consent) { var s = ED.get('animEnabled'); if (s !== null) return s !== 'false'; }
+      return !isLowEnd;
+    })();
+
+    ED.onTheme = function () { if (animEnabled) { destroyVanta(); runVanta(); } };
+
+    var hoverTimeout = null, forced = false;
+    function expandHeader()   { if (!forced) header.classList.add('expanded'); }
+    function collapseHeader() { if (!forced) header.classList.remove('expanded'); }
+    header.addEventListener('mouseenter', function () { clearTimeout(hoverTimeout); expandHeader(); });
+    header.addEventListener('mouseleave', function () { hoverTimeout = setTimeout(collapseHeader, 150); });
+    menuBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      forced = !forced;
+      header.classList.toggle('expanded', forced);
+      menuBtn.setAttribute('aria-expanded', forced);
+      ED.remember('headerExpanded', forced);
+    });
+    function closeHeader() { forced = false; header.classList.remove('expanded'); menuBtn.setAttribute('aria-expanded', false); }
+    document.addEventListener('click', function (e) { if (forced && !header.contains(e.target)) closeHeader(); });
+
+    var lastY = 0, scrollTick = false;
+    window.addEventListener('scroll', function (e) {
+      var t = e.target;
+      if (scrollTick || !(t === document || t === document.body || t === document.documentElement)) return;
+      scrollTick = true;
+      requestAnimationFrame(function () {
+        var y = t === document ? window.scrollY : t.scrollTop, delta = y - lastY;
+        bars.classList.toggle('float', y > 8);
+        if (y <= bars.offsetHeight || header.classList.contains('expanded')) bars.classList.remove('away');
+        else if (delta > 6)  bars.classList.add('away');
+        else if (delta < -6) bars.classList.remove('away');
+        lastY = y; scrollTick = false;
+      });
+    }, { passive: true, capture: true });
+    bars.classList.toggle('float', (document.body.scrollTop || window.scrollY) > 8);
+
+    document.querySelectorAll('header nav a').forEach(function (link) {
+      link.addEventListener('mouseenter', function () { dimOverlay.classList.add('active'); bars.style.zIndex = '1001'; });
+      link.addEventListener('mouseleave', function () {
+        dimOverlay.classList.remove('active');
+        setTimeout(function () { if (!dimOverlay.classList.contains('active')) bars.style.zIndex = '1000'; }, 300);
+      });
+    });
+    dimOverlay.addEventListener('click', function () { this.classList.remove('active'); bars.style.zIndex = '1000'; });
+
+    ED.dialog(dialog, [document.getElementById('settings-btn'), document.getElementById('more-btn')], closeHeader);
+
+    function updateAnimButton() {
+      animToggle.classList.toggle('off', !animEnabled);
+      animToggle.innerHTML = animEnabled ? ICON_ANIM_ON : ICON_ANIM_OFF;
+    }
+    function setAnim(on) {
+      animEnabled = on;
+      if (on) runVanta(); else destroyVanta();
+      updateAnimButton();
+    }
+    animToggle.addEventListener('click', function () {
+      var on = !animEnabled;
+      if (on && isLowEnd && !confirm('this device may struggle with animations. enable anyway?')) return;
+      setAnim(on);
+      ED.remember('animEnabled', String(on));
+    });
+    window.addEventListener('storage', function (e) {
+      if (e.key === 'consentGiven') ED.consent = e.newValue === 'true';
+      if (e.key === 'animEnabled' && e.newValue) setAnim(e.newValue !== 'false');
+    });
+
+    themeToggle.innerHTML = ICON_THEME;
+    updateAnimButton();
+    if (animEnabled) runVanta();
+  }
+
+    var link = document.createElement('link'), started = false;
+  function go() {
+    if (started) return; started = true;
+    build();
+  }
+  link.rel = 'stylesheet'; link.id = 'full-css'; link.href = C.css;
+  link.addEventListener('load', go);
+  link.addEventListener('error', go);
+  document.head.appendChild(link);
+})();
