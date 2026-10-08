@@ -2,7 +2,7 @@
   'use strict';
   var ED = window.ED, C = ED.cfg, root = document.documentElement;
 
-    var CSS =
+  var CSS =
     'code,pre{border:1px solid color-mix(in srgb,currentColor 25%,transparent);border-radius:.4rem}' +
     'code{padding:.1em .4em}pre code{display:block;border:0;padding:0}' +
     '.code-block-wrapper{position:relative;margin:1rem 0}' +
@@ -15,7 +15,9 @@
     'blockquote.note,blockquote.tip,blockquote.warning,blockquote.important,blockquote.caution,blockquote.danger' +
     '{background:linear-gradient(to right,color-mix(in srgb,var(--c) 30%,transparent),transparent)}' +
     'blockquote .title{display:inline-flex;align-items:center;gap:.4em;font-weight:bold}' +
-    'blockquote .title svg{color:var(--c)}';
+    'blockquote .title svg{color:var(--c)}' +
+    'header details summary h1{margin:0;padding:0;font-size:34px;line-height:1}' +
+    'header details summary h1 a{display:block;color:inherit;text-decoration:none}';
 
   var svg = function (d) {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
@@ -29,13 +31,14 @@
     danger:    svg('<circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/>')
   };
 
-    var SEARCH_DEFS = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><mask id="SVGzmt0MemV"><g fill="none" stroke="#fff" stroke-linejoin="round" stroke-width="4"><path fill="#555" d="M21 38c9.389 0 17-7.611 17-17S30.389 4 21 4S4 11.611 4 21s7.611 17 17 17Z"/><path stroke-linecap="round" d="M26.657 14.343A7.98 7.98 0 0 0 21 12a7.98 7.98 0 0 0-5.657 2.343m17.879 18.879l8.485 8.485"/></g></mask><symbol id="i-search" viewBox="0 0 48 48"><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#SVGzmt0MemV)"/></symbol></defs></svg>';
+  var SEARCH_DEFS = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><mask id="SVGzmt0MemV"><g fill="none" stroke="#fff" stroke-linejoin="round" stroke-width="4"><path fill="#555" d="M21 38c9.389 0 17-7.611 17-17S30.389 4 21 4S4 11.611 4 21s7.611 17 17 17Z"/><path stroke-linecap="round" d="M26.657 14.343A7.98 7.98 0 0 0 21 12a7.98 7.98 0 0 0-5.657 2.343m17.879 18.879l8.485 8.485"/></g></mask><symbol id="i-search" viewBox="0 0 48 48"><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#SVGzmt0MemV)"/></symbol></defs></svg>';
 
   var HEADER =
     '<header><details>' +
-    '<summary style="display: flex; align-items: center; list-style: none; cursor: pointer; user-select: none; -webkit-user-select: none;">' +
-    '<img src="' + C.favicon + '" height="34" alt=""><a href="' + C.home + '">error.doc</a>' +
-    '<span style="margin-left: auto;" aria-hidden="true">•••</span></summary>' +
+    '<summary style="display:flex;align-items:center;list-style:none;cursor:pointer;user-select:none;-webkit-user-select:none;">' +
+    '<img src="' + C.favicon + '" height="34" alt="">' +
+    '<h1><a href="' + C.home + '">error.doc</a></h1>' +
+    '<span style="margin-left:auto;" aria-hidden="true">●●●</span></summary>' +
     '<span id="links"></span><button type="button" id="settings-btn"><svg width="1em" height="1em" viewBox="0 0 100 100"><polygon points="50,0 100,25 100,75 50,100 0,75 0,25" fill="currentColor"/></svg> settings</button>' +
     '</details><hr></header>';
 
@@ -46,8 +49,7 @@
     '<a href="https://zynomon.github.io/error/e.html" aria-label="Repository"><img src="https://img.shields.io/badge/-A81D33?logo=linux&logoColor=fff" alt="Repository"></a>' +
     '</div><h6>"born from failure, built for control." - Apache 2.0 Licensed, since 2025.</h6></footer>';
 
-
-    var style = document.createElement('style');
+  var style = document.createElement('style');
   style.id = 'half-css';
   style.textContent = CSS;
   document.head.appendChild(style);
@@ -56,7 +58,7 @@
   main.insertAdjacentHTML('beforebegin', SEARCH_DEFS + HEADER);
   main.insertAdjacentHTML('afterend', FOOTER);
 
-    ED.links(document.getElementById('links'), function (l) {
+  ED.links(document.getElementById('links'), function (l) {
     var b = document.createElement('button');
     b.type = 'button';
     if (l.name === 'search') b.insertAdjacentHTML('beforeend', '<svg width="1em" height="1em"><title>search</title><use href="#i-search"/></svg>');
@@ -71,6 +73,5 @@
   ED.callouts(ICONS);
   ED.dialog(document.getElementById('settings'), [document.getElementById('settings-btn')]);
 
-  
   root.classList.remove('pending');
 })();
