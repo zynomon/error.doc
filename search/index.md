@@ -29,7 +29,10 @@ description: "Search across every page of the error.os documentation"
   var RAW = 'https://raw.githubusercontent.com/' + repo + '/' + branch + '/';
   var KEY = 'errdoc-search:v1:' + repo + '@' + branch;
   
-  var index = [], files = 0, done = 0, total = 0, limited = false, note = '';
+  var link = document.querySelector('link[rel~="icon"]');
+  var fallbackIcon = link ? link.href : (window.ERROR_DOC ? window.ERROR_DOC.icon : '');
+
+  var index = [], files = 0, done = 0, failed = 0, total = 0, limited = false, note = '';
   var vocab = null, typeTimer = 0, dymTimer = 0, dymTok = 0, dym = null, retry = null;
 
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
@@ -85,7 +88,7 @@ description: "Search across every page of the error.os documentation"
     }
     var id = path.replace(/\.md$/i, '').replace(/\/index$/i, '');
     var url = site + (meta.permalink ? meta.permalink.replace(/^\//, '') : /(^|\/)index\.md$/i.test(path) ? path.replace(/index\.md$/i, '') : path.replace(/\.md$/i, '.html'));
-    var icon = safe(meta.icon || '');
+    var icon = safe(meta.icon || fallbackIcon);
     var title = meta.title || id;
     var sec = { h: title, a: '', t: [] }, seen = false, fence = false;
     function uniq(a) {
@@ -172,7 +175,8 @@ description: "Search across every page of the error.os documentation"
       status.textContent = failed + ' file(s) failed';
       bar.style.display = 'none'; showRetry(true);
     } else {
-      status.parentNode.style.display = 'none';
+      status.style.display = 'none';
+      bar.style.display = 'none';
     }
     input.disabled = false;
     if (!document.activeElement || document.activeElement === document.body) input.focus();
