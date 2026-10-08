@@ -5,7 +5,7 @@ description: "Search across every page of the error.os documentation"
 ---
 
 <div align="center">
-  <h1>Search Across</h1>
+  <h1>Search Across The Documentation.</h1>
   <input id="s-input" type="search" placeholder="search.." autocomplete="off" disabled style="width:100%;max-width:600px;padding:0.75rem;border:1px solid rgba(128,128,128,0.3);background:transparent;color:inherit;font-family:inherit;box-sizing:border-box;">
   <br>
   <progress id="s-bar" style="width:100%;max-width:600px;height:4px;margin-top:1rem;"></progress>
