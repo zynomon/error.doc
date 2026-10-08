@@ -43,7 +43,7 @@
     '</details><hr></header>';
 
   var FOOTER =
-    '<footer><h2>𝚎𝚛𝚛𝚘𝚛.𝚘𝚜™</h2><div>' +
+    '<hr><footer><h2 style="font-family:'Courier New','Nimbus Mono PS',monospace">error.os™</h2><div><div>' +
     '<a href="https://zynomon.github.io/error" aria-label="error"><img src="https://img.shields.io/badge/-%23121011.svg?logo=github&logoColor=white" alt="error"></a> ' +
     '<a href="https://discord.gg/Jn7FBwu99F" aria-label="Discord"><img src="https://img.shields.io/badge/-%235865F2.svg?&logo=discord&logoColor=white" alt="Discord"></a> ' +
     '<a href="https://zynomon.github.io/error/e.html" aria-label="Repository"><img src="https://img.shields.io/badge/-A81D33?logo=linux&logoColor=fff" alt="Repository"></a>' +
