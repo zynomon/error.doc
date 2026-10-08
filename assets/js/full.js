@@ -112,7 +112,6 @@
 
   var ICON_ANIM_ON = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">lightbulb-alt-outline</title><path fill="currentColor" fill-rule="evenodd" d="M12 3.75c-3.476 0-6.25 2.717-6.25 6.016c0 2.005.82 3.733 2.285 4.81c.323.237.6.591.705 1.04c.087.369.186.818.284 1.294h2.226v-1.083a.75.75 0 0 1 .117-.403l.802-1.26l-1.799-1.412a.75.75 0 0 1-.17-.993l1.167-1.832a.75.75 0 0 1 1.266.806l-.802 1.259l1.799 1.413a.75.75 0 0 1 .17.992l-1.05 1.649v.864h2.226c.098-.476.197-.925.284-1.294c.106-.449.382-.803.705-1.04c1.464-1.077 2.285-2.806 2.285-4.81c0-3.299-2.774-6.016-6.25-6.016m2.689 14.66H9.31c.11.637.197 1.24.224 1.674c.027.457.368.866.871.974l.196.043c.92.199 1.875.199 2.796 0l.196-.043c.503-.108.844-.517.872-.974c.026-.433.112-1.037.223-1.674M4.25 9.766C4.25 5.59 7.744 2.25 12 2.25s7.75 3.341 7.75 7.516c0 2.424-1.004 4.627-2.897 6.018a.32.32 0 0 0-.133.176a51 51 0 0 0-.394 1.843c-.183.938-.332 1.848-.363 2.372c-.07 1.158-.922 2.105-2.052 2.35l-.196.042c-1.13.244-2.3.244-3.43 0l-.196-.042c-1.13-.244-1.982-1.192-2.052-2.35c-.031-.524-.18-1.434-.363-2.372a51 51 0 0 0-.394-1.843a.32.32 0 0 0-.133-.176C5.254 14.394 4.25 12.19 4.25 9.767" clip-rule="evenodd"/></svg>';
   var ICON_ANIM_OFF = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">lightbulb-off-solid</title><path fill="currentColor" d="M4.5 9.766C4.5 5.737 7.874 2.5 12 2.5c1.925 0 3.687.705 5.018 1.866a.29.29 0 0 1 .01.425L6.92 14.901a.29.29 0 0 1-.412.003C5.194 13.578 4.5 11.754 4.5 9.766m-.497 10.17l-.033.034a.75.75 0 1 0 1.06 1.06l4.121-4.12h6.858c.142 0 .264-.1.294-.238c.061-.28.12-.541.174-.77a.57.57 0 0 1 .228-.319c1.822-1.34 2.795-3.463 2.795-5.817a7 7 0 0 0-.526-2.68L21.03 5.03a.75.75 0 0 0-1.033-1.086L4.03 19.91z"/><path fill="currentColor" d="M8.281 18.41a.2.2 0 0 0-.198.235c.105.604.182 1.147.204 1.515c.063 1.041.83 1.899 1.855 2.12l.196.043a7.9 7.9 0 0 0 3.324 0l.196-.043c1.025-.221 1.792-1.079 1.855-2.12c.022-.368.1-.91.204-1.515a.2.2 0 0 0-.198-.235z"/></svg>';
-  var ICON_THEME = '<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><title xmlns="">brush-alt</title><path fill="currentColor" d="M19 8.001h-4V4.999a2.92 2.92 0 0 0-.874-2.108a2.94 2.94 0 0 0-2.39-.879C10.202 2.144 9 3.508 9 5.117V8H5c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2v-9.999c0-1.103-.897-2-2-2M5 10h6V5.117c0-.57.407-1.07 1.002-1.117c.266 0 .512.103.712.307a.96.96 0 0 1 .286.692V10h.995l.005.001h5V12H5zm0 10v-6h14l.002 6z"/></svg>';
 
     var vantaEffect = null;
   function createNoiseTexture() {
@@ -173,7 +172,7 @@
   function behaviour() {
     var header = document.querySelector('header'), bars = document.querySelector('.bars');
     var menuBtn = document.getElementById('menu-btn'), animToggle = document.getElementById('anim-toggle');
-    var themeToggle = document.getElementById('theme-toggle'), dialog = document.getElementById('settings');
+    var dialog = document.getElementById('settings');
     var dimOverlay = document.getElementById('nav-dim-overlay');
 
     var cores = navigator.hardwareConcurrency || 1, ram = navigator.deviceMemory || 1;
@@ -249,7 +248,6 @@
       if (e.key === 'animEnabled' && e.newValue) setAnim(e.newValue !== 'false');
     });
 
-    themeToggle.innerHTML = ICON_THEME;
     updateAnimButton();
     if (animEnabled) runVanta();
   }
