@@ -7,7 +7,7 @@
     'code{padding:.1em .4em}pre code{display:block;border:0;padding:0}' +
     '.code-block-wrapper{position:relative;margin:1rem 0}' +
     '.code-block-wrapper pre{margin:0;padding:.75rem 4.5rem .75rem .75rem;overflow-x:auto}' +
-    '.copy-button{position:absolute;top:.4rem;right:.4rem;opacity:0;cursor:pointer}' +
+    '.copy-button{position:absolute;top:.4rem;right:.4rem;opacity:0;cursor:pointer;background:none;border:none;color:inherit;font-size:0.85rem}' +
     '.code-block-wrapper:hover .copy-button,.copy-button:focus-visible{opacity:1}' +
     '@media (hover:none){.copy-button{opacity:1}}' +
     'blockquote.note{--c:#2196f3}blockquote.tip{--c:#2ea043}blockquote.warning{--c:#e08a00}' +
@@ -31,8 +31,6 @@
     danger:    svg('<circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/>')
   };
 
-  var SEARCH_DEFS = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><mask id="SVGzmt0MemV"><g fill="none" stroke="#fff" stroke-linejoin="round" stroke-width="4"><path fill="#555" d="M21 38c9.389 0 17-7.611 17-17S30.389 4 21 4S4 11.611 4 21s7.611 17 17 17Z"/><path stroke-linecap="round" d="M26.657 14.343A7.98 7.98 0 0 0 21 12a7.98 7.98 0 0 0-5.657 2.343m17.879 18.879l8.485 8.485"/></g></mask><symbol id="i-search" viewBox="0 0 48 48"><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#SVGzmt0MemV)"/></symbol></defs></svg>';
-
   var HEADER =
     '<header><details>' +
     '<summary style="display:flex;align-items:center;list-style:none;cursor:pointer;user-select:none;-webkit-user-select:none;">' +
@@ -43,7 +41,7 @@
     '</details><hr></header>';
 
   var FOOTER =
-    '<hr><footer><h2 style="font-family:'Courier New','Nimbus Mono PS',monospace">error.os™</h2><div><div>' +
+    '<hr><footer><h2 style="font-family:\'Courier New\',\'Nimbus Mono PS\',monospace">error.os™</h2><div><div>' +
     '<a href="https://zynomon.github.io/error" aria-label="error"><img src="https://img.shields.io/badge/-%23121011.svg?logo=github&logoColor=white" alt="error"></a> ' +
     '<a href="https://discord.gg/Jn7FBwu99F" aria-label="Discord"><img src="https://img.shields.io/badge/-%235865F2.svg?&logo=discord&logoColor=white" alt="Discord"></a> ' +
     '<a href="https://zynomon.github.io/error/e.html" aria-label="Repository"><img src="https://img.shields.io/badge/-A81D33?logo=linux&logoColor=fff" alt="Repository"></a>' +
@@ -55,7 +53,7 @@
   document.head.appendChild(style);
 
   var main = document.querySelector('main');
-  main.insertAdjacentHTML('beforebegin', SEARCH_DEFS + HEADER);
+  main.insertAdjacentHTML('beforebegin', HEADER);
   main.insertAdjacentHTML('afterend', FOOTER);
 
   ED.links(document.getElementById('links'), function (l) {
@@ -69,9 +67,15 @@
     });
     return b;
   });
+  
   ED.copy({ label: 'copy', done: 'copied' });
   ED.callouts(ICONS);
-  ED.dialog(document.getElementById('settings'), [document.getElementById('settings-btn')]);
+  
+  var settingsDlg = document.getElementById('settings');
+  var settingsBtn = document.getElementById('settings-btn');
+  if (settingsDlg && settingsBtn) {
+    ED.dialog(settingsDlg, [settingsBtn]);
+  }
 
   root.classList.remove('pending');
 })();
