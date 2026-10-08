@@ -29,12 +29,14 @@
     danger:    svg('<circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/>')
   };
 
-    var HEADER =
+    var SEARCH_DEFS = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><mask id="SVGzmt0MemV"><g fill="none" stroke="#fff" stroke-linejoin="round" stroke-width="4"><path fill="#555" d="M21 38c9.389 0 17-7.611 17-17S30.389 4 21 4S4 11.611 4 21s7.611 17 17 17Z"/><path stroke-linecap="round" d="M26.657 14.343A7.98 7.98 0 0 0 21 12a7.98 7.98 0 0 0-5.657 2.343m17.879 18.879l8.485 8.485"/></g></mask><symbol id="i-search" viewBox="0 0 48 48"><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#SVGzmt0MemV)"/></symbol></defs></svg>';
+
+  var HEADER =
     '<header><details>' +
     '<summary style="display: flex; align-items: center; list-style: none; cursor: pointer; user-select: none; -webkit-user-select: none;">' +
     '<img src="' + C.favicon + '" height="34" alt=""><a href="' + C.home + '">error.doc</a>' +
     '<span style="margin-left: auto;" aria-hidden="true">•••</span></summary>' +
-    '<span id="links"></span><button type="button" id="settings-btn">settings</button>' +
+    '<span id="links"></span><button type="button" id="settings-btn"><svg width="1em" height="1em" viewBox="0 0 100 100"><polygon points="50,0 100,25 100,75 50,100 0,75 0,25" fill="currentColor"/></svg> settings</button>' +
     '</details><hr></header>';
 
   var FOOTER =
@@ -51,13 +53,14 @@
   document.head.appendChild(style);
 
   var main = document.querySelector('main');
-  main.insertAdjacentHTML('beforebegin', HEADER);
+  main.insertAdjacentHTML('beforebegin', SEARCH_DEFS + HEADER);
   main.insertAdjacentHTML('afterend', FOOTER);
 
     ED.links(document.getElementById('links'), function (l) {
     var b = document.createElement('button');
     b.type = 'button';
-    if (l.icon) { var i = document.createElement('img'); i.src = l.icon; i.alt = ''; i.height = 16; b.appendChild(i); }
+    if (l.name === 'search') b.insertAdjacentHTML('beforeend', '<svg width="1em" height="1em"><title>search</title><use href="#i-search"/></svg>');
+    else if (l.icon) { var i = document.createElement('img'); i.src = l.icon; i.alt = ''; i.height = 16; b.appendChild(i); }
     b.appendChild(document.createTextNode(' ' + l.label));
     b.addEventListener('click', function () {
       if (ED.external(l.href)) window.open(l.href, '_blank', 'noopener'); else location.href = l.href;

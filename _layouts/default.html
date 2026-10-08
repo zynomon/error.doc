@@ -78,7 +78,7 @@
         var g = function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } };
         var ok = g('consentGiven') === 'true';
         var t = ok ? g('theme') : null;
-        var m = (ok && g('mode')) || 'half';
+        var m = (ok && g('mode')) || 'full';
         document.documentElement.setAttribute('data-mode', m);
         document.documentElement.classList.add('pending');
         if (t === 'light' || (t !== 'dark' && matchMedia('(prefers-color-scheme: light)').matches))
@@ -97,7 +97,7 @@
     <h2>settings</h2>
     <div class="row"><span>color scheme<small>light / dark</small></span>
       <button class="bt theme-toggle" id="theme-toggle" aria-label="Toggle theme"></button></div>
-    <div class="row"><span>mode<small>full / bare minimum, reloads</small></span>
+    <div class="row"><span>bare minimum mode<small>on / off, reloads</small></span>
       <button class="bt" id="mode-btn" style="width:auto;height:auto;padding:0.45rem 1rem"></button></div>
     <div class="acts"><button class="bt" id="reset-btn">reset</button><button class="bt" id="close-btn">close</button></div>
 </dialog>
@@ -251,8 +251,11 @@
     if (e.key === 'theme' && (e.newValue === 'light' || e.newValue === 'dark')) ED.setTheme(e.newValue);
   });
 
-  modeBtn.textContent = half() ? 'full' : 'bare minimum';
-  modeBtn.addEventListener('click', function () { ED.setMode(half() ? 'full' : 'half'); });
+  modeBtn.textContent = half() ? 'on' : 'off';
+  modeBtn.addEventListener('click', function () {
+    if (!half() && !confirm('Turn on bare minimum mode? The page will reload without styling and animation.')) return;
+    ED.setMode(half() ? 'full' : 'half');
+  });
   document.getElementById('reset-btn').addEventListener('click', ED.reset);
   document.getElementById('close-btn').addEventListener('click', function () { dialog.close(); });
   dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
