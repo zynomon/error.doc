@@ -4,31 +4,32 @@ title: "Search"
 description: "Search across every page of the error.os documentation"
 ---
 
-# Search
-
-<div id="search-app" data-site="{{ '/' | absolute_url }}" data-repo="zynomon/error.doc" data-branch="main" data-dir="docs/">
-  <input class="s-input" id="s-input" type="search" placeholder="search across all docs" autocomplete="off" aria-label="Search all docs" disabled>
-  <div class="s-load" id="s-load">
-    <p class="s-status" id="s-status" role="status">loading docs .. 0/0</p>
-    <div class="s-bar"><span id="s-bar"></span></div>
-  </div>
-  <p class="s-count" id="s-count" aria-live="polite"></p>
-  <div id="s-results"></div>
+<div align="center">
+  <h1>Search Across</h1>
+  <input id="s-input" type="search" placeholder="search.." autocomplete="off" disabled style="width:100%;max-width:600px;padding:0.75rem;border:1px solid rgba(128,128,128,0.3);background:transparent;color:inherit;font-family:inherit;box-sizing:border-box;">
+  <br>
+  <progress id="s-bar" style="width:100%;max-width:600px;height:4px;margin-top:1rem;"></progress>
+  <br>
+  <span id="s-status" style="display:block;margin-top:0.5rem;color:rgba(128,128,128,0.7)">0/0 loaded....</span>
 </div>
+
+<div id="s-results" style="max-width:600px;margin:2rem auto;text-align:left"></div>
 
 <script>
 (function () {
-  var app = document.getElementById('search-app'), input = document.getElementById('s-input');
-  var status = document.getElementById('s-status'), bar = document.getElementById('s-bar');
-  var load = document.getElementById('s-load');
-  var count = document.getElementById('s-count'), out = document.getElementById('s-results');
-  var repo = app.dataset.repo, branch = app.dataset.branch, dir = app.dataset.dir, site = app.dataset.site;
+  var input = document.getElementById('s-input');
+  var bar = document.getElementById('s-bar');
+  var status = document.getElementById('s-status');
+  var out = document.getElementById('s-results');
+  
+  var repo = 'zynomon/error.doc';
+  var branch = 'main';
+  var dir = 'docs/';
+  var site = window.location.origin + '/';
   var RAW = 'https://raw.githubusercontent.com/' + repo + '/' + branch + '/';
   var KEY = 'errdoc-search:v1:' + repo + '@' + branch;
-  var link = document.querySelector('link[rel~="icon"]');
-  var fallbackIcon = link ? link.href : '';
-  var WORD = /[\p{L}\p{N}]{3,}/gu;
-  var index = [], files = 0, done = 0, failed = 0, total = 0, limited = false, note = '';
+  
+  var index = [], files = 0, done = 0, total = 0, limited = false, note = '';
   var vocab = null, typeTimer = 0, dymTimer = 0, dymTok = 0, dym = null, retry = null;
 
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
@@ -36,7 +37,7 @@ description: "Search across every page of the error.os documentation"
   var slug = function (t) { return t.toLowerCase().replace(/[^a-z0-9 -]/g, '').replace(/ /g, '-').replace(/^[^a-z]+/, ''); };
   var enc = function (p) { return p.split('/').map(encodeURIComponent).join('/'); };
   var safe = function (u) { return /^\s*(javascript|data|vbscript):/i.test(u) ? '' : u; };
-
+  var WORD = /[\p{L}\p{N}]{3,}/gu;
   var DOC_RX = new RegExp('^' + rx(dir) + '[^/]+/[^/]+\\.md$', 'i');
 
   function get(url, type) {
@@ -84,7 +85,7 @@ description: "Search across every page of the error.os documentation"
     }
     var id = path.replace(/\.md$/i, '').replace(/\/index$/i, '');
     var url = site + (meta.permalink ? meta.permalink.replace(/^\//, '') : /(^|\/)index\.md$/i.test(path) ? path.replace(/index\.md$/i, '') : path.replace(/\.md$/i, '.html'));
-    var icon = safe(meta.icon || fallbackIcon);
+    var icon = safe(meta.icon || '');
     var title = meta.title || id;
     var sec = { h: title, a: '', t: [] }, seen = false, fence = false;
     function uniq(a) {
@@ -111,8 +112,9 @@ description: "Search across every page of the error.os documentation"
   }
 
   function progress() {
-    status.textContent = 'loading docs .. ' + done + '/' + total;
-    bar.style.width = (total ? done / total * 100 : 100) + '%';
+    status.textContent = done + '/' + total + ' loaded....';
+    if (total > 0) bar.value = done;
+    else bar.removeAttribute('value');
   }
   function pool(items, n, fn) {
     var i = 0;
@@ -127,30 +129,30 @@ description: "Search across every page of the error.os documentation"
   function showRetry(show) {
     if (!retry) {
       retry = document.createElement('button');
-      retry.type = 'button'; retry.className = 's-retry'; retry.textContent = 'retry';
+      retry.type = 'button'; retry.textContent = 'retry';
       retry.addEventListener('click', start);
-      load.appendChild(retry);
+      status.parentNode.appendChild(retry);
     }
     retry.hidden = !show;
   }
 
   function start() {
     showRetry(false);
-    load.hidden = false; bar.parentNode.hidden = false;
+    bar.max = 0; bar.value = 0;
     done = 0; failed = 0; total = 0; note = ''; progress();
     var cache = readCache(), fresh = {}, stale = 0;
     list().then(function (items) {
-      total = items.length; progress();
+      total = items.length; bar.max = total; progress();
       return pool(items, 6, function (it) {
         var c = cache.f[it.p];
         if (c && c.h && c.h === it.h) { fresh[it.p] = c; return Promise.resolve(); }
         return get(RAW + enc(it.p), 'text')
           .then(function (md) { fresh[it.p] = { h: it.h, e: parse(it.p, md) }; })
           .catch(function () { if (c) { fresh[it.p] = c; stale++; } else failed++; });
-      }).then(function () { if (stale) note = ' ( ' + stale + ' served from cache )'; finish(fresh, true); });
+      }).then(function () { if (stale) note = ' (' + stale + ' cached)'; finish(fresh, true); });
     }, function () {
       if (Object.keys(cache.f).length) {
-        note = limited ? ' ( github rate limit, showing cached copy )' : ' ( offline, showing cached copy )';
+        note = limited ? ' (rate limit, cached)' : ' (offline, cached)';
         finish(cache.f, false);
       } else finish({}, false);
     });
@@ -162,14 +164,16 @@ description: "Search across every page of the error.os documentation"
     keys.forEach(function (p) { index = index.concat(fresh[p].e); files++; });
     if (save && files) writeCache(fresh);
     if (!files) {
-      status.textContent = limited ? 'github rate limit reached, try again later' : 'could not load the docs from github';
-      bar.parentNode.hidden = true; showRetry(true); count.textContent = '';
+      status.textContent = limited ? 'github rate limit reached' : 'could not load docs';
+      bar.style.display = 'none'; showRetry(true); 
       return;
     }
     if (failed) {
-      status.textContent = failed + ' file' + (failed > 1 ? 's' : '') + ' failed to load';
-      bar.parentNode.hidden = true; showRetry(true);
-    } else load.hidden = true;
+      status.textContent = failed + ' file(s) failed';
+      bar.style.display = 'none'; showRetry(true);
+    } else {
+      status.parentNode.style.display = 'none';
+    }
     input.disabled = false;
     if (!document.activeElement || document.activeElement === document.body) input.focus();
     var q = new URLSearchParams(location.search).get('q');
@@ -214,7 +218,7 @@ description: "Search across every page of the error.os documentation"
   function suggest(words) {
     clearTimeout(dymTimer);
     var tok = ++dymTok;
-    if (dym) { dym.hidden = true; dym.innerHTML = ''; }
+    if (dym) { dym.remove(); dym = null; }
     dymTimer = setTimeout(function () {
       if (tok !== dymTok) return;
       if (!vocab) buildVocab();
@@ -225,28 +229,23 @@ description: "Search across every page of the error.os documentation"
         return w;
       });
       if (!changed || tok !== dymTok) return;
-      if (!dym) {
-        dym = document.createElement('p');
-        dym.className = 's-dym';
-        count.parentNode.insertBefore(dym, count.nextSibling);
-        dym.addEventListener('click', function (e) {
-          var a = e.target.closest('a');
-          if (!a) return;
-          e.preventDefault(); input.value = a.dataset.q; run(); input.focus();
-        });
-      }
-      var s = fixed.join(' ');
-      dym.innerHTML = 'did you mean <a href="?q=' + encodeURIComponent(s) + '" data-q="' + esc(s) + '">' + esc(s) + '</a>?';
-      dym.hidden = false;
+      dym = document.createElement('p');
+      dym.style.textAlign = 'center';
+      dym.innerHTML = 'did you mean <a href="?q=' + encodeURIComponent(fixed.join(' ')) + '">' + esc(fixed.join(' ')) + '</a>?';
+      dym.querySelector('a').addEventListener('click', function(e) {
+        e.preventDefault(); input.value = this.innerText; run(); input.focus();
+      });
+      out.parentNode.insertBefore(dym, out);
     }, 250);
   }
 
   function run() {
     var q = input.value.trim(), words = q.toLowerCase().split(/\s+/).filter(Boolean);
     history.replaceState(null, '', (q ? '?q=' + encodeURIComponent(q) : location.pathname) + location.hash);
+    if (dym) { dym.remove(); dym = null; }
     if (!words.length) {
-      count.textContent = index.length + ' sections in ' + files + ' docs' + note;
-      out.innerHTML = ''; suggest([]); return;
+      out.innerHTML = '<p style="text-align:center;color:rgba(128,128,128,0.7)">' + index.length + ' sections in ' + files + ' docs' + note + '</p>';
+      return;
     }
     var hits = [];
     index.forEach(function (e, n) {
@@ -259,7 +258,13 @@ description: "Search across every page of the error.os documentation"
       hits.push({ e: e, s: s, n: n });
     });
     hits.sort(function (a, b) { return b.s - a.s || a.n - b.n; });
-    count.textContent = (hits.length ? hits.length + ' found' + (hits.length > 60 ? ' ( showing 60 )' : '') : 'nothing found') + note;
+    
+    if (!hits.length) {
+      out.innerHTML = '<p style="text-align:center;color:rgba(128,128,128,0.7)">nothing found' + note + '</p>';
+      suggest(words);
+      return;
+    }
+
     var re = new RegExp('(' + words.map(rx).join('|') + ')', 'i');
     out.innerHTML = hits.slice(0, 60).map(function (h) {
       var e = h.e, p = -1;
@@ -267,14 +272,14 @@ description: "Search across every page of the error.os documentation"
       var from = Math.max(0, p < 0 ? 0 : p - 40);
       var snip = (from ? '…' : '') + e.text.slice(from, from + 140) + (from + 140 < e.text.length ? '…' : '');
       var mark = snip.split(re).map(function (v, i) { return i % 2 ? '<mark>' + esc(v) + '</mark>' : esc(v); }).join('');
-      var img = e.icon ? '<img src="' + esc(e.icon) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '';
-      return '<a class="hit" href="' + esc(e.url) + '">' + img + '<b>' + esc(e.title) + (e.sh && e.sh !== e.title ? ' › ' + esc(e.sh) : '') + '</b>:<span>' + mark + '</span></a>';
+      var img = e.icon ? '<img src="' + esc(e.icon) + '" alt="" width="20" height="20" style="vertical-align:middle;margin-right:0.5em">' : '';
+      return '<div style="border-bottom:1px solid rgba(128,128,128,0.3);padding:0.5em 0"><a href="' + esc(e.url) + '" style="font-weight:bold;color:inherit;text-decoration:none">' + img + esc(e.title) + (e.sh && e.sh !== e.title ? ' › ' + esc(e.sh) : '') + '</a><br><span style="font-size:0.9em;color:rgba(128,128,128,0.8)">' + mark + '</span></div>';
     }).join('');
     suggest(words);
   }
 
   input.addEventListener('input', function () { clearTimeout(typeTimer); typeTimer = setTimeout(run, 80); });
-  app.addEventListener('keydown', function (e) {
+  document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && document.activeElement === input) { clearTimeout(typeTimer); run(); if (out.firstChild) out.firstChild.click(); return; }
     var l = [].slice.call(out.children), i = l.indexOf(document.activeElement);
     if (e.key === 'ArrowDown') { e.preventDefault(); (l[i + 1] || l[0] || input).focus(); }

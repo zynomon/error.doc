@@ -1402,48 +1402,63 @@ dialog h2 {
     font-size: 0.85rem;
 }
 
-.hit,
-.hit:hover {
+.hit {
     display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    padding: 0.55rem 0.7rem;
-    border-radius: var(--border-radius-sm);
-    border-bottom: 0;
-    color: var(--fg);
-    text-shadow: none;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid rgba(128, 128, 128, 0.15);
+    border-radius: 4px;
+    background: transparent;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, background 0.2s;
 }
 
-.hit:hover,
+.hit:hover {
+    border-color: rgba(128, 128, 128, 0.4);
+    background: rgba(128, 128, 128, 0.05);
+}
+
 .hit:focus {
-    background: var(--glass-hover);
-    outline: none;
+    outline: 1px solid rgba(128, 128, 128, 0.6);
+    outline-offset: -1px;
 }
 
 .hit b {
-    flex: none;
-    color: var(--fg);
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 40%;
+    color: inherit;
 }
 
 .hit span {
-    color: var(--dim);
+    flex-grow: 1;
+    font-size: 0.9em;
+    color: rgba(128, 128, 128, 0.8);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .hit mark {
-    background: none;
-    padding: 0;
-    color: var(--accent);
-    text-decoration: underline;
+    background: rgba(128, 128, 128, 0.2);
+    color: inherit;
+    padding: 0 2px;
+    border-radius: 2px;
 }
 
 .hit img {
-    width: 1rem;
-    height: 1rem;
-    flex: none;
-    align-self: center;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    flex-shrink: 0;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
 }
 
 main {
@@ -2010,4 +2025,81 @@ footer,
     width: 100% !important;
     height: 100% !important;
     image-rendering: auto;
+}
+
+
+#search-app {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1rem;
+    font-family: inherit;
+}
+
+.s-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    color: inherit;
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    border-radius: 4px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+.s-input:focus {
+    border-color: rgba(128, 128, 128, 0.6);
+}
+
+.s-input:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.s-load {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(128, 128, 128, 0.7);
+}
+
+.s-bar {
+    height: 2px;
+    background: rgba(128, 128, 128, 0.1);
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+
+.s-bar span {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: rgba(128, 128, 128, 0.5);
+    transition: width 0.2s ease;
+}
+
+.s-count {
+    margin: 1rem 0;
+    font-size: 0.85rem;
+    color: rgba(128, 128, 128, 0.7);
+    text-align: center;
+}
+
+#s-results {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.s-dym, .s-retry {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: rgba(128, 128, 128, 0.7);
+}
+
+.s-dym a {
+    color: inherit;
+    text-decoration: underline;
+    cursor: pointer;
 }
